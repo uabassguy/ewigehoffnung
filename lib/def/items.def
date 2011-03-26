@@ -1,0 +1,105 @@
+
+#=========== Items ===========
+
+{
+name = bandage
+icon = "bandage"
+weight = 0.01
+effects = [heal]
+type = item
+}
+
+#=========== Weapons ===========
+
+{
+name = bow
+icon = "bow"
+weight = 3
+effects = []
+type = ranged
+}
+
+{
+name = knife
+icon = "knife"
+weight = 1
+effects = []
+type = melee
+}
+
+{
+name = arrow
+icon = "arrow"
+weight = 0
+effects = []
+type = ammo
+}
+#=========== Cloth/Armor ===========
+
+{
+name = leather_harness
+icon = "harness_leather"
+weight = 6
+effects = []
+type = armor
+}
+
+{
+name = linen_shirt
+icon = "shirt_linen"
+weight = 1
+effects = []
+type = cloth
+}
+
+{
+name = linen_pants
+icon = "pants_linen"
+weight = 1
+effects = []
+type = pants
+}
+
+{
+name = leather_boots
+icon = "boots_leather"
+weight = 1
+effects = []
+type = boots
+}
+
+#=========== Herbs ===========
+
+{
+name = banewort
+icon = "banewort"
+weight = 0.1
+effects = [toxic]
+type = herb
+}
+
+{
+name = wolfsbane
+icon = "wolfsbane"
+weight = 0.1
+effects = [toxic]
+type = herb
+}
+
+{
+name = sage
+icon = "sage"
+weight = 0.1
+effects = [heal]
+type = herb
+}
+
+#EOF
+
+{
+name = 
+icon = ""
+weight = 0
+effects = []
+type = 
+}

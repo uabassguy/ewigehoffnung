@@ -1,0 +1,8 @@
+syntax: glob
+nbproject/*
+spec/*
+test/*
+commit
+
+syntax: regexp
+.*\#.*\#$

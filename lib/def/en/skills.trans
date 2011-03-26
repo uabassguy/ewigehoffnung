@@ -1,0 +1,48 @@
+
+healing
+{
+name = "Healing"
+desc = ""
+}
+
+crafting
+{
+name = "Crafting"
+desc = ""
+}
+
+botany
+{
+name = "Botany"
+desc = ""
+}
+
+healing_magic
+{
+name = "Healing Magic"
+desc = ""
+}
+
+mind
+{
+name = "Mind Magic"
+desc = ""
+}
+
+elemental
+{
+name = "Elemental Magic"
+desc = ""
+}
+
+ranged
+{
+name = "Ranged Combat"
+desc = ""
+}
+
+melee
+{
+name = "Melee"
+desc = ""
+}

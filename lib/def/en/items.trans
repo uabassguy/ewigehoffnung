@@ -1,0 +1,66 @@
+
+bandage
+{
+name = "Bandage"
+desc = "A bandage to attend wounds"
+}
+
+bow
+{
+name = "Bow"
+desc = "A simple, light bow"
+}
+
+knife
+{
+name = "Knife"
+desc = "More a tool than a weapon"
+}
+
+arrow
+{
+name = "Arrow"
+desc = "Ammunition for bows"
+}
+
+leather_harness
+{
+name = "Leather Harness"
+desc = "Leather armor"
+}
+
+linen_shirt
+{
+name = "Linen Shirt"
+desc = "Basic shirt"
+}
+
+linen_pants
+{
+name = "Linen Pants"
+desc = "Common pants"
+}
+
+leather_boots
+{
+name = "Leather Boots"
+desc = "Plain boots"
+}
+
+banewort
+{
+name = "Deadly Nightshade"
+desc = "Highly toxic herb"
+}
+
+wolfsbane
+{
+name = "Wolfsbane"
+desc = "Highly toxic herb"
+}
+
+sage
+{
+name = "Sage"
+desc = ""
+}

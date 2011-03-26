@@ -1,0 +1,40 @@
+
+{
+name = healing
+icon = "healing"
+}
+
+{
+name = crafting
+icon = "crafting"
+}
+
+{
+name = botany
+icon = "botany"
+}
+
+{
+name = healing_magic
+icon = "healing_magic"
+}
+
+{
+name = mind
+icon = "mind"
+}
+
+{
+name = elemental
+icon = "elemental"
+}
+
+{
+name = ranged
+icon = "ranged"
+}
+
+{
+name = melee
+icon = "melee"
+}

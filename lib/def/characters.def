@@ -1,0 +1,69 @@
+{
+name = "Tharat"
+age = 34
+strength = 40
+weight = 70
+file = "tharat"
+race = "Etarae"
+gender = male
+}
+
+{
+name = "Adekea"
+age = 14
+strength = 10
+weight = 45
+file = "adekea"
+race = "Etarae"
+gender = female
+}
+
+{
+name = "Esthen"
+age = 18
+strength = 15
+weight = 60
+file = "esthen"
+race = "Etarae"
+gender = male
+}
+
+{
+name = "Joanna"
+age = 31
+strength = 15
+weight = 60
+file = "joanna"
+race = "Etarae"
+gender = female
+}
+
+{
+name = "Eyera"
+age = 24
+strength = 15
+weight = 60
+file = "eyera"
+race = "Mensch"
+gender = female
+}
+
+{
+name = "Salyjea"
+age = 19
+strength = 15
+weight = 60
+file = "salyjea"
+race = "Etarae"
+gender = female
+}
+
+{
+name = "Iliana"
+age = 43
+strength = 20
+weight = 70
+file = "iliana"
+race = "Etarae"
+gender = female
+}

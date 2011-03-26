@@ -1,0 +1,66 @@
+
+bandage
+{
+name = "Verband"
+desc = ""
+}
+
+bow
+{
+name = "Bogen"
+desc = ""
+}
+
+knife
+{
+name = "Messer"
+desc = ""
+}
+
+arrow
+{
+name = "Pfeil"
+desc = ""
+}
+
+leather_harness
+{
+name = "Lederharnisch"
+desc = ""
+}
+
+linen_shirt
+{
+name = "Leinenhemd"
+desc = ""
+}
+
+linen_pants
+{
+name = "Leinenhose"
+desc = ""
+}
+
+leather_boots
+{
+name = "Lederstiefel"
+desc = ""
+}
+
+banewort
+{
+name = "Tollkirsche"
+desc = ""
+}
+
+wolfsbane
+{
+name = "Eisenhut"
+desc = ""
+}
+
+sage
+{
+name = "Salbei"
+desc = ""
+}

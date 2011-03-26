@@ -1,0 +1,66 @@
+
+{
+name = "smoke"
+file = "smoke"
+delay = 2
+time = 160
+fadein = 20
+fadeout = 70
+xrange = (0..0)
+yrange = (-2..-1)
+mode = :default
+angle = false
+color = [255, 255, 255, 255]
+xoffset = (-12..12)
+yoffset = (-12..12)
+}
+
+{
+name = "cursor_leaves"
+file = "leaf"
+delay = 10
+time = 120
+fadein = 10
+fadeout = 60
+xrange = (0..0)
+yrange = (1..2)
+mode = :default
+angle = true
+color = [255, 255, 255, 255]
+xoffset = (0..0)
+yoffset = (0..0)
+}
+
+{
+name = "title_leaves"
+file = "leaf"
+delay = 20
+time = 500
+fadein = 10
+fadeout = 180
+xrange = (0..0)
+yrange = (1..2)
+mode = :default
+angle = true
+color = [255, 220, 130, 125]
+xoffset = (-512..512)
+yoffset = (0..0)
+}
+
+#EOF
+
+{
+name = ""
+file = ""
+delay = 0
+time = 0
+fadein = 0
+fadeout = 0
+xrange = (0..0)
+yrange = (0..0)
+mode = :default
+angle = false
+color = [255, 255, 255, 255]
+xoffset = (0..0)
+yoffset = (0..0)
+}
