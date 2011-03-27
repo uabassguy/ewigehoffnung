@@ -32,6 +32,10 @@ module EH
       @sprite = nil
     end
     
+    def empty?
+      return @sprite == nil
+    end
+    
   end
   
 end

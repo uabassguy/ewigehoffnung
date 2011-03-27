@@ -25,7 +25,7 @@ module EH::Game
     }
   end
   
-  def self.itemtype_to_locations(type)
+  def self.itemtype_to_locations(type, equip)
     ary = []
     case type
     when :armor
@@ -33,13 +33,21 @@ module EH::Game
     when :cloth
       ary = [:torso]
     when :melee
-      ary = [:larm, :rarm]
+      ary = []
+      if equip.at(:rarm) != nil and equip.at(:rarm).type != :ranged
+        ary = [:larm, :rarm]
+      elsif equip.at(:rarm) == nil
+        ary = [:larm, :rarm]
+      end
     when :pants
       ary = [:legs]
     when :boots
       ary = [:feet]
     when :ranged
-      ary = [:rarm, :back]
+      ary = [:back]
+      if equip.at(:larm) == nil
+        ary.push(:rarm)
+      end
     when :ammo
       ary = [:back]
     end

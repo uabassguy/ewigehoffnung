@@ -99,11 +99,28 @@ module EH::States
       if @w.get(:inventory).changed?
         @w.get(:iteminfo).item = @w.get(:inventory).selected
         @w.get(:itemdrop).enable
-        ary = EH::Game.itemtype_to_locations(@w.get(:inventory).selected.type)
+        ary = EH::Game.itemtype_to_locations(@w.get(:inventory).selected.type, @party.members[@w.get(:charselect).index].equipment)
         @w.get(:equip).highlight_slots(ary)
         @cursor.attach(@w.get(:inventory).selected.icon)
       end
       if @w.get(:equip).changed?
+        @w.get(:inventory).assemble_items
+        ary = EH::Game.itemtype_to_locations(@w.get(:inventory).selected.type, @party.members[@w.get(:charselect).index].equipment)
+        @w.get(:equip).reset_slots
+        if !@cursor.empty?
+          @w.get(:equip).highlight_slots(ary)
+        end
+        @w.get(:equip).setup_equipment
+      end
+      if @w.get(:equip).equip?
+        loc = @w.get(:equip).slot
+        inv = @party.members[@w.get(:charselect).index].inventory
+        equip = @party.members[@w.get(:charselect).index].equipment
+        equip.equip(@w.get(:inventory).selected, loc, inv)
+        @w.get(:iteminfo).item = nil
+        @w.get(:itemdrop).disable
+        @w.get(:equip).reset_slots
+        @w.get(:equip).setup_equipment
         @w.get(:inventory).assemble_items
         @cursor.clear
       end

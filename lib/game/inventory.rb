@@ -18,7 +18,7 @@ module EH::Game
       removed = 0
       self.each { |other_item|
         if other_item.name == item.name
-          self.delete(other_item)
+          self.delete_at(self.index(other_item))
           removed += 1
         end
         if removed >= times

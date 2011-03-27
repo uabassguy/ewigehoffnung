@@ -5,9 +5,11 @@ module EH
   # cache system borks inheritance, so we need to wrap a Gosu::Image instance
   class Sprite
     attr_reader :file
+    attr_accessor :color
     @@cache = {}
     def initialize(window, file, tile=false)
       @file = file
+      @color = Gosu::Color.new(255, 255, 255, 255)
       if @@cache[file]
         @img = @@cache[file]
         return

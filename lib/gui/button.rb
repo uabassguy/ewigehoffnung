@@ -62,6 +62,8 @@ module EH::GUI
   end
   
   class ImageButton < Button
+    attr_reader :bg
+    attr_accessor :proc
     def initialize(x, y, file, proc, w=-1, h=-1)
       @bg = EH::Sprite.new(EH.window, "gui/#{file}")
       @sound = EH::Sample.new(EH.window, "click1")

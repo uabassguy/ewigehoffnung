@@ -14,7 +14,6 @@ module EH::Game
       super
     end
     def equip(item, location, inventory)
-      # TODO twohanded check here or in menu?
       if @@locations.include?(location)
         inventory.remove(item)
         ret = self[location]
@@ -27,6 +26,9 @@ module EH::Game
       ret = self[location]
       self[location] = nil
       return ret
+    end
+    def at(loc)
+      return self[loc]
     end
   end
 end
