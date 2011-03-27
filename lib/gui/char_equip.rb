@@ -54,7 +54,7 @@ module EH::GUI
       @equipped = {}
       equip.each { |loc, item|
         if item
-          @equipped.store(loc, ImageButton.new(@x+@@positions[loc][0], @y+@@positions[loc][1], "../#{item.img.file}", lambda { unequip(loc) }, 32, 32))
+          @equipped.store(loc, ImageButton.new(@x+@@positions[loc][0], @y+@@positions[loc][1], "../#{item.icon.file}", lambda { unequip(loc) }, 32, 32))
         end          
       }
     end

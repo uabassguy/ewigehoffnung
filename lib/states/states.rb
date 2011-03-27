@@ -1,6 +1,7 @@
 
 # Superclass for game states
 
+require "cursor.rb"
 require "particles.rb"
 
 module EH::States
@@ -9,18 +10,19 @@ module EH::States
     def initialize(window)
       @window = EH.window = window
       @x = @y = 0
-      @cursor = EH::Sprite.new(window, "cursors/normal")
+      @cursor = EH::Cursor.new
     end
     def update
       update_cursor
     end
     def update_cursor
       @x, @y = @window.mouse_x, @window.mouse_y
+      @cursor.update(@x, @y)
     end
     def draw
     end
     def draw_cursor
-      @cursor.draw(@x, @y, EH::CURSOR_Z)
+      @cursor.draw
     end
     def finish
     end

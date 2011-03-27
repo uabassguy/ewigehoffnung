@@ -83,10 +83,10 @@ module EH::States
       @w.add(:equip, CharEquip.new(320, 224, @party.members[0]))
     end
     def update
+      super
       if @window.pressed?(Gosu::KbEscape) or @w.remove?
         @window.advance(@previous)
       end
-      update_cursor
       @w.update
       if @w.get(:charselect).changed?
         @w.get(:inventory).inventory = @party.members[@w.get(:charselect).index].inventory
@@ -94,15 +94,18 @@ module EH::States
         @w.get(:itemdrop).disable
         @w.get(:equip).char = @party.members[@w.get(:charselect).index]
         @w.get(:equip).reset_slots
+        @cursor.clear
       end
       if @w.get(:inventory).changed?
         @w.get(:iteminfo).item = @w.get(:inventory).selected
         @w.get(:itemdrop).enable
         ary = EH::Game.itemtype_to_locations(@w.get(:inventory).selected.type)
         @w.get(:equip).highlight_slots(ary)
+        @cursor.attach(@w.get(:inventory).selected.icon)
       end
       if @w.get(:equip).changed?
         @w.get(:inventory).assemble_items
+        @cursor.clear
       end
     end
     def draw

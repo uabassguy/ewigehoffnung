@@ -1,0 +1,8 @@
+== ails.deviantart.com
+bow.png
+bandage.png
+knife.png (edited)
+boots_leather.png
+arrow.png
+leather_harness.png
+shirt_linen.png
