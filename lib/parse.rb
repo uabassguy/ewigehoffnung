@@ -4,11 +4,102 @@
 require "game/map.rb"
 require "game/item.rb"
 
+require "rexml/document"
+require "tileset.rb"
+require "layer.rb"
+
 module EH::Parse
+  include REXML
   def self.map(file)
-    # TODO stub
-    puts("EH::Parse.map() STUB")
+    tiles = []
+    layers = []
+    objects = []
+    f = File.open("maps/#{file}.tmx", "r")
+    doc = Document.new(f)
+    f.close
+    root = doc.root
+    properties = self.xml_properties(root.elements["properties[1]"])
+    properties.store(:width, root.attributes["width"].to_i)
+    properties.store(:height, root.attributes["height"].to_i)
+    root.each_element("//tileset") { |el|
+      tiles.push(self.tileset(el))
+    }
+    root.each_element("//layer") { |el|
+      layers.push(self.layer(el))
+      layers.last.fill_tilemap(tiles[0])
+      layers.last.clean # save a little memory :)
+    }
+    root.each_element("//objectgroup") { |el|
+      objects += self.objectgroup(el)
+    }
+    #awesome_print(properties)
+    #tiles.each { |t|
+    #  awesome_print(t.create_tiles)
+    #}
+    #awesome_print(layers)
+    #awesome_print(objects)
+    return EH::Game::Map.new(properties, layers, objects)
   end
+  
+  def self.xml_properties(el)
+    hash = {}
+    el.each_element("property") { |prop|
+      hash.store(prop.attributes["name"].to_sym, prop.attributes["value"])
+    }
+    return hash
+  end
+  
+  def self.xml_csv(data)
+    ary = []
+    line = data.text.gsub("\n", "")
+    line.each_line(",") { |val|
+      ary.push(val.gsub(",", "").to_i)
+    }
+    return ary
+  end
+  
+  def self.xml_base64_zlib(data)
+    puts("ERROR: base64 zlib decoding not supported yet")
+  end
+  
+  def self.tileset(el)
+    file = el.elements["//image"].attributes["source"]
+    file = "graphics/tiles/#{File.basename(file)}"
+    props = {}
+    el.each_element("//tile") { |e|
+      id = e.attributes["id"].to_i
+      props.store(id, self.xml_properties(e.elements["properties[1]"]))
+    }
+    return EH::Tileset.new(el.attributes["firstgid"], el.attributes["name"], file, props)
+  end
+  
+  def self.layer(el)
+    props = self.xml_properties(el.elements["properties[1]"])
+    case el.elements["data[1]"].attributes["encoding"]
+    when "csv"
+      tiles = self.xml_csv(el.elements["data[1]"])
+    when "base64"
+      if el.elements["data[1]"].attributes["compression"] != "zlib"
+        puts("ERROR: Unsupported layer compression (must be zlib)")
+      else
+        tiles = self.xml_base64_zlib(el.elements["data[1]"])
+      end
+    else
+      puts("ERROR: Unsupported layer encoding (must be csv or base64)")
+    end
+    tiles = [] if !tiles
+    return EH::Layer.new(el.attributes["width"].to_i, el.attributes["height"].to_i, props, tiles)
+  end
+  
+  def self.objectgroup(el)
+    ary = []
+    el.each_element("object") { |obj|
+      props = self.xml_properties(obj.elements["properties[1]"])
+      ary.push(EH::Game::MapObject.new(obj.attributes["x"].to_i, obj.attributes["y"].to_i, props))
+    }
+    return ary
+  end
+  
   def self.characters
     ary = []
     begin

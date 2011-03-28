@@ -1,13 +1,18 @@
+
 module EH::Game
   class MapObject
-    attr_reader :x, :y, :z, :name, :dy, :dx
+    attr_reader :x, :y, :z, :name, :dy, :dx, :properties
     attr_accessor :through
-    def initialize(state, file)
-      @graphics = Gosu::Image.load_tiles(state.window, "graphics/chars/#{file}.png", -4, -4, false)
+    def initialize(x, y, props)
+      file = props[:file]
+      @properties = props
+      @graphics = Gosu::Image.load_tiles(EH.window, "graphics/chars/#{file}.png", -4, -4, false)
       @index = 0
-      @x = @y = 0
+      @x, @y = x, y
       @z = EH::MAPOBJECT_Z
+      @z += props[:z] if props[:z]
       @speed = 0 # speed
+      @speed += props[:speed] if props[:speed]
       @dx = @dy = 0 # distance to move, should be multiple of @speed
       @dead = false
       @steps = 0
@@ -17,8 +22,8 @@ module EH::Game
     end
     def setup
     end
-    def update(state)
-      update_move(state.map)
+    def update
+      update_move(EH.window.state.map.current)
     end
     def update_move(map)
       # FIXME sometimes they just move 30 px

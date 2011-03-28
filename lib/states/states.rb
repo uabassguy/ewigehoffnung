@@ -28,20 +28,24 @@ module EH::States
     end
   end
   
-  require "game/map.rb"
+  require "game/map_loader.rb"
   require "game/party.rb"
   class GameState < State
     attr_reader :map, :party
     def initialize(window)
       super(window)
-      @map = EH::Game::Map.new("test", self.window)
+      EH.window.state = self
+      @map = EH::Game::MapLoader.new
+      @map.load("test")
       EH::Game.characters = EH::Parse.characters
       EH::Game.items = EH::Parse.items
       EH::Game.skills = EH::Parse.skills
       EH::Trans.parse_items
       EH::Trans.parse_skills
       @party = EH::Game::Party.new
-      @objects = [EH::Game::Player.new(self, 32, 0), EH::Game::NPC.new(self, 0, 0, "eyera", nil)]
+      # TODO move @objects to @map
+      @objects = @map.current.objects
+      @objects.push(EH::Game::Player.new(32, 0))
       @setup = false
     end
     def update
@@ -52,7 +56,7 @@ module EH::States
       @party.update
       @objects.each { |obj|
         obj.setup if !@setup
-        obj.update(self)
+        obj.update
         if obj.dead?
           @objects.delete(obj)
         end

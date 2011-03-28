@@ -3,7 +3,7 @@
 
 module EH
   class GameWindow < Gosu::Window
-    attr_reader :state
+    attr_accessor :state
     include States
     def initialize
       super(1024, 768, false)

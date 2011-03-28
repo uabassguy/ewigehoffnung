@@ -4,14 +4,14 @@ require "game/map_object.rb"
 module EH::Game
   class Player < MapObject
     include Gosu
-    def initialize(state, x=0, y=0)
-      super(state, state.party.player.charset)
+    def initialize(x=0, y=0)
+      super(x, y, {:file => EH.window.state.party.player.charset})
       @speed = 2
       @x, @y = x, y
       @name = "player"
     end
-    def update(state)
-      window = state.window
+    def update
+      window = EH.window
       if @dx == 0 and @dy == 0
         if window.button_down?(KbLeft)
           @dx = -32;
@@ -28,9 +28,9 @@ module EH::Game
         end
       end
       if window.button_down?(KbSpace) or window.button_down?(KbReturn) or window.button_down?(KbEnter)
-        update_trigger(state)
+        update_trigger(window.state)
       end
-      update_move(state.map)
+      super
     end
   end
 end

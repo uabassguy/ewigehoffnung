@@ -1,13 +1,22 @@
 
+# TODO move to root?
+
 module EH::Game
   class Tile
-    def initialize(window, passable, id, x, y, z)
-      @graphic = EH::Sprite.new(window, "tiles/#{id}", true)
+    attr_reader :properties
+    attr_accessor :x, :y, :z
+    def initialize(sprite, x, y, z, props=[])
+      @sprite = sprite
       @x, @y, @z = x, y, z
-      @passable = passable
+      if props[:collide]
+        @passable = !props[:collide].to_b
+      else
+        @passable = true
+      end
+      @properties = props
     end
     def draw
-      @graphic.draw(@x, @y, @z)
+      @sprite.draw(@x, @y, @z)
     end
     def passable?
       return @passable

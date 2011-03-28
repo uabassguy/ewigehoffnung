@@ -4,8 +4,8 @@ require "game/goal.rb"
 
 module EH::Game
   class NPC < MapObject
-    def initialize(state, x, y, char, proc)
-      super(state, char)
+    def initialize(x, y, char, proc)
+      super(x, y, {:file => char})
       @x, @y, @proc = x, y, proc
       @goal = CompositeGoal.new(:abort)
       @speed = 2

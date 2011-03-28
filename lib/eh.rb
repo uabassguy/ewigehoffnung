@@ -14,6 +14,7 @@ module EH
   end
   VERSION = 0.1
   # Game
+  MAP_Z = 1
   MAPOBJECT_Z = 10 
   CURSOR_Z = 1000000
   GUI_Z = 9999

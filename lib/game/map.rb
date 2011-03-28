@@ -4,52 +4,19 @@ module EH::Game
   require "ext/astar/priority_queue.rb"
   require "game/tile.rb"
   class Map
-    # TODO load that stuff from files
-    # TODO xml parser for tiled maps
-    MAP_Z = 0
-    UNPASSABLES = [10]
-    TILES = [10, 10, 11, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17]
-    HEIGHT = 15
-    def initialize(filename, window)
-      @tiles = Array.new(15) { [] }
-      file = File.new("maps/#{filename}.map")
-      parse(file, window)
-      file.close
-      @costmap = nil
-    end
-    # TODO move to parse.rb
-    def parse(file, window)
-      @tiles = Array.new(HEIGHT) { [] }
-      i = 0
-      file.each_line { |line|
-        parse_line(line, i, window)
-        i += 1
-      }
-    end
-    def parse_line(line, i, window)
-      x = 0
-      line.each_line(",") { |c|
-        if c.include?("<") or c.include?(">")
-          next
-        end
-        c.gsub!(",", "")
-        if c == "0" || !c || c == "\n"
-          next
-        end
-        if UNPASSABLES.include?(c.to_i)
-          passable = false
-        else
-          passable = true
-        end
-        @tiles[i].push(Tile.new(window, passable, c, x*32, i*32, MAP_Z))
-        x += 1
-      }
+    attr_reader :props, :layers, :objects
+    def initialize(props, layers, objects)
+      @properties = props
+      @layers = layers
+      @objects = objects
     end
     
     def draw
-      @tiles.each { |ary|
-        ary.each { |tile|
-          tile.draw
+      @layers.each { |l|
+        l.filled.each { |ary|
+          ary.each { |tile|
+            tile.draw if tile
+          }
         }
       }
     end
@@ -57,7 +24,16 @@ module EH::Game
     def passable?(x, y)
       # FIXME doesnt work right on moving characters
       # FIXME doesnt work on left edge
-      p = @tiles[y/32][x/32].passable?
+      p = true
+      @layers.each { |l|
+        if l.filled[y/32][x/32] == nil
+          next
+        end
+        p = l.filled[y/32][x/32].passable?
+        if !p
+          return false
+        end
+      }
       if p
         obj = EH.window.state.find_object(x, y)
         if !obj
