@@ -5,6 +5,8 @@ require "gui/inventory.rb"
 require "gui/item_info.rb"
 require "gui/char_equip.rb"
 require "gui/image.rb"
+require "gui/textfield.rb"
+require "gui/slider.rb"
 
 module EH::States
   class StartMenu < State
@@ -12,8 +14,7 @@ module EH::States
     def initialize(window)
       super(window)
       @background = EH::Sprite.new(window, "menu/start_background")
-      @w = EH::GUI::Window.new(self, 0, 0, 1024, 768, false)
-      @w.title = Trans.menu(:titlescreen_title)
+      @w = EH::GUI::Window.new(self, 0, 0, 1024, 768, Trans.menu(:titlescreen_title), false)
       @w.add(:newgame, EH::GUI::Button.new(160, 544, 256, 64, Trans.menu(:newgame), lambda { EH.window.advance(GameState.new(EH.window)); @song.stop }, false))
       @w.add(:loadgame, EH::GUI::Button.new(608, 544, 256, 64, Trans.menu(:loadgame), lambda { EH.window.advance(LoadMenu.new(EH.window)) }, false))
       @w.add(:options, EH::GUI::Button.new(160, 640, 256, 64, Trans.menu(:options), lambda { EH.window.advance(OptionMenu.new(EH.window)) }, false))
@@ -32,6 +33,56 @@ module EH::States
       @background.draw(0, 0, 0)
       @w.draw
       @leaves.draw
+      draw_cursor
+    end
+  end
+  
+  class OptionMenu < State
+    include EH::GUI
+    include EH
+    def initialize(window)
+      super(window)
+      @background = EH::Sprite.new(window, "menu/ingame_background")
+      @restart = false
+      @w = EH::GUI::Window.new(self, 0, 0, 1024, 768, Trans.menu(:options))
+      @w.add(:details, Window.new(self, 288, 56, 704, 128, Trans.menu(:options_details), false, "gui/options_details"))
+      @w.add(:language, Button.new(32, 32, 224, 32, Trans.menu(:language), lambda {swap(:language)}, true, :left))
+      @w.add(:volume, Button.new(32, 80, 224, 32, Trans.menu(:volume), lambda {swap(:volume)}, true, :left))
+    end
+    def swap(sym)
+      detail = @w[:details]
+      detail.empty
+      case sym
+      when :language
+        detail.add(:en, Button.new(16, 16, 96, 24, Trans.menu(:lang_english), lambda {language(:en)}, true, :left))
+        detail.add(:de, Button.new(16, 48, 96, 24, Trans.menu(:lang_german), lambda {language(:de)}, true, :left))
+        detail[EH.config[:language].to_sym].disable
+      when :volume
+        detail.add(:slider, Slider.new(16, 16, 128, 32))
+      end
+    end
+    def language(sym)
+      EH.config[:language] = sym.to_s
+      swap(:language)
+      @restart = true
+    end
+    def update
+      if @window.pressed?(Gosu::KbEscape) or @w.remove?
+        if @restart
+          EH.exit(0)
+        else
+          EH.window.advance(StartMenu.new(EH.window))
+        end
+      end
+      @w.update
+      if @restart and !@w[:details].include?(:warning)
+        @w[:details].add(:warning, Textfield.new(384, 16, 320, 96, Trans.menu(:restart_warning)))
+      end
+      update_cursor
+    end
+    def draw
+      @background.draw(0, 0, 0)
+      @w.draw
       draw_cursor
     end
   end
@@ -73,8 +124,7 @@ module EH::States
       @previous = previous
       @party = party
       @background = EH::Sprite.new(window, "menu/ingame_background")
-      @w = EH::GUI::Window.new(self, 0, 0, 1024, 768)
-      @w.title = Trans.menu(:equipment)
+      @w = EH::GUI::Window.new(self, 0, 0, 1024, 768, Trans.menu(:equipment))
       @w.add(:charselect, CharSelector.new(32, 32, party))
       @w.add(:inventory, Inventory.new(32, 96, 256, 360, @party.members[@w.get(:charselect).index], [:pants, :melee, :armor, :cloth, :ranged, :boots, :ammo]))
       @w.add(:iteminfo, ItemInfo.new(320, 32))

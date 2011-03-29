@@ -44,7 +44,7 @@ module EH::GUI
       when :center
         @font.draw(@text, @x + @xoff + (@w/2) - (@font.text_width(@text)/2), @y + @yoff + (@h/9), EH::GUI_Z + 10, 1, 1, Gosu::Color::BLACK)
       when :left
-        @font.draw(@text, @x + @xoff + 4, @y + @yoff + (@h/9), EH::GUI_Z + 10, 1, 1, Gosu::Color::BLACK)
+        @font.draw(@text, @x + @xoff + 8, @y + @yoff + (@h/9), EH::GUI_Z + 10, 1, 1, Gosu::Color::BLACK)
       when :right
         @font.draw(@text, @x + @xoff + (@w-@font.text_width(@text)), @y + @yoff + (@h/9), EH::GUI_Z + 10, 1, 1, Gosu::Color::BLACK)
       end

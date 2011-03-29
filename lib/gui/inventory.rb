@@ -5,7 +5,6 @@ module EH::GUI
     ITEM_HEIGHT = 24
     def initialize(x, y, w, h, char, filter=[:all])
       super(x, y, w, h, ITEM_HEIGHT)
-      @bg = EH::Sprite.new(EH.window, "gui/inventory_background")
       @inv = char.inventory
       @filter = filter
       @item = nil
@@ -42,43 +41,6 @@ module EH::GUI
     end
     def update(window)
       super
-      @items.each { |item|
-        item.yoff = @content_offset/ITEM_HEIGHT
-        if item.y + item.yoff < @y
-          next
-        elsif item.y + item.yoff + item.h > @y+@h
-          next
-        end
-        item.update(window)
-      }
-    end
-    def draw
-      super
-      @bg.img.draw(@x, @y, EH::GUI_Z, @w/@bg.width, @h/@bg.height.to_f)
-      @items.each { |item|
-        if item.y + item.yoff < @y
-          next
-        elsif item.y + item.yoff + item.h > @y+@h
-          next
-        end
-        item.draw
-      }
-    end
-    def selected
-      return @item
-    end
-    def changed?
-      if @changed
-        @changed = false
-        return true
-      else
-        return false
-      end
-    end
-    private
-    def clicked(item)
-      @changed = true
-      @item = item
     end
   end
 end

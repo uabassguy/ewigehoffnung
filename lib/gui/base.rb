@@ -2,11 +2,15 @@
 # gui logic
 
 module EH::GUI
-  class Window
+  
+  class Window # make hash?
     attr_reader :state
     # height includes titlebar
-    def initialize(state, x, y, w, h, close=true, move=false, z=-1)
+    attr_accessor :xoff, :yoff # completely unused, just used for windows in windows
+    def initialize(state, x, y, w, h, titlestr, close=true, bg=nil, move=false, z=-1)
       @state = state
+      @xoff = @yoff = 0
+      @bg = EH::Sprite.new(EH.window, bg) if bg != nil
       @x, @y, @w, @h, @z = x, y, w, h, z
       if @z < 0
         @z = EH::GUI_Z
@@ -17,7 +21,8 @@ module EH::GUI
         EH::Sprite.new(state.window, "gui/bar_center", true),
         EH::Sprite.new(state.window, "gui/bar_right", true)
       ]
-      @title = @titlefont = nil
+      @titlefont = Gosu::Font.new(EH.window, EH::DEFAULT_FONT, 24)
+      @title = titlestr
       @remove = false
       if close
         @close = ImageButton.new(@w-24, @y, "button_close", lambda { @remove = true })
@@ -25,6 +30,15 @@ module EH::GUI
         @close = nil
       end
       @move = move
+    end
+    def empty
+      @elements = {}
+    end
+    def include?(sym)
+      return get(sym) != nil
+    end
+    def [](sym)
+      return get(sym)
     end
     def get(sym)
       return @elements[sym]
@@ -36,13 +50,12 @@ module EH::GUI
       return @remove
     end
     def title=(str)
-      @titlefont = Gosu::Font.new(EH.window, EH::DEFAULT_FONT, 24)
       @title = str
     end
     def add(name, el)
       @elements.store(name, el)
     end
-    def update
+    def update(state=nil)
       @elements.each_value { |el|
         el.update(self)
         if el.remove?
@@ -52,6 +65,7 @@ module EH::GUI
       @close.update(self) if @close
     end
     def draw
+      @bg.img.draw(@x, @y+24, @z, @w/@bg.width.to_f, @h/@bg.height.to_f) if @bg
       @elements.each_value { |el|
         el.xoff = @x
         el.yoff = @y + 24 # titlebar
@@ -66,8 +80,8 @@ module EH::GUI
   end
   
   class Element
-    attr_accessor :xoff, :yoff
-    attr_reader :x, :y, :w, :h
+    attr_accessor :x, :y, :xoff, :yoff
+    attr_reader :w, :h
     # x and y are relative to the windows topleft corner plus title bar
     def initialize(x, y, w, h)
       @remove = false
@@ -85,18 +99,62 @@ module EH::GUI
   
   # scrollable
   class Container < Element
+    # ch = content element height
     def initialize(x, y, w, h, ch)
       super(x, y, w, h)
+      @bg = EH::Sprite.new(EH.window, "gui/container_background")
       @scrollbar = Scrollbar.new(x+w-24, y, 24, h)
       @ch = ch
       @content_offset = 0
+      @items = []
+      @item = nil
+    end
+    def add(element)
+      element.x = @x
+      element.y = @y + ((@items.size+1)*@ch)
+      @items.push(element)
     end
     def update(window)
       @scrollbar.update(window)
+      @scrollbar.xoff, @scrollbar.yoff = @xoff, @yoff
       @content_offset = @scrollbar.offset * -@ch
+      @items.each { |item|
+        item.yoff = @content_offset/@ch
+        if item.y + item.yoff < @y
+          next
+        elsif item.y + item.yoff + item.h > @y+@h
+          next
+        end
+        item.update(window)
+      }
     end
     def draw
       @scrollbar.draw
+      @bg.img.draw(@x+@xoff, @y+@yoff, EH::GUI_Z, (@w-24)/@bg.width.to_f, @h/@bg.height.to_f)
+      @items.each { |item|
+        if item.y + item.yoff < @y
+          next
+        elsif item.y + item.yoff + item.h > @y+@h
+          next
+        end
+        item.draw
+      }
+    end
+    def selected
+      return @item
+    end
+    def changed?
+      if @changed
+        @changed = false
+        return true
+      else
+        return false
+      end
+    end
+    private
+    def clicked(item)
+      @changed = true
+      @item = item
     end
   end
   
@@ -135,8 +193,8 @@ module EH::GUI
       end
     end
     def draw
-      @bg.img.draw(@x, @y, EH::GUI_Z + 14, @w/@bg.width, @h/@bg.height.to_f)
-      @scroller.img.draw(@x, @sy, EH::GUI_Z + 15, 1, @sh/@scroller.height.to_f)
+      @bg.img.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + 14, @w/@bg.width, @h/@bg.height.to_f)
+      @scroller.img.draw(@x+@xoff, @sy+@yoff, EH::GUI_Z + 15, 1, @sh/@scroller.height.to_f)
     end
   end
   

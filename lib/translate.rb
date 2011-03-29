@@ -24,6 +24,12 @@ module EH
         :skills => "Fertigkeiten",
         :save => "Speichern",
         :load => "Laden",
+        :language => "Sprache",
+        :options_details => "Details",
+        :volume => "Lautstärke",
+        :lang_english => "Englisch",
+        :lang_german => "Deutsch",
+        :restart_warning => "Das Spiel muss neugestartet werden, um alle Einstellungen zu übernehmen.",
       },
       "en" => {
         :menu => "Menu",
@@ -37,6 +43,12 @@ module EH
         :skills => "Skills",
         :save => "Save",
         :load => "Load",
+        :language => "Language",
+        :options_details => "Details",
+        :volume => "Volume",
+        :lang_english => "English",
+        :lang_german => "German",
+        :restart_warning => "The game must be restarted to apply all settings.",
       },
     }
     def self.parse_items
