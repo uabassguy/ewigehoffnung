@@ -45,13 +45,14 @@ module EH::States
       @party = EH::Game::Party.new
       # TODO move @objects to @map
       @objects = @map.current.objects
-      @objects.push(EH::Game::Player.new(32, 0))
+      @objects.push(EH::Game::Player.new(32, 32))
       @setup = false
     end
     def update
       if @window.pressed?(Gosu::KbEscape)
         @window.save
         @window.advance(IngameMenu.new(EH.window, @party))
+        return
       end
       @party.update
       @objects.each { |obj|

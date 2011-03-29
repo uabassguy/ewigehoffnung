@@ -6,6 +6,8 @@ module EH
       @properties = props
       @collide = true
       @collide = !props[:nocollide].to_b if props[:nocollide]
+      @z = EH::MAP_Z
+      @z += props[:z].to_i if props[:z]
       create_tilemap(w, h, tiles)
       if tileset
         fill_tilemap(tileset)
@@ -32,7 +34,7 @@ module EH
       h = w = 0
       @tiles.each { |ary|
         ary.each { |gid|
-          @filled[h][w] = tileset.tile(gid-1, w*32, h*32)
+          @filled[h][w] = tileset.tile(gid-1, w*32, h*32, @z)
           w += 1
         }
         w = 0

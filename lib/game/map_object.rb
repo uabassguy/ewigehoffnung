@@ -1,7 +1,7 @@
 
 module EH::Game
   class MapObject
-    attr_reader :x, :y, :z, :name, :dy, :dx, :properties
+    attr_reader :x, :y, :z, :name, :dy, :dx, :properties, :tx, :ty
     attr_accessor :through
     def initialize(x, y, props)
       file = props[:file]
@@ -9,6 +9,7 @@ module EH::Game
       @graphics = Gosu::Image.load_tiles(EH.window, "graphics/chars/#{file}.png", -4, -4, false)
       @index = 0
       @x, @y = x, y
+      @tx, @ty = x/32, y/32 # tile based position, used for collision
       @z = EH::MAPOBJECT_Z
       @z += props[:z] if props[:z]
       @speed = 0 # speed
@@ -26,21 +27,25 @@ module EH::Game
       update_move(EH.window.state.map.current)
     end
     def update_move(map)
-      # FIXME sometimes they just move 30 px
+      # FIXME movement totally borks when moving away from 0|0, 1|0 and 0|1
       moved = false
       if @dx > 0
-        if @through or map.passable?(@x+@dx, @y)
+        if @stepped or @through or map.passable?((@tx*32)+@dx, @ty*32)
           @x += @speed
           @dx -= @speed
+          @tx += 1 if !@stepped
+          @stepped = true
           moved = true
         else
           @dx = 0
         end
         @index = 8
       elsif @dx < 0
-        if @through or map.passable?(@x+@dx, @y)
+        if @stepped or @through or map.passable?((@tx*32)+@dx, @ty*32)
           @x -= @speed
           @dx += @speed
+          @tx -= 1 if !@stepped
+          @stepped = true
           moved = true
         else
           @dx = 0
@@ -48,18 +53,22 @@ module EH::Game
         @index = 4
       end
       if @dy > 0
-        if @through or map.passable?(@x, @y+@dy)
+        if @stepped or @through or map.passable?(@tx*32, (@ty*32)+@dy)
           @y += @speed
           @dy -= @speed
+          @ty += 1 if !@stepped
+          @stepped = true
           moved = true
         else
           @dy = 0
         end
         @index = 0
       elsif @dy < 0
-        if @through or map.passable?(@x, @y+@dy)
+        if @stepped or @through or map.passable?(@tx*32, (@ty*32)+@dy)
           @y -= @speed
           @dy += @speed
+          @ty -= 1 if !@stepped
+          @stepped = true
           moved = true
         else
           @dy = 0
@@ -68,6 +77,7 @@ module EH::Game
       end
       if @dx == 0 and @dy == 0 and moved
         @steps += 1
+        @stepped = false
       end
       if moved
         d = @dx

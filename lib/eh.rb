@@ -15,7 +15,7 @@ module EH
   VERSION = 0.1
   # Game
   MAP_Z = 1
-  MAPOBJECT_Z = 10 
+  MAPOBJECT_Z = 50 
   CURSOR_Z = 1000000
   GUI_Z = 9999
   PARTICLE_Z = 5000

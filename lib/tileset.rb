@@ -21,7 +21,7 @@ module EH
       }
       return @filled
     end
-    def tile(gid, x, y)
+    def tile(gid, x, y, z)
       if gid < 0
         return nil
       end
@@ -30,6 +30,7 @@ module EH
       end
       tile = @filled[gid].dup
       tile.x, tile.y = x, y
+      tile.z = z
       return tile
     end
   end
