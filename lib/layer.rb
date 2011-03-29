@@ -4,8 +4,6 @@ module EH
     attr_reader :properties, :filled
     def initialize(w, h, props, tiles, tileset=nil)
       @properties = props
-      @collide = true
-      @collide = !props[:nocollide].to_b if props[:nocollide]
       @z = EH::MAP_Z
       @z += props[:z].to_i if props[:z]
       create_tilemap(w, h, tiles)
@@ -42,8 +40,25 @@ module EH
       }
       return @filled
     end
-    def collide?
-      return @collide
+  end
+  
+  class CollisionLayer
+    attr_reader :tiles
+    def initialize(w, h, tiles)
+      create_tilemap(w, h, tiles)
+    end
+    def create_tilemap(w, h, tiles)
+      @tiles = Array.new(h) { [] }
+      wi = hi = 0
+      tiles.each { |int|
+        @tiles[hi].push(int)
+        wi += 1
+        if wi >= w
+          wi = 0
+          hi += 1
+        end
+      }
     end
   end
+  
 end

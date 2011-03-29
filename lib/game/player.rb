@@ -6,7 +6,7 @@ module EH::Game
     include Gosu
     def initialize(x=0, y=0)
       super(x, y, {:file => EH.window.state.party.player.charset})
-      @speed = 2
+      @speed = 4
       @x, @y = x, y
       @name = "player"
     end
@@ -28,7 +28,7 @@ module EH::Game
         end
       end
       if window.button_down?(KbSpace) or window.button_down?(KbReturn) or window.button_down?(KbEnter)
-        update_trigger(window.state)
+        update_trigger
       end
       super
     end

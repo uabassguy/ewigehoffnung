@@ -3,12 +3,38 @@ module EH::Game
   require "ext/astar/node.rb"
   require "ext/astar/priority_queue.rb"
   require "game/tile.rb"
+  
   class Map
     attr_reader :props, :layers, :objects
     def initialize(props, layers, objects)
       @properties = props
       @layers = layers
       @objects = objects
+      create_static_collision
+    end
+    
+    def create_static_collision
+      tiles = []
+      @layers.each { |l|
+        i = 0
+        l.filled.each { |row|
+          row.each { |tile|
+            if !tile
+              if tiles[i] == false
+                i += 1
+                next
+              else
+                tiles[i] = true
+                i += 1
+                next
+              end
+            end
+            tiles[i] = tile.passable?
+            i += 1
+          }
+        }
+      }
+      @collision = EH::CollisionLayer.new(@layers.first.filled.first.size, @layers.first.filled.size, tiles)
     end
     
     def draw
@@ -22,18 +48,10 @@ module EH::Game
     end
     
     def passable?(x, y)
-      # FIXME doesnt work right on moving characters
-      # FIXME doesnt work on left edge
-      p = true
-      @layers.each { |l|
-        if l.filled[y/32][x/32] == nil
-          next
-        end
-        p = l.filled[y/32][x/32].passable?
-        if !p
-          return false
-        end
-      }
+      if (x/32) < 0 or (x/32) > @collision.tiles.first.size-1 or (y/32) < 0 or (y/32) > @collision.tiles.size-1
+        return false
+      end
+      p = @collision.tiles[y/32][x/32]
       if p
         obj = EH.window.state.find_object(x, y)
         if !obj
@@ -44,14 +62,14 @@ module EH::Game
       return p
     end
     
-    def generate_costmap(maxx=@tiles.compact.size)
+    def generate_costmap(maxx=@collision.tiles.size)
       map = []
       x = 0
-      @tiles.each { |ary|
+      @collision.tiles.each { |ary|
         cary = []
         y = 0
         ary.each { |tile|
-          if tile.passable?
+          if tile
             obj = EH.window.state.find_object(y*32, x*32)
             if obj and !obj.through
               cary.push(0)
@@ -145,7 +163,7 @@ module EH::Game
     def show_path(anode)
       #shows the path back from node 'anode' by following the parent pointer
       curr = anode
-      pathmap = generate_costmap(@tiles.compact.size).clone
+      pathmap = generate_costmap(@collision.tiles.size).clone
       while curr.parent do
         pathmap[curr.y][curr.x] = '*'
         curr = curr.parent

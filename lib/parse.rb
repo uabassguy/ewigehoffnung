@@ -95,7 +95,12 @@ module EH::Parse
     ary = []
     el.each_element("object") { |obj|
       props = self.xml_properties(obj.elements["properties[1]"])
-      ary.push(EH::Game::MapObject.new(obj.attributes["x"].to_i, obj.attributes["y"].to_i, props))
+      props.store(:layer, el.attributes["name"])
+      if obj.attributes["type"] == "npc"
+        ary.push(EH::Game::NPC.new(obj.attributes["x"].to_i, obj.attributes["y"].to_i, props))
+      else
+        ary.push(EH::Game::MapObject.new(obj.attributes["x"].to_i, obj.attributes["y"].to_i, props))
+      end
     }
     return ary
   end

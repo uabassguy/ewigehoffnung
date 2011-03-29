@@ -20,12 +20,26 @@ module EH::Game
       @trigger = nil
       @name = "mapobject-#{file.downcase}-#{rand(1000)}"
       @through = false
+      @setup = true
     end
+    
+    def do_setup?
+      return @setup
+    end
+    
     def setup
+      if !@setup
+        return
+      end
+      if @setup
+        @setup = false
+      end
     end
+    
     def update
       update_move(EH.window.state.map.current)
     end
+    
     def update_move(map)
       # FIXME movement totally borks when moving away from 0|0, 1|0 and 0|1
       moved = false
@@ -97,10 +111,11 @@ module EH::Game
       end
       return moved
     end
-    def update_trigger(state)
+    
+    def update_trigger
       # look for something on current tile
-      obj = state.find_object(@x-@dx, @y-@dy)
-      if !obj
+      obj = EH.window.state.find_object(@tx*32, @ty*32)
+      if !obj or obj == self
         # look for something in the direction we're looking
         x = y = 0
         case direction
@@ -113,21 +128,25 @@ module EH::Game
         else
           y = -32
         end
-        obj = state.find_object(@x+x, @y+y)
+        obj = EH.window.state.find_object((@tx*32)+x, (@ty*32)+y)
       end
       if obj
         obj.trigger(self)
       end
     end
+    
     def draw
       @graphics[@index].draw(@x, @y-16, @z)
     end
+    
     def dead?
       return @dead
     end
+    
     def trigger(other)
       @trigger.call(other) if @trigger
     end
+    
     def direction
       if EH.between?(@index, -1, 4)
         return 0 # down
@@ -139,5 +158,6 @@ module EH::Game
         return 3 # up
       end
     end
+    
   end
 end

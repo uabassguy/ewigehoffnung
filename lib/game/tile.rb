@@ -2,6 +2,7 @@
 # TODO move to root?
 
 module EH::Game
+  
   class Tile
     attr_reader :properties
     attr_accessor :x, :y, :z
@@ -22,4 +23,5 @@ module EH::Game
       return @passable
     end
   end
+  
 end

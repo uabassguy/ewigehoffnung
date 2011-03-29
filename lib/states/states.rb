@@ -35,17 +35,15 @@ module EH::States
     def initialize(window)
       super(window)
       EH.window.state = self
-      @map = EH::Game::MapLoader.new
-      @map.load("test")
       EH::Game.characters = EH::Parse.characters
       EH::Game.items = EH::Parse.items
       EH::Game.skills = EH::Parse.skills
       EH::Trans.parse_items
       EH::Trans.parse_skills
       @party = EH::Game::Party.new
+      @map = EH::Game::MapLoader.new
+      @map.load("test")
       # TODO move @objects to @map
-      @objects = @map.current.objects
-      @objects.push(EH::Game::Player.new(32, 32))
       @setup = false
     end
     def update
@@ -55,27 +53,18 @@ module EH::States
         return
       end
       @party.update
-      @objects.each { |obj|
-        obj.setup if !@setup
-        obj.update
-        if obj.dead?
-          @objects.delete(obj)
-        end
-      }
+      @map.update
       update_cursor
       @window.unpress
       @setup = true
     end
     def draw
       @map.draw
-      @objects.each { |obj|
-        obj.draw
-      }
       draw_cursor
     end
     def find_object(x, y)
       #puts("looking for object at #{x/32}|#{y/32} (#{x}|#{y}), player = #{@objects[0].x/32}|#{@objects[0].y/32} (#{@objects[0].x}|#{@objects[0].y})")
-      @objects.each { |obj|
+      @map.objects.each { |obj|
         if obj.x/32 == x/32 and obj.y/32 == y/32
           return obj
         end

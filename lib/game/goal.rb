@@ -1,4 +1,6 @@
 
+# FIXME policy = :recalc doesnt work
+
 module EH::Game
   
   class Goal
@@ -49,6 +51,7 @@ module EH::Game
     end
     def update
       if @state == :progress
+        awesome_print(self) if !current
         case current.state
         when :before
           if current.class != MotionGoal

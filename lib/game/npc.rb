@@ -2,20 +2,26 @@
 require "game/map_object.rb"
 require "game/goal.rb"
 
+# TODO move goal logic to mapobject
+
 module EH::Game
   class NPC < MapObject
-    def initialize(x, y, char, proc)
-      super(x, y, {:file => char})
-      @x, @y, @proc = x, y, proc
-      @goal = CompositeGoal.new(:abort)
+    # cant take lambda because of argument
+    def initialize(x, y, props, proc=proc {})
+      super(x, y, props)
+      @x, @y = x, y
+      @trigger = proc
+      @goal = CompositeGoal.new(:retry)
       @speed = 2
+      @name = "npc-#{props[:file].downcase}-#{rand(1000)}"
     end
     def setup
-      #find_path_to(19, 14)
+      super
+      find_path_to(19, 14)
     end
     def find_path_to(x, y)
-      puts("\nfrom #{@x/32}|#{@y/32} to #{x}|#{y}")
-      curr = EH.window.state.map.astar(AStar::Node.new(@x/32, @y/32), AStar::Node.new(x, y))
+      puts("from #{@x/32}|#{@y/32} to #{x}|#{y}")
+      curr = EH.window.state.map.current.astar(AStar::Node.new(@x/32, @y/32), AStar::Node.new(x, y))
       @goal.reset
       while curr and curr.parent
         @goal.push(MotionGoal.new((curr.x - curr.parent.x) * 32, (curr.y - curr.parent.y) * 32, x, y))
@@ -23,8 +29,8 @@ module EH::Game
       end
       @goal.reverse!
     end
-    def update(state)
-      moved = update_move(state.map)
+    def update
+      moved = update_move(EH.window.state.map.current)
       @goal.update if @goal.size > 0
       if @goal.current.class == MotionGoal
         if @goal.current.state == :recalc
