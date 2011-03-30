@@ -6,11 +6,21 @@ module EH::Game
   
   class Map
     attr_reader :props, :layers, :objects
+    attr_accessor :xoff, :yoff
     def initialize(props, layers, objects)
       @properties = props
       @layers = layers
       @objects = objects
+      @xoff = @yoff = 0
       create_static_collision
+    end
+    
+    def width
+      return @properties[:width]
+    end
+    
+    def height
+      return @properties[:height]
     end
     
     def create_static_collision
@@ -41,7 +51,7 @@ module EH::Game
       @layers.each { |l|
         l.filled.each { |ary|
           ary.each { |tile|
-            tile.draw if tile
+            tile.draw(@xoff, @yoff) if tile
           }
         }
       }
@@ -178,5 +188,22 @@ module EH::Game
       end
       puts(pathstr)
     end
+    
+    def upper
+      return @properties[:upper]
+    end
+    
+    def lower
+      return @properties[:lower]
+    end
+    
+    def left
+      return @properties[:left]
+    end
+    
+    def right
+      return @properties[:right]
+    end
+    
   end
 end

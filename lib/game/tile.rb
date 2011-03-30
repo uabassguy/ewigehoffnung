@@ -16,8 +16,8 @@ module EH::Game
       end
       @properties = props
     end
-    def draw
-      @sprite.draw(@x, @y, @z)
+    def draw(x, y)
+      @sprite.draw(@x+x, @y+y, @z)
     end
     def passable?
       return @passable

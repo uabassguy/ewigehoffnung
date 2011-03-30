@@ -6,7 +6,7 @@ module EH::Game
     include Gosu
     def initialize(x=0, y=0)
       super(x, y, {:file => EH.window.state.party.player.charset})
-      @speed = 4
+      @speed = 2
       @x, @y = x, y
       @name = "player"
     end

@@ -19,6 +19,10 @@ module EH::Parse
     f.close
     root = doc.root
     properties = self.xml_properties(root.elements["properties[1]"])
+    if !properties
+      properties = {:name => ""}
+      puts("WARNING: No properties set for map #{file}")
+    end
     properties.store(:width, root.attributes["width"].to_i)
     properties.store(:height, root.attributes["height"].to_i)
     root.each_element("//tileset") { |el|
@@ -32,17 +36,12 @@ module EH::Parse
     root.each_element("//objectgroup") { |el|
       objects += self.objectgroup(el)
     }
-    #awesome_print(properties)
-    #tiles.each { |t|
-    #  awesome_print(t.create_tiles)
-    #}
-    #awesome_print(layers)
-    #awesome_print(objects)
     return EH::Game::Map.new(properties, layers, objects)
   end
   
   def self.xml_properties(el)
     hash = {}
+    return hash if !el
     el.each_element("property") { |prop|
       hash.store(prop.attributes["name"].to_sym, prop.attributes["value"])
     }

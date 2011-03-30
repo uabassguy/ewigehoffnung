@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="20" height="15" tilewidth="32" tileheight="32">
  <properties>
+  <property name="left" value="test_left"/>
+  <property name="lower" value="test2"/>
   <property name="name" value="Test 1"/>
+  <property name="right" value="test3"/>
+  <property name="upper" value="test_upper"/>
  </properties>
  <tileset firstgid="1" name="Test1" tilewidth="32" tileheight="32">
   <image source="../graphics/tiles/test.png" width="256" height="1312"/>
