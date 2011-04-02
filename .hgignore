@@ -3,6 +3,7 @@ nbproject/*
 spec/*
 test/*
 commit
+lib/maps/*.ehm
 
 syntax: regexp
 .*\#.*\#$

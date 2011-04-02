@@ -3,13 +3,18 @@ require "game/tile.rb"
 
 module EH
   class Tileset
-    attr_reader :first, :name, :tiles
+    @@tilesets = {}
+    attr_reader :first, :name, :tiles, :props, :filename
     def initialize(fgid, name, filename, props)
       @first = fgid
       @name = name
-      @tiles = Gosu::Image.load_tiles(EH.window, filename, 32, 32, true)
+      if !@@tilesets[filename]
+        @@tilesets[filename] = Gosu::Image.load_tiles(EH.window, filename, 32, 32, true)
+      end
+      @tiles = @@tilesets[filename].dup
       @props = props
       @props.default = {}
+      @filename = filename
       @filled = []
     end
     def create_tiles

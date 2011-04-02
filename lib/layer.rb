@@ -1,7 +1,8 @@
 
 module EH
   class Layer
-    attr_reader :properties, :filled
+    attr_reader :properties, :tileset
+    attr_accessor :filled
     def initialize(w, h, props, tiles, tileset=nil)
       @properties = props
       @z = EH::MAP_Z
@@ -11,9 +12,7 @@ module EH
         fill_tilemap(tileset)
       end
     end
-    def clean
-      @tiles = Array.new(@tiles.size) { []}
-    end
+    
     def create_tilemap(w, h, tiles)
       @tiles = Array.new(h) { [] }
       @filled = @tiles.dup
@@ -28,6 +27,7 @@ module EH
       }
     end
     def fill_tilemap(tileset)
+      @tileset = tileset
       @filled = Array.new(@tiles.size) { [] }
       h = w = 0
       @tiles.each { |ary|

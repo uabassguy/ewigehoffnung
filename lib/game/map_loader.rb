@@ -8,10 +8,12 @@
 module EH::Game
   class MapLoader
     attr_reader :objects
+    
     def initialize
       @objects = []
       @maps = []
     end
+    
     def load(file)
       map = EH::Parse.map(file)
       @objects = map.objects
@@ -64,6 +66,7 @@ module EH::Game
         end
       end
     end
+    
     def draw
       @maps.each { |map|
         map.draw if map
@@ -72,6 +75,7 @@ module EH::Game
         obj.draw
       }
     end
+    
     def update
       @objects.each { |obj|
         obj.setup if obj.do_setup?
@@ -81,6 +85,7 @@ module EH::Game
         end
       }
     end
+    
     def current
       return @maps[4]
     end

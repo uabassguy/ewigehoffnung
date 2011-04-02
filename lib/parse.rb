@@ -8,6 +8,9 @@ require "rexml/document"
 require "tileset.rb"
 require "layer.rb"
 
+require "base64"
+require "zlib"
+
 module EH::Parse
   include REXML
   def self.map(file)
@@ -25,13 +28,13 @@ module EH::Parse
     end
     properties.store(:width, root.attributes["width"].to_i)
     properties.store(:height, root.attributes["height"].to_i)
+    properties.store(:file, file)
     root.each_element("//tileset") { |el|
       tiles.push(self.tileset(el))
     }
     root.each_element("//layer") { |el|
       layers.push(self.layer(el))
-      layers.last.fill_tilemap(tiles[0])
-      layers.last.clean # save a little memory :)
+      layers.last.fill_tilemap(tiles.first) # TODO check for gids to choose right tileset
     }
     root.each_element("//objectgroup") { |el|
       objects += self.objectgroup(el)
@@ -57,9 +60,14 @@ module EH::Parse
     return ary
   end
   
-  def self.xml_base64_zlib(data)
-    puts("ERROR: base64 zlib decoding not supported yet")
+  def self.zlib_inflate(string)
+    zstream = Zlib::Inflate.new
+    buf = zstream.inflate(string)
+    zstream.finish
+    zstream.close
+    return buf
   end
+
   
   def self.tileset(el)
     file = el.elements["//image"].attributes["source"]
@@ -74,17 +82,10 @@ module EH::Parse
   
   def self.layer(el)
     props = self.xml_properties(el.elements["properties[1]"])
-    case el.elements["data[1]"].attributes["encoding"]
-    when "csv"
+    if el.elements["data[1]"].attributes["encoding"] == "csv"
       tiles = self.xml_csv(el.elements["data[1]"])
-    when "base64"
-      if el.elements["data[1]"].attributes["compression"] != "zlib"
-        puts("ERROR: Unsupported layer compression (must be zlib)")
-      else
-        tiles = self.xml_base64_zlib(el.elements["data[1]"])
-      end
     else
-      puts("ERROR: Unsupported layer encoding (must be csv or base64)")
+      puts("ERROR: Unsupported layer encoding (must be csv)")
     end
     tiles = [] if !tiles
     return EH::Layer.new(el.attributes["width"].to_i, el.attributes["height"].to_i, props, tiles)

@@ -5,8 +5,8 @@ module EH::Game
   require "game/tile.rb"
   
   class Map
-    attr_reader :props, :layers, :objects
-    attr_accessor :xoff, :yoff
+    attr_reader :props, :layers, :properties
+    attr_accessor :xoff, :yoff, :objects
     def initialize(props, layers, objects)
       @properties = props
       @layers = layers
@@ -203,6 +203,12 @@ module EH::Game
     
     def right
       return @properties[:right]
+    end
+    
+    def cleaned
+      map = self.dup
+      map.objects = []
+      return map
     end
     
   end
