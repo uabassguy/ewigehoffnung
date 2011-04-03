@@ -25,7 +25,7 @@ module EH::GUI
       @title = titlestr
       @remove = false
       if close
-        @close = ImageButton.new(@w-24, @y, "button_close", lambda { @remove = true })
+        @close = ImageButton.new(@w-24, @y, "gui/button_close", lambda { @remove = true })
       else
         @close = nil
       end
@@ -119,7 +119,7 @@ module EH::GUI
       @scrollbar.xoff, @scrollbar.yoff = @xoff, @yoff
       @content_offset = @scrollbar.offset * -@ch
       @items.each { |item|
-        item.yoff = @content_offset/@ch
+        item.yoff = @yoff + (@content_offset/@ch)
         if item.y + item.yoff < @y
           next
         elsif item.y + item.yoff + item.h > @y+@h

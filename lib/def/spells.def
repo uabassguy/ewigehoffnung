@@ -1,0 +1,34 @@
+
+# Healing
+
+{
+name = stop_bleed
+icon = "stop_bleed"
+type = healing_magic
+cost = 2
+}
+
+# Mind
+
+{
+name = 
+icon = ""
+type = mind
+cost = 0
+}
+
+# Elemental
+
+{
+name = heat
+icon = "heat"
+type = elemental
+cost = 10
+}
+
+{
+name = cold
+icon = "cold"
+type = elemental
+cost = 10
+}

@@ -38,6 +38,7 @@ module EH::States
       EH::Game.characters = EH::Parse.characters
       EH::Game.items = EH::Parse.items
       EH::Game.skills = EH::Parse.skills
+      EH::Game.spells = EH::Parse.spells
       EH::Trans.parse_items
       EH::Trans.parse_skills
       @party = EH::Game::Party.new

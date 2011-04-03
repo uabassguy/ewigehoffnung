@@ -4,6 +4,7 @@ require "game/skills.rb"
 require "game/constitution.rb"
 require "game/mind.rb"
 require "game/equipment.rb"
+require "game/magic.rb"
 
 module EH::Game
   def self.characters
@@ -15,7 +16,7 @@ module EH::Game
   
   class Character
     attr_reader :name, :age, :charset, :weight, :strength, :charset, :gender
-    attr_reader :inventory, :skills, :const, :mind, :equipment, :race
+    attr_reader :inventory, :skills, :const, :mind, :equipment, :race, :magic
     attr_accessor :health
     # health is only used as a percentage for easier displaying, the real stuff is in @const
     def initialize(name, charset, age, weight, strength, gender, race)
@@ -27,6 +28,7 @@ module EH::Game
       @const = EH::Game::Constitution.new
       @mind = EH::Game::Mind.new
       @equipment = EH::Game::Equipment.new
+      @magic = EH::Game::Magic.new
     end
     def update
     end

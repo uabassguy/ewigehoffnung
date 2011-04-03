@@ -10,6 +10,10 @@ module EH
       "de" => {},
       "en" => {},
     }
+    @@spells = {
+      "de" => {},
+      "en" => {},
+    }
     # menus are hardcoded anyway, so we dont parse anything
     @@menu = {
       "de" => {
@@ -22,6 +26,7 @@ module EH
         :items => "Gegenstände",
         :equipment => "Ausrüstung",
         :skills => "Fertigkeiten",
+        :magic => "Magie",
         :save => "Speichern",
         :load => "Laden",
         :language => "Sprache",
@@ -41,6 +46,7 @@ module EH
         :items => "Items",
         :equipment => "Equipment",
         :skills => "Skills",
+        :magic => "Magic",
         :save => "Save",
         :load => "Load",
         :language => "Language",
@@ -51,6 +57,7 @@ module EH
         :restart_warning => "The game must be restarted to apply all settings.",
       },
     }
+    
     def self.parse_items
       begin
         file = File.open("def/#{EH.config[:language]}/items.trans", "r")
@@ -88,17 +95,51 @@ module EH
         }
         file.close
       rescue Errno::ENOENT
-        puts("FATAL: No item translations for selected language (#{EH.config[:language]}) found!")
-        if EH.config[:language] != "de"
-          EH.config[:language] = "de"
-          puts("INFO: Changed language to 'de' (German), try restarting")
-          EH.exit(1)
-        else
-          puts("INFO: Even the default language is not working, the install seems to be broken.\nTry redownloading the application.")
-          EH.exit(1)
-        end
+        self.handle_failed("item")
       end
     end
+    
+    def self.parse_spells
+      begin
+        file = File.open("def/#{EH.config[:language]}/spells.trans", "r")
+        block = false
+        name = desc = ""
+        spell = nil
+        file.each_line { |line|
+          line.gsub!("\n", "")
+          if line.start_with?("#") or line.length == 0
+            if line == "#EOF"
+              break
+            end
+            next
+          end
+          if line[0] == "{"
+            block = true
+          end
+          if line[0] == "}"
+            block = false
+            @@spells[EH.config[:language]].store(spell.name, name)
+            @@spells[EH.config[:language]].store("#{spell.name}_desc", desc)
+            next
+          end
+          if block
+            if line.start_with?("name")
+              line.gsub!(/name *= */, "")
+              name = line.gsub("\"", "")
+            elsif line.start_with?("desc")
+              line.gsub!(/desc *= */, "")
+              desc = line.gsub("\"", "")
+            end
+          else
+            spell = EH::Game.find_spell(line)
+          end
+        }
+        file.close
+      rescue Errno::ENOENT
+        self.handle_failed("spell")
+      end
+    end
+    
     def self.parse_skills
       begin
         file = File.open("def/#{EH.config[:language]}/skills.trans", "r")
@@ -136,22 +177,30 @@ module EH
         }
         file.close
       rescue Errno::ENOENT
-        puts("FATAL: No skill translations for selected language (#{EH.config[:language]}) found!")
-        if EH.config[:language] != "de"
-          EH.config[:language] = "de"
-          puts("INFO: Changed language to 'de' (German), try restarting")
-          EH.exit(1)
-        else
-          puts("INFO: Even the default language is not working, the install seems to be broken.\nTry redownloading the application.")
-          EH.exit(1)
-        end
+        self.handle_failed("skill")
       end
     end
+    
+    def self.handle_failed(type)
+      puts("FATAL: No #{type} translations for selected language (#{EH.config[:language]}) found!")
+      if EH.config[:language] != "de"
+        EH.config[:language] = "de"
+        puts("INFO: Changed language to 'de' (German), try restarting")
+        EH.exit(1)
+      else
+        puts("INFO: Even the default language is not working, the install seems to be broken.\nTry redownloading the application.")
+        EH.exit(1)
+      end
+    end
+    
     def self.item(sym)
       return @@items[EH.config[:language]][sym]
     end
     def self.skill(sym)
       return @@skills[EH.config[:language]][sym]
+    end
+    def self.spell(sym)
+      return @@spells[EH.config[:language]][sym]
     end
     def self.menu(sym)
       return @@menu[EH.config[:language]][sym]

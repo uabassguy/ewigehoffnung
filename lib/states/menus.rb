@@ -97,6 +97,7 @@ module EH::States
       @w.add(:items, Button.new(32, 32, 224, 32, Trans.menu(:items), lambda {}))
       @w.add(:equip, Button.new(32, 96, 224, 32, Trans.menu(:equipment), lambda { @window.advance(EquipMenu.new(@window, self, party)) }))
       @w.add(:skills, Button.new(32, 160, 224, 32, Trans.menu(:skills), lambda {}))
+      @w.add(:magic, Button.new(32, 224, 224, 32, Trans.menu(:magic), lambda { @window.advance(MagicMenu.new(@window, self, party)) }))
       @w.add(:save, Button.new(32, 552, 224, 32, Trans.menu(:save), lambda {}))
       @w.add(:load, Button.new(32, 616, 224, 32, Trans.menu(:load), lambda {}))
       @w.add(:options, Button.new(32, 680, 224, 32, Trans.menu(:options), lambda {}))
@@ -127,7 +128,7 @@ module EH::States
       @w.add(:charselect, CharSelector.new(32, 32, party))
       @w.add(:inventory, Inventory.new(32, 96, 256, 360, @party.members[@w.get(:charselect).index], [:pants, :melee, :armor, :cloth, :ranged, :boots, :ammo]))
       @w.add(:iteminfo, ItemInfo.new(320, 32))
-      @w.add(:itemdrop, ImageButton.new(32, 464, "drop_item", lambda { drop_item }, 96, 96))
+      @w.add(:itemdrop, ImageButton.new(32, 464, "gui/drop_item", lambda { drop_item }, 96, 96))
       @w.get(:itemdrop).disable
       @w.add(:equip, CharEquip.new(320, 224, @party.members[0]))
     end
@@ -185,6 +186,33 @@ module EH::States
       @w.get(:inventory).assemble_items
       @w.get(:iteminfo).item = nil
       @w.get(:itemdrop).disable
+    end
+  end
+  
+  class MagicMenu < State
+    include EH::GUI
+    include EH
+    def initialize(window, previous, party)
+      super(window)
+      @previous = previous
+      @party = party
+      @background = EH::Sprite.new(window, "menu/ingame_background")
+      @w = EH::GUI::Window.new(self, 0, 0, 1024, 768, Trans.menu(:magic))
+      @w.add(:charselect, CharSelector.new(32, 32, party))
+    end
+    def update
+      super
+      if @window.pressed?(Gosu::KbEscape) or @w.remove?
+        @window.advance(@previous)
+      end
+      @w.update
+      if @w.get(:charselect).changed?
+      end
+    end
+    def draw
+      @background.draw(0, 0, 0)
+      @w.draw
+      draw_cursor
     end
   end
   

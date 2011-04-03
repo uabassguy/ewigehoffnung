@@ -65,7 +65,7 @@ module EH::GUI
     attr_reader :bg
     attr_accessor :proc
     def initialize(x, y, file, proc, w=-1, h=-1)
-      @bg = EH::Sprite.new(EH.window, "gui/#{file}")
+      @bg = EH::Sprite.new(EH.window, file.to_s)
       @sound = EH::Sample.new(EH.window, "click1")
       if w < 0
         @w = w = @bg.width

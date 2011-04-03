@@ -23,7 +23,7 @@ module EH::Game
     def initialize(name, desc, icon)
       @name = name
       @desc = desc
-      @img = EH::Sprite.new(EH.window, "skills/#{icon}")
+      @img = EH::Sprite.new(EH.window, "icons/skills/#{icon}")
     end
   end
   

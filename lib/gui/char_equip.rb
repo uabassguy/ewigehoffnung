@@ -31,7 +31,7 @@ module EH::GUI
     def reset_slots
       @slots = {}
       @@positions.each { |loc, pos|
-        @slots.store(loc, ImageButton.new(@x+pos[0], @y+pos[1], "equipslot_background", lambda {}))
+        @slots.store(loc, ImageButton.new(@x+pos[0], @y+pos[1], "gui/equipslot_background", lambda {}))
       }
     end
     def highlight_slots(ary)
@@ -57,7 +57,7 @@ module EH::GUI
       @equipped = {}
       equip.each { |loc, item|
         if item
-          @equipped.store(loc, ImageButton.new(@x+@@positions[loc][0], @y+@@positions[loc][1], "../#{item.icon.file}", lambda { unequip(loc) }, 32, 32))
+          @equipped.store(loc, ImageButton.new(@x+@@positions[loc][0], @y+@@positions[loc][1], "#{item.icon.file}", lambda { unequip(loc) }, 32, 32))
         end          
       }
     end

@@ -4,7 +4,7 @@ module EH::Game
     attr_reader :name, :desc, :icon, :weight, :effects, :type, :img
     def initialize(name, desc, icon, weight, effects=[], type=:item)
       @name, @desc, @weight, @effects, @type = name, desc, weight, effects, type
-      @icon = EH::Sprite.new(EH.window, "icons/#{icon}")
+      @icon = EH::Sprite.new(EH.window, "icons/items/#{icon}")
       @img = EH::Sprite.new(EH.window, "items/#{icon}")
     end
   end

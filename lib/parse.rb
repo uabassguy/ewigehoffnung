@@ -3,16 +3,72 @@
 
 require "game/map.rb"
 require "game/item.rb"
+require "game/spell.rb"
 
-require "rexml/document"
 require "tileset.rb"
 require "layer.rb"
 
+require "rexml/document"
 require "base64"
 require "zlib"
 
+# TODO function to look for key in a line and return it
+
 module EH::Parse
   include REXML
+  
+  def self.spells
+    ary = []
+    begin
+      file = File.open("def/spells.def")
+    rescue
+      puts("ERROR: Couldn't find spells.def")
+      return ary
+    end
+    block = false
+    
+    name = icon = ""
+    type = nil
+    cost = 0
+        
+    file.each_line { |line|
+      line.gsub!("\n", "")
+      if line.start_with?("#") or line.length == 0
+        if line == "#EOF"
+          break
+        end
+        next
+      end
+      if line[0] == "{"
+        block = true
+      end
+      if line[0] == "}"
+        block = false
+        ary.push(EH::Game::Spell.new(name, icon, type, cost))
+        name = icon = ""
+        type = nil
+        cost = 0
+      end
+      if block
+        if line.start_with?("name")
+          line.gsub!(/name *= */, "")
+          name = line.gsub("\"", "")
+        elsif line.start_with?("icon")
+          line.gsub!(/icon *= */, "")
+          icon = line.gsub("\"", "")
+        elsif line.start_with?("type")
+          line.gsub!(/type *= */, "")
+          type = line.gsub("\"", "").to_sym
+        elsif line.start_with?("cost")
+          line.gsub!(/cost *= */, "")
+          cost = line.gsub("\"", "").to_i
+        end
+      end
+    }
+    puts("INFO: Parsed #{ary.size} spells")
+    return ary
+  end
+  
   def self.map(file)
     tiles = []
     layers = []

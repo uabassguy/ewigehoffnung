@@ -1,0 +1,17 @@
+
+stop_bleed {
+name = "Wunde verschließen"
+desc = ""
+}
+
+#EOF
+
+ {
+name = ""
+desc = ""
+}
+
+ {
+name = ""
+desc = ""
+}
