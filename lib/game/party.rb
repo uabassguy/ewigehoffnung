@@ -32,4 +32,11 @@ module EH::Game
       return @members[@player_index]
     end
   end
+  
+  # Character states
+  NORMAL = 0
+  ASLEEP = 1
+  DEAD = 2
+  UNCONSCIOUS = 3
+  
 end

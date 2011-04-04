@@ -1,5 +1,14 @@
 
-# General interface to general game data
+# General system interface and common convenience functions
+
+if (Gem::Version.new(RUBY_VERSION) <=> Gem::Version.new("1.9.0")) <= 0
+  puts("WARNING: Ruby version (#{RUBY_VERSION}) is too old. Game may crash at any time.")
+end
+
+require "awesome_print"
+require "gosu"
+
+$:.push(".")
 
 # Set up constants before loading any other files
 module EH
@@ -47,10 +56,6 @@ module EH
     return false
   end
   
-  def self.ary_to_color(ary)
-    return Gosu::Color.new(ary[0], ary[1], ary[2], ary[3])
-  end
-  
   require "config.rb"
   
   @config = Config.new
@@ -81,6 +86,12 @@ class Numeric
       return true
     end
   end
+  def inc
+    + 1
+  end
+  def dec
+    - 1
+  end
 end
 
 class String
@@ -90,6 +101,12 @@ class String
     else
       return false
     end
+  end
+  def to_pos
+    ary = []
+    ary.push(self.gsub(/\|\d+/, "").to_i)
+    ary.push(self.gsub(/\d+\|/, "").to_i)
+    return ary
   end
 end
 
@@ -105,12 +122,18 @@ class FalseClass
   end
 end
 
+class Array
+  def to_color
+    return Gosu::Color.new(self[0], self[1], self[2], self[3])
+  end
+end
+
 if !File.exists?("graphics/missing.png")
   puts("FATAL: Couldn't find graphics, exiting.")
   EH.exit(1)
 end
 
-puts("Loaded core module (v#{EH::VERSION})\nLIB #{EH::LIBRARY_PATH}\nHOME #{EH::HOME_PATH}")
+puts("INFO: Loaded core module (v#{EH::VERSION})\nLIB #{EH::LIBRARY_PATH}\nHOME #{EH::HOME_PATH}")
 
 require "translate.rb"
 require "parse.rb"

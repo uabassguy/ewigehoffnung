@@ -72,7 +72,7 @@ module EH::Game
       return p
     end
     
-    def generate_costmap(maxx=@collision.tiles.size)
+    def generate_costmap
       map = []
       x = 0
       @collision.tiles.each { |ary|
@@ -94,9 +94,6 @@ module EH::Game
         }
         map.push(cary)
         x += 1
-        if x > maxx
-          break
-        end
       }
       return map
     end
@@ -136,13 +133,13 @@ module EH::Game
       closed = AStar::PriorityQueue.new()
       node_start.calc_h(node_goal)
       open.push(node_start)
-      costmap = generate_costmap(node_goal.x)
+      costmap = generate_costmap
       while !open.empty? do
         iterations += 1 #keep track of how many times this itersates
         node_current = open.find_best
         if node_current == node_goal
           puts("Iterations: #{iterations}")
-          show_path(node_current)
+          #show_path(node_current)
           return node_current 
         end       
         generate_successor_nodes(node_current, costmap) { |node_successor|
@@ -173,7 +170,7 @@ module EH::Game
     def show_path(anode)
       #shows the path back from node 'anode' by following the parent pointer
       curr = anode
-      pathmap = generate_costmap(@collision.tiles.size).clone
+      pathmap = generate_costmap
       while curr.parent do
         pathmap[curr.y][curr.x] = '*'
         curr = curr.parent

@@ -8,9 +8,9 @@ require "game/spell.rb"
 require "tileset.rb"
 require "layer.rb"
 
+require "game/npc/behaviour.rb"
+
 require "rexml/document"
-require "base64"
-require "zlib"
 
 # TODO function to look for key in a line and return it
 
@@ -93,7 +93,7 @@ module EH::Parse
       layers.last.fill_tilemap(tiles.first) # TODO check for gids to choose right tileset
     }
     root.each_element("//objectgroup") { |el|
-      objects += self.objectgroup(el)
+      objects += self.objectgroup(el, file)
     }
     return EH::Game::Map.new(properties, layers, objects)
   end
@@ -115,16 +115,7 @@ module EH::Parse
     }
     return ary
   end
-  
-  def self.zlib_inflate(string)
-    zstream = Zlib::Inflate.new
-    buf = zstream.inflate(string)
-    zstream.finish
-    zstream.close
-    return buf
-  end
 
-  
   def self.tileset(el)
     file = el.elements["//image"].attributes["source"]
     file = "graphics/tiles/#{File.basename(file)}"
@@ -147,13 +138,15 @@ module EH::Parse
     return EH::Layer.new(el.attributes["width"].to_i, el.attributes["height"].to_i, props, tiles)
   end
   
-  def self.objectgroup(el)
+  def self.objectgroup(el, map)
     ary = []
     el.each_element("object") { |obj|
       props = self.xml_properties(obj.elements["properties[1]"])
       props.store(:layer, el.attributes["name"])
+      props.store(:name, obj.attributes["name"].gsub("-", "_"))
       if obj.attributes["type"] == "npc"
-        ary.push(EH::Game::NPC.new(obj.attributes["x"].to_i, obj.attributes["y"].to_i, props))
+        ary.push(EH::Game::MapNPC.new(obj.attributes["x"].to_i, obj.attributes["y"].to_i, props))
+        ary.last.behaviour = self.behaviour(map, ary.last)
       else
         ary.push(EH::Game::MapObject.new(obj.attributes["x"].to_i, obj.attributes["y"].to_i, props))
       end
@@ -218,6 +211,7 @@ module EH::Parse
     puts("INFO: Parsed #{ary.size} characters")
     return ary
   end
+  
   def self.skills
     ary = []
     begin
@@ -260,6 +254,7 @@ module EH::Parse
     puts("INFO: Parsed #{ary.size} skills")
     return ary
   end
+  
   def self.items
     ary = []
     begin
@@ -313,6 +308,7 @@ module EH::Parse
     puts("INFO: Parsed #{ary.size} items")
     return ary
   end
+  
   def self.particles
     hash = {}
     begin
@@ -375,7 +371,7 @@ module EH::Parse
           mode = line.gsub("\"", "").to_sym
         elsif line.start_with?("color")
           line.gsub!(/color *= */, "")
-          color = EH.ary_to_color(parse_int_array(line.gsub("\"", "")))
+          color = parse_int_array(line.gsub("\"", "")).to_color
         elsif line.start_with?("angle")
           line.gsub!(/angle *= */, "")
           angle = line.gsub("\"", "").to_b
@@ -397,6 +393,7 @@ module EH::Parse
     puts("INFO: Parsed #{hash.length} particles")
     return hash
   end
+  
   def self.parse_range(str)
     r = (0..0)
     str.gsub!("(", "")
@@ -407,6 +404,7 @@ module EH::Parse
     r = (first..last)
     return r
   end
+  
   def self.parse_sym_array(str)
     ary = []
     str.gsub!("[", "")
@@ -417,6 +415,7 @@ module EH::Parse
     }
     return ary
   end
+  
   def self.parse_int_array(str)
     ary = []
     str.gsub!("[", "")
@@ -427,4 +426,90 @@ module EH::Parse
     }
     return ary
   end
+  
+  def self.behaviour(map, npc)
+    begin
+      file = File.open("maps/def/#{map}.bhv", "r")
+      block = ary = false
+      
+      b = nil
+      
+      name = array = type = ""
+      init = trigger = motion = update = []
+      
+      file.each_line { |line|
+        line.gsub!("\n", "")
+        if line.start_with?("#") or line.length == 0
+          if line == "#EOF"
+            break
+          end
+        end
+        line.lstrip!
+        if ary
+          if line == "]"
+            array.gsub!("<", "")
+            array.gsub!(">", "")
+            ret = self.task_array(array.split("?"), npc)
+            # TODO needs some magic
+            case type
+            when "init"
+              init = ret
+            when "trigger"
+              trigger = ret
+            when "motion"
+              motion = ret
+            when "update"
+              update = ret
+            end
+            array = ""
+            ary = false
+            next
+          end
+          array += "#{line}?"
+          next
+        end
+        if block
+          if line.include?("}")
+            block = false
+            b = EH::Game::NPC::Behaviour.new(npc, init, trigger, motion, update)
+            init = trigger = motion = update = []
+            break
+          end
+          if line.match(/\s?=\s?\[/)
+            if !line.include?("]")
+              type = line.gsub(/\s?=\s?\[/, "")
+              ary = true
+            end
+          end
+        else
+          if line.include?("{")
+            block = true
+            name = line.gsub(/\s?\{/, "")
+            if npc.properties[:name] != name
+              ary = block = false
+              next
+            end
+          end
+        end
+      }
+      file.close
+    rescue Errno::ENOENT
+      # we dont care about missing definition files
+    end
+    awesome_print(b)
+    return b
+  end
+  
+  def self.task_array(inp, npc)
+    ret = []
+    inp.each { |el|
+      ret.push(el.split(" "))
+    }
+    ary = []
+    ret.each { |task|
+      ary.push(EH::Game::NPC.send(task.first.to_sym, task, npc))
+    }
+    return ary
+  end
+  
 end

@@ -145,6 +145,7 @@ module EH::Game
     
     def trigger(other)
       @trigger.call(other) if @trigger
+      @behaviour.on_trigger(other) if @behaviour
     end
     
     def direction

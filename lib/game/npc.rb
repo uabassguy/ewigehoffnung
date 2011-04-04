@@ -5,19 +5,22 @@ require "game/goal.rb"
 # TODO move goal logic to mapobject
 
 module EH::Game
-  class NPC < MapObject
+  class MapNPC < MapObject
+    attr_accessor :behaviour
+    attr_reader :goal
     # cant take lambda because of argument
     def initialize(x, y, props, proc=proc {})
       super(x, y, props)
       @x, @y = x, y
       @trigger = proc
+      @behaviour = nil
       @goal = CompositeGoal.new(:retry)
       @speed = 2
       @name = "npc-#{props[:file].downcase}-#{rand(1000)}"
     end
     def setup
       super
-      find_path_to(19, 14)
+      @behaviour.on_init
     end
     def find_path_to(x, y)
       puts("from #{@x/32}|#{@y/32} to #{x}|#{y}")
@@ -30,6 +33,7 @@ module EH::Game
       @goal.reverse!
     end
     def update
+      @behaviour.on_update
       moved = update_move(EH.window.state.map.current)
       @goal.update if @goal.size > 0
       if @goal.current.class == MotionGoal

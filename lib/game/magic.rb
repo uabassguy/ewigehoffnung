@@ -5,7 +5,8 @@ module EH::Game
   
   class Magic
     attr_reader :learned
-    def initialize
+    def initialize(char)
+      @char = char
       @learned = []
     end
     
@@ -18,7 +19,7 @@ module EH::Game
     end
     
     def cast(spell, caster, target=nil)
-      if @learned.include?(spell)
+      if @learned.include?(spell) and @char.state == EH::Game::NORMAL
         spell.cast(caster, target)
       end
     end

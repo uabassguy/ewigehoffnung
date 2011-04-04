@@ -17,20 +17,52 @@ module EH::Game
   class Character
     attr_reader :name, :age, :charset, :weight, :strength, :charset, :gender
     attr_reader :inventory, :skills, :const, :mind, :equipment, :race, :magic
+    attr_reader :endurance, :state
     attr_accessor :health
     # health is only used as a percentage for easier displaying, the real stuff is in @const
     def initialize(name, charset, age, weight, strength, gender, race)
       @name, @age, @charset, @race, @gender = name, age, charset, race, gender
       @weight, @strength = weight, strength
-      @health = 100
+      @health = @endurance = 100
       @inventory = EH::Game::Inventory.new(20, @strength)
       @skills = EH::Game::Skills.new
       @const = EH::Game::Constitution.new
       @mind = EH::Game::Mind.new
       @equipment = EH::Game::Equipment.new
-      @magic = EH::Game::Magic.new
+      @magic = EH::Game::Magic.new(self)
+      @state = EH::Game::NORMAL
     end
+    
     def update
     end
+    
+    def calc_status
+      if @endurance <= 25
+        @state = EH::Game::DEAD
+      elsif @endurance <= 0
+        @state = EH::Game::UNCONSCIOUS
+      end
+    end
+    
+    def weaken(amount)
+      if @state = EH::Game::DEAD
+        @endurance -= amount
+        calc_status
+      end
+    end
+    
+    def rest(amount)
+      if @state != EH::Game::DEAD
+        @endurance -= amount
+      end
+    end
+    
+    def wake
+      if @state != EH::Game::DEAD
+        @state = EH::Game::NORMAL
+        calc_status
+      end
+    end
+    
   end
 end

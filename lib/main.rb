@@ -1,7 +1,5 @@
 
 require "rubygems"
-require "awesome_print"
-require "gosu"
 require "eh.rb"
 require "game_window.rb"
 
