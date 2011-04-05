@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="20" height="15" tilewidth="32" tileheight="32">
  <properties>
+  <property name="fog" value="clouds1"/>
+  <property name="foga" value="125"/>
+  <property name="fogb" value="130"/>
+  <property name="fogg" value="255"/>
+  <property name="fogr" value="130"/>
+  <property name="fogx" value="0.5"/>
+  <property name="fogy" value="0.25"/>
   <property name="left" value="test_left"/>
   <property name="lower" value="test2"/>
+  <property name="music" value="Butterfly Tea - A New Hope 2K11"/>
   <property name="name" value="Test 1"/>
   <property name="right" value="test3"/>
+  <property name="tonea" value="20"/>
+  <property name="toneb" value="100"/>
+  <property name="toneg" value="100"/>
+  <property name="toner" value="255"/>
   <property name="upper" value="test_upper"/>
  </properties>
  <tileset firstgid="1" name="Test1" tilewidth="32" tileheight="32">

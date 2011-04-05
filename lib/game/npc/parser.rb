@@ -23,8 +23,8 @@ module EH::Game::NPC
       prc = proc { |npc|
         npc.behaviour.update.push(
           Task.new(proc { |npc|
-              npc.properties["#{name}-emitter"].x = npc.x
-              npc.properties["#{name}-emitter"].y = npc.y
+              npc.properties["#{name}-emitter"].x = npc.x+16
+              npc.properties["#{name}-emitter"].y = npc.y+16
             }, false, false)
         )
       }

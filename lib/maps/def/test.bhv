@@ -1,8 +1,6 @@
 
 npc_1 {
-    init = [
-        <particles @x|@y smoke follow>
-    ]
+    init = []
     trigger = []
     update = []
     motion = [

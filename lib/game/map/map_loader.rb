@@ -5,6 +5,8 @@
 # 
 # 4 => current
 
+require "game/map/fog.rb"
+
 module EH::Game
   class MapLoader
     attr_reader :objects, :misc
@@ -13,6 +15,7 @@ module EH::Game
       @objects = []
       @maps = []
       @misc = []
+      @tonepic = EH::Sprite.new(EH.window, "pixel", true)
     end
     
     def load(file)
@@ -66,6 +69,26 @@ module EH::Game
           @maps[8].yoff = @maps[7].height*32
         end
       end
+      if map.properties[:music]
+        if map.properties[:music] == "nil"
+          @song.stop if @song
+        else
+          @song = EH::Song.new(map.properties[:music])
+          @song.play(true)
+        end
+      end
+      if map.properties[:fog]
+        if map.properties[:fog] == "nil"
+          @fog = nil
+        else
+          @fog = EH::Game::Fog.new(map.properties[:fog], map.properties[:fogx].to_f, map.properties[:fogy].to_f, map.properties[:foga].to_i, map.properties[:fogr].to_i, map.properties[:fogg].to_i, map.properties[:fogb].to_i)
+        end
+      end
+      if map.properties[:tonea] or map.properties[:toner] or map.properties[:toneg] or map.properties[:toneb]
+        @tone = Gosu::Color.new(map.properties[:tonea].to_i, map.properties[:toner].to_i, map.properties[:toneg].to_i, map.properties[:toneb].to_i)
+      else
+        @tone = nil
+      end
     end
     
     def draw
@@ -78,6 +101,8 @@ module EH::Game
       @misc.each { |m|
         m.draw
       }
+      @fog.draw if @fog
+      @tonepic.img.draw(0, 0, 500000, 1024, 768, @tone) if @tone
     end
     
     def update
@@ -91,6 +116,7 @@ module EH::Game
       @misc.each { |obj|
         obj.update
       }
+      @fog.update if @fog
     end
     
     def current

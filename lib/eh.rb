@@ -28,6 +28,7 @@ module EH
   CURSOR_Z = 1000000
   GUI_Z = 9999
   PARTICLE_Z = 5000
+  FOG_Z = 6000
   
   DEFAULT_FONT = "arial"
   
