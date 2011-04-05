@@ -25,7 +25,7 @@ module EH::Game::NPC
     end
   
     def on_trigger(other)
-      @trigger = exec_tasks(@trigger)
+      @trigger = exec_tasks(@trigger, other)
     end
   
     def on_update
@@ -46,6 +46,7 @@ module EH::Game::NPC
       ary.compact!
       ary.each { |task|
         ary[ary.index(task)] = exec_task(task, other)
+        task.reset
       }
       ary.compact!
       return ary

@@ -1,7 +1,7 @@
 
 # Parsers
 
-require "game/map.rb"
+require "game/map/map.rb"
 require "game/item.rb"
 require "game/spell.rb"
 

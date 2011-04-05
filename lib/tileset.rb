@@ -1,5 +1,5 @@
 
-require "game/tile.rb"
+require "game/map/tile.rb"
 
 module EH
   class Tileset

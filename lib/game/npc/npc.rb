@@ -1,5 +1,5 @@
 
-require "game/map_object.rb"
+require "game/map/map_object.rb"
 require "game/npc/goal.rb"
 
 # TODO move goal logic to mapobject
@@ -8,7 +8,6 @@ module EH::Game
   class MapNPC < MapObject
     attr_accessor :behaviour
     attr_reader :goal
-    # cant take lambda because of argument
     def initialize(x, y, props, proc=proc {})
       super(x, y, props)
       @x, @y = x, y

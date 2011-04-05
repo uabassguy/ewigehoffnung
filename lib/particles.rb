@@ -11,7 +11,7 @@ module EH
   
   class Particles
     def initialize(str, x=0, y=0)
-      @emitter = EH.particles[str]
+      @emitter = EH.particles[str].dup
       @emitter.x, @emitter.y = x, y
     end
     def x=(x)

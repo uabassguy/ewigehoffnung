@@ -28,7 +28,7 @@ module EH::States
     end
   end
   
-  require "game/map_loader.rb"
+  require "game/map/map_loader.rb"
   require "game/party.rb"
   class GameState < State
     attr_reader :map, :party

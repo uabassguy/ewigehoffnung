@@ -1,5 +1,5 @@
 
-require "game/map_object.rb"
+require "game/map/map_object.rb"
 
 module EH::Game
   class Player < MapObject
@@ -27,7 +27,7 @@ module EH::Game
           @dy = 32;
         end
       end
-      if window.button_down?(KbSpace) or window.button_down?(KbReturn) or window.button_down?(KbEnter)
+      if window.pressed?(KbSpace) or window.pressed?(KbReturn) or window.pressed?(KbEnter)
         update_trigger
       end
       super

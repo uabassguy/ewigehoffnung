@@ -2,7 +2,7 @@
 module EH::Game
   require "ext/astar/node.rb"
   require "ext/astar/priority_queue.rb"
-  require "game/tile.rb"
+  require "game/map/tile.rb"
   
   class Map
     attr_reader :props, :layers, :properties
@@ -200,12 +200,6 @@ module EH::Game
     
     def right
       return @properties[:right]
-    end
-    
-    def cleaned
-      map = self.dup
-      map.objects = []
-      return map
     end
     
   end

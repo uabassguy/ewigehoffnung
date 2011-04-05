@@ -7,11 +7,12 @@
 
 module EH::Game
   class MapLoader
-    attr_reader :objects
+    attr_reader :objects, :misc
     
     def initialize
       @objects = []
       @maps = []
+      @misc = []
     end
     
     def load(file)
@@ -74,6 +75,9 @@ module EH::Game
       @objects.each { |obj|
         obj.draw
       }
+      @misc.each { |m|
+        m.draw
+      }
     end
     
     def update
@@ -83,6 +87,9 @@ module EH::Game
         if obj.dead?
           @objects.delete(obj)
         end
+      }
+      @misc.each { |obj|
+        obj.update
       }
     end
     
