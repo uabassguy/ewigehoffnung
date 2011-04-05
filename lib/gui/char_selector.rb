@@ -11,7 +11,7 @@ module EH::GUI
       @changed = false
       @party = party
       @background = EH::Sprite.new(EH.window, "gui/charselect_background")
-      @font = Gosu::Font.new(EH.window, EH::DEFAULT_FONT, 24)
+      @font = EH.font(EH::DEFAULT_FONT, 24)
       @left = Button.new(x, y, 32, 32, "<", lambda {left}, false)
       @right = Button.new(x+w-32, y, 32, 32, ">", lambda {right}, false)
     end

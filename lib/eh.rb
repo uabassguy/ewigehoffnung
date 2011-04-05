@@ -56,6 +56,16 @@ module EH
     return false
   end
   
+  @@fonts = {}
+  
+  def self.font(name, size)
+    if @@fonts["#{name}-#{size}".to_sym]
+      return @@fonts["#{name}-#{size}".to_sym]
+    else
+      @@fonts["#{name}-#{size}".to_sym] = Gosu::Font.new(EH.window, name, size)
+    end
+  end
+  
   require "config.rb"
   
   @config = Config.new

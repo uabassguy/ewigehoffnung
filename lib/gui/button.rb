@@ -9,7 +9,7 @@ module EH::GUI
         @bg = EH::Sprite.new(EH.window, "gui/button_background")
       end
       @hi = EH::Sprite.new(EH.window, "gui/button_highlight")
-      @font = Gosu::Font.new(EH.window, EH::DEFAULT_FONT, h)
+      @font = EH.font(EH::DEFAULT_FONT, h)
       @text = text
       @proc = proc
       @selected = false

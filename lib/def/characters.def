@@ -39,11 +39,11 @@ gender = female
 }
 
 {
-name = "Eyera"
+name = "Ejera"
 age = 24
 strength = 15
 weight = 60
-file = "eyera"
+file = "ejera"
 race = "Mensch"
 gender = female
 }

@@ -7,8 +7,8 @@ module EH::GUI
       super(x, y, 672, 160)
       @bg = EH::Sprite.new(EH.window, "gui/iteminfo_background")
       @img = EH::Sprite.new(EH.window, "items/none")
-      @bigfont = Gosu::Font.new(EH.window, EH::DEFAULT_FONT, 32)
-      @font = Gosu::Font.new(EH.window, EH::DEFAULT_FONT, 24)
+      @bigfont = EH.font(EH::DEFAULT_FONT, 32)
+      @font = EH.font(EH::DEFAULT_FONT, 24)
       @item = nil
     end
     def item=(item)

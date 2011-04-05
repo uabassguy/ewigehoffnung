@@ -21,7 +21,7 @@ module EH::GUI
         EH::Sprite.new(state.window, "gui/bar_center", true),
         EH::Sprite.new(state.window, "gui/bar_right", true)
       ]
-      @titlefont = Gosu::Font.new(EH.window, EH::DEFAULT_FONT, 24)
+      @titlefont = EH.font("arial", 24)
       @title = titlestr
       @remove = false
       if close

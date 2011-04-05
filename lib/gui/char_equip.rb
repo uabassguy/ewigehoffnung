@@ -16,7 +16,7 @@ module EH::GUI
       super(x, y, 320, 512)
       @bg = EH::Sprite.new(EH.window, "gui/charequip_background")
       @body = EH::Sprite.new(EH.window, "gui/equip_#{c.race}")
-      @font = Gosu::Font.new(EH.window, EH::DEFAULT_FONT, 24)
+      @font = EH.font(EH::DEFAULT_FONT, 24)
       @equipped = {}
       reset_slots
       @char = c
