@@ -2,13 +2,12 @@
 npc_1 {
     init = [
         <particles @x|@y smoke follow>
-        <path_to 19|14 wait retry>
     ]
     trigger = []
     update = []
     motion = [
-        <path_to 19|14 wait retry>
-        <path_to 0|0 wait retry>
+        <path_to 19|14>
+        <path_to 0|0>
     ]
 }
 

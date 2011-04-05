@@ -9,14 +9,13 @@ module EH::Game::NPC
   
   def self.path_to(ary, npc)
     ary.shift
-    wait = ary.include?("wait")
     ret = ary.include?("retry")
     remove = ary.include?("remove")
-    task = Task.new(
+    task = MotionTask.new(
       proc { |npc, other|
-        npc.find_path_to(ary[0].to_pos[0], ary[0].to_pos[1]) if npc.behaviour.motion.last.finished? and npc.goal.size == 0
+        npc.find_path_to(ary[0].to_pos[0], ary[0].to_pos[1])
       },
-      wait, remove)
+      true, remove)
     return task
   end
   

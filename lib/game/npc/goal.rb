@@ -45,6 +45,10 @@ module EH::Game
     def reset
       self.clear
       @current = 0
+      @state = :reset
+    end
+    def start
+      @state = :progress
     end
     def current
       return self[@current]

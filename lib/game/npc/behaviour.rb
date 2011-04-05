@@ -18,7 +18,10 @@ module EH::Game::NPC
     
     def on_init
       exec_tasks(@init)
-      awesome_print(@init)
+      if !@motion.empty?
+        @curr_motion = @motion.last
+        on_endmotion
+      end
     end
   
     def on_trigger(other)
@@ -27,31 +30,39 @@ module EH::Game::NPC
   
     def on_update
       @update = exec_tasks(@update)
-      @motion = exec_tasks(@motion)
-      if !@motion.empty? and @motion.last.finished?
-        @motion.each { |task|
-          task.reset
-        }
-        puts("reset tasks")
-        puts(@motion.inspect)
+      on_endmotion if !@motion.empty? and @self.goal.state == :finished
+    end
+    
+    def on_endmotion
+      i = @motion.index(@curr_motion) + 1
+      if i >= @motion.size
+        i = 0
       end
+      @curr_motion = @motion[i]
+      exec_task(@curr_motion)
     end
     
     def exec_tasks(ary, other=nil)
+      ary.compact!
       ary.each { |task|
-        task.execute(@self, other) if !task.finished?
-        if task.finished?
-          if task.remove?
-            ary.delete(task)
-          end
-          puts("task executed & finished")
-          next
-        end
-        if task.wait? and !task.finished?
-          break
-        end
+        ary[ary.index(task)] = exec_task(task, other)
       }
+      ary.compact!
       return ary
+    end
+    
+    def exec_task(task, other=nil)
+      if task.class == MotionTask
+        task.execute(@self, other)
+        return task
+      end
+      task.execute(@self, other) if !task.finished?
+      if task.finished?
+        if task.remove?
+          task = nil
+        end
+      end
+      return task
     end
   
   end

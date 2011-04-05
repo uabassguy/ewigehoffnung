@@ -12,11 +12,8 @@ module EH::Game::NPC
     end
   
     def execute(npc, other=nil)
-      puts("#{npc.goal.size} - #{@finished}")
       @action.call(npc, other) if !@finished
       if !@wait
-        @finished = true
-      elsif @wait and npc.goal.size == 0
         @finished = true
       end
     end
@@ -37,6 +34,22 @@ module EH::Game::NPC
       @finished = false
     end
   
+  end
+  
+  class MotionTask < Task
+    def initialize(action, wait=true, remove=false)
+      super
+      @started = false
+    end
+    def start
+      @started = true
+    end
+    def stop
+      @started = false
+    end
+    def started?
+      return @started
+    end
   end
   
 end

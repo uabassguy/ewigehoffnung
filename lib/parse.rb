@@ -443,6 +443,7 @@ module EH::Parse
           if line == "#EOF"
             break
           end
+          next
         end
         line.lstrip!
         if ary
@@ -496,7 +497,7 @@ module EH::Parse
     rescue Errno::ENOENT
       # we dont care about missing definition files
     end
-    awesome_print(b)
+    #awesome_print(b)
     return b
   end
   

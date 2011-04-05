@@ -138,7 +138,7 @@ module EH::Game
         iterations += 1 #keep track of how many times this itersates
         node_current = open.find_best
         if node_current == node_goal
-          puts("Iterations: #{iterations}")
+          #puts("Iterations: #{iterations}")
           #show_path(node_current)
           return node_current 
         end       

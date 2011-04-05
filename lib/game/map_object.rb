@@ -6,6 +6,7 @@ module EH::Game
     def initialize(x, y, props)
       file = props[:file]
       @properties = props
+      # TODO check for file first
       @graphics = Gosu::Image.load_tiles(EH.window, "graphics/chars/#{file}.png", -4, -4, false)
       @index = 0
       @x, @y = x, y

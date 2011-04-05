@@ -1,6 +1,6 @@
 
 require "game/map_object.rb"
-require "game/goal.rb"
+require "game/npc/goal.rb"
 
 # TODO move goal logic to mapobject
 
@@ -20,10 +20,10 @@ module EH::Game
     end
     def setup
       super
-      @behaviour.on_init
+      @behaviour.on_init if @behaviour
     end
     def find_path_to(x, y)
-      puts("from #{@x/32}|#{@y/32} to #{x}|#{y}")
+      #puts("from #{@x/32}|#{@y/32} to #{x}|#{y}")
       curr = EH.window.state.map.current.astar(AStar::Node.new(@x/32, @y/32), AStar::Node.new(x, y))
       @goal.reset
       while curr and curr.parent
@@ -31,9 +31,11 @@ module EH::Game
         curr = curr.parent
       end
       @goal.reverse!
+      @goal.start
+      return @goal
     end
     def update
-      @behaviour.on_update
+      @behaviour.on_update if @behaviour
       moved = update_move(EH.window.state.map.current)
       @goal.update if @goal.size > 0
       if @goal.current.class == MotionGoal
@@ -54,9 +56,6 @@ module EH::Game
             end
           end
         end
-      end
-      if @goal.state == :finished
-        @goal.reset
       end
     end
   end
