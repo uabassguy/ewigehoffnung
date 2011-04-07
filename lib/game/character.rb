@@ -15,7 +15,7 @@ module EH::Game
   end
   
   class Character
-    attr_reader :name, :age, :charset, :weight, :strength, :charset, :gender
+    attr_reader :name, :age, :weight, :strength, :charset, :gender
     attr_reader :inventory, :skills, :const, :mind, :equipment, :race, :magic
     attr_reader :endurance, :state
     attr_accessor :health

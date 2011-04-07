@@ -5,6 +5,8 @@ module EH
     def initialize
       @cursor = EH::Sprite.new(EH.window, "cursors/normal")
       clear
+      @x = 512
+      @y = 384
     end
     
     def update(x, y)

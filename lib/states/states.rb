@@ -41,6 +41,7 @@ module EH::States
       EH::Game.spells = EH::Parse.spells
       EH::Trans.parse_items
       EH::Trans.parse_skills
+      EH::Trans.parse_dialogues
       @party = EH::Game::Party.new
       @map = EH::Game::MapLoader.new
       @map.load("test")

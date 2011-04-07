@@ -9,6 +9,7 @@ require "game/map/fog.rb"
 
 module EH::Game
   class MapLoader
+    
     attr_reader :objects, :misc
     
     def initialize
@@ -16,6 +17,13 @@ module EH::Game
       @maps = []
       @misc = []
       @tonepic = EH::Sprite.new(EH.window, "pixel", true)
+      @message = nil
+      @font = EH.font(EH::DEFAULT_FONT, 24)
+      @msgimg = EH::Sprite.new(EH.window, "gui/msg_background")
+    end
+    
+    def current
+      return @maps[4]
     end
     
     def load(file)
@@ -91,6 +99,26 @@ module EH::Game
       end
     end
     
+    def update
+      if !@message
+        @objects.each { |obj|
+          obj.setup if obj.do_setup?
+          obj.update
+          if obj.dead?
+            @objects.delete(obj)
+          end
+        }
+        @misc.each { |obj|
+          obj.update
+        }
+      else
+        if EH.window.pressed?(Gosu::KbSpace)
+          @message = nil
+        end
+      end
+      @fog.update if @fog
+    end
+    
     def draw
       @maps.each { |map|
         map.draw if map
@@ -103,24 +131,18 @@ module EH::Game
       }
       @fog.draw if @fog
       @tonepic.img.draw(0, 0, 500000, 1024, 768, @tone) if @tone
+      if @message
+        @msgimg.img.draw(@mx, @my, EH::CURSOR_Z-10, @msgimg.img.width/@mw.to_f, @msgimg.img.height/@mh.to_f)
+        # TODO multiline rendering (array)
+        @font.draw(@message, @mx+8, @my+8, EH::CURSOR_Z-9, 1, 1, 0xff000000)
+      end
     end
     
-    def update
-      @objects.each { |obj|
-        obj.setup if obj.do_setup?
-        obj.update
-        if obj.dead?
-          @objects.delete(obj)
-        end
-      }
-      @misc.each { |obj|
-        obj.update
-      }
-      @fog.update if @fog
+    def message(str, x=256, y=480, w=512, h=224)
+      @message = str
+      @mx, @my = x, y
+      @mw, @mh = w, h
     end
     
-    def current
-      return @maps[4]
-    end
   end
 end

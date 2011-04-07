@@ -10,7 +10,11 @@ module EH::GUI
     def initialize(state, x, y, w, h, titlestr, close=true, bg=nil, move=false, z=-1)
       @state = state
       @xoff = @yoff = 0
-      @bg = EH::Sprite.new(EH.window, bg) if bg != nil
+      if bg != nil
+        @bg = EH::Sprite.new(EH.window, bg)
+      else
+        @bg = nil
+      end
       @x, @y, @w, @h, @z = x, y, w, h, z
       if @z < 0
         @z = EH::GUI_Z

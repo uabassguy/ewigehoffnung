@@ -11,7 +11,7 @@ module EH::Game
       @members += EH::Game.characters
       @player_index = 0
       @location = ""
-      EH::Game.items.size*5.times { @members[0].inventory.add(EH::Game.items.sample) }
+      (EH::Game.items.size * 5).times { @members[0].inventory.add(EH::Game.items.sample) }
       @members[0].equipment.equip(EH::Game.items[1], :rarm, @members[0].inventory)
     end
     def add(char)

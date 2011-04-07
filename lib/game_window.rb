@@ -11,13 +11,20 @@ module EH
       EH.window = self
       @state = StartMenu.new(self)
       @unpress = []
+      @font = EH.font(EH::DEFAULT_FONT, 20)
+      @bg = EH::Sprite.new(EH.window, "pixel", true)
     end
     def update
       @state.update
       unpress
+      self.caption = "Ewige Hoffnung - v#{EH::VERSION} - #{Gosu.fps} FPS"
     end
     def draw
       @state.draw
+      if $DEBUG
+        @bg.img.draw(16, 16, 999999, 160, 48, 0x99000000)
+        @font.draw("Mouse: #{mouse_x.to_i}|#{mouse_y.to_i}", 32, 32, 999999)
+      end
     end
     def advance(state)
       @state.finish

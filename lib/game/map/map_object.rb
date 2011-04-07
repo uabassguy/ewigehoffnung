@@ -22,6 +22,7 @@ module EH::Game
       @name = "mapobject-#{file.downcase}-#{rand(1000)}"
       @through = false
       @setup = true
+      @stepped = false
     end
     
     def do_setup?

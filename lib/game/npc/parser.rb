@@ -12,6 +12,14 @@ module EH::Game::NPC
     return str.to_pos
   end
   
+  def self.make_msg_str(str)
+    if str.include?("dialogue:")
+      return EH::Trans.dialogue(str.gsub("dialogue:", "").to_sym)
+    else
+      return str
+    end
+  end
+  
   def self.particles(ary, npc)
     ary.shift
     name = "particles-#{rand(100)}-#{ary[1]}"
@@ -20,11 +28,11 @@ module EH::Game::NPC
     npc.properties.store("#{name}-y", pos[1])
     npc.properties.store("#{name}-effect", ary[1])
     if ary.include?("follow")
-      prc = proc { |npc|
-        npc.behaviour.update.push(
-          Task.new(proc { |npc|
-              npc.properties["#{name}-emitter"].x = npc.x+16
-              npc.properties["#{name}-emitter"].y = npc.y+16
+      prc = proc { |np|
+        np.behaviour.update.push(
+          Task.new(proc { |n|
+              n.properties["#{name}-emitter"].x = n.x+16
+              n.properties["#{name}-emitter"].y = n.y+16
             }, false, false)
         )
       }
@@ -32,10 +40,10 @@ module EH::Game::NPC
       prc = proc {}
     end
     task = Task.new(
-      proc { |npc, other|
+      proc { |np, other|
         EH.window.state.map.misc.push(MapParticle.new(npc.properties["#{name}-x"], npc.properties["#{name}-y"], npc.properties["#{name}-effect"]))
-        npc.properties.store("#{name}-emitter", EH.window.state.map.misc.last)
-        prc.call(npc)
+        np.properties.store("#{name}-emitter", EH.window.state.map.misc.last)
+        prc.call(np)
       },
       false, true)
     return task
@@ -46,8 +54,8 @@ module EH::Game::NPC
     ret = ary.include?("retry")
     remove = ary.include?("remove")
     task = MotionTask.new(
-      proc { |npc, other|
-        npc.find_path_to(ary[0].to_pos[0], ary[0].to_pos[1])
+      proc { |np, other|
+        np.find_path_to(ary[0].to_pos[0], ary[0].to_pos[1])
       },
       true, remove)
     return task
@@ -55,9 +63,10 @@ module EH::Game::NPC
   
   def self.msg(ary, npc)
     ary.shift
+    msg = self.make_msg_str(ary.first)
     wait = ary.include?("wait")
     remove = ary.include?("remove")
-    task = Task.new(proc { |npc, other| puts("msg proc #{npc} <-- #{other}") }, wait, remove)
+    task = Task.new(proc { |np, other| EH.window.state.map.message(msg) }, wait, remove)
     return task
   end
   

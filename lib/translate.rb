@@ -2,6 +2,7 @@
 
 module EH
   module Trans
+    # TODO auto-setup hashes, this is crap
     @@items = {
       "de" => {},
       "en" => {},
@@ -11,6 +12,10 @@ module EH
       "en" => {},
     }
     @@spells = {
+      "de" => {},
+      "en" => {},
+    }
+    @@dialogues = {
       "de" => {},
       "en" => {},
     }
@@ -181,6 +186,48 @@ module EH
       end
     end
     
+    def self.parse_dialogues
+      Dir.new("def/#{EH.config[:language]}/dialogues/").each { |f|
+        begin
+          file = File.new("def/#{EH.config[:language]}/dialogues/#{f}")
+          if File.directory?(file)
+            next
+          end
+          block = false
+          msg = ""
+          sym = nil
+          file.each_line { |line|
+            line.gsub!("\n", "")
+            if line.start_with?("#") or line.length == 0
+              if line == "#EOF"
+                break
+              end
+              next
+            end
+            line.lstrip!
+            if block
+              if line.include?("}")
+                block = false
+                @@dialogues[EH.config[:language]].store(sym, msg)
+                msg = ""
+                sym = nil
+                next
+              end
+              msg += "#{line}\n"
+            else
+              if line.include?("{")
+                block = true
+                sym = line.gsub(/\s?\{/, "").to_sym
+              end
+            end
+          }
+          file.close
+        rescue Errno::ENOENT
+        end
+      }
+      awesome_print(@@dialogues)
+    end
+    
     def self.handle_failed(type)
       puts("FATAL: No #{type} translations for selected language (#{EH.config[:language]}) found!")
       if EH.config[:language] != "de"
@@ -204,6 +251,9 @@ module EH
     end
     def self.menu(sym)
       return @@menu[EH.config[:language]][sym]
+    end
+    def self.dialogue(sym)
+      return @@dialogues[EH.config[:language]][sym]
     end
   end
 end
