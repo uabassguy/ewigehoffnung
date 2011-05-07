@@ -32,11 +32,9 @@ module EH::Parse
     cost = 0
         
     file.each_line { |line|
-      line.gsub!("\n", "")
-      if line.start_with?("#") or line.length == 0
-        if line == "#EOF"
-          break
-        end
+      line.sub!("\n", "")
+      if line[0] == "#" or line.length == 0
+        break if line.index("#EOF")
         next
       end
       if line[0] == "{"
@@ -169,11 +167,9 @@ module EH::Parse
     gender = :male
         
     file.each_line { |line|
-      line.gsub!("\n", "")
-      if line.start_with?("#") or line.length == 0
-        if line == "#EOF"
-          break
-        end
+      line.sub!("\n", "")
+      if line[0] == "#" or line.length == 0
+        break if line.index("#EOF")
         next
       end
       if line[0] == "{"
@@ -223,11 +219,9 @@ module EH::Parse
     block = false
     name = desc = icon = ""
     file.each_line { |line|
-      line.gsub!("\n", "")
-      if line.start_with?("#") or line.length == 0
-        if line == "#EOF"
-          break
-        end
+      line.sub!("\n", "")
+      if line[0] == "#" or line.length == 0
+        break if line.index("#EOF")
         next
       end
       if line[0] == "{"
@@ -268,11 +262,9 @@ module EH::Parse
     weight = 0.0
     effects = []
     file.each_line { |line|
-      line.gsub!("\n", "")
-      if line.start_with?("#") or line.length == 0
-        if line == "#EOF"
-          break
-        end
+      line.sub!("\n", "")
+      if line[0] == "#" or line.length == 0
+        break if line.index("#EOF")
         next
       end
       if line[0] == "{"
@@ -327,11 +319,9 @@ module EH::Parse
     angle = false
     
     file.each_line { |line|
-      line.gsub!("\n", "")
-      if line.start_with?("#") or line.length == 0
-        if line == "#EOF"
-          break
-        end
+      line.sub!("\n", "")
+      if line[0] == "#" or line.length == 0
+        break if line.index("#EOF")
         next
       end
       if line[0] == "{"
@@ -438,8 +428,8 @@ module EH::Parse
       init = trigger = motion = update = []
       
       file.each_line { |line|
-        line.gsub!("\n", "")
-        if line.start_with?("#") or line.length == 0
+        line.sub!("\n", "")
+        if line[0] == "#" or line.length == 0
           if line == "#EOF"
             break
           end

@@ -2,13 +2,11 @@
 # General system interface and common convenience functions
 
 if (Gem::Version.new(RUBY_VERSION) <=> Gem::Version.new("1.9.0")) <= 0
-  puts("WARNING: Ruby version (#{RUBY_VERSION}) is too old. Game may crash at any time.")
+  warn("WARNING: Ruby version (#{RUBY_VERSION}) is too old. Game may crash at any time.")
 end
 
 require "awesome_print"
 require "gosu"
-
-$:.push(".")
 
 # Set up constants before loading any other files
 module EH
