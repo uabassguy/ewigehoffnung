@@ -12,7 +12,7 @@ module EH::Game::NPC
     end
   
     def execute(npc, other=nil)
-      @action.call(npc, other) if !@finished
+      #@action.call(npc, other) if !@finished
       if !@wait
         @finished = true
       end

@@ -225,7 +225,6 @@ module EH
         rescue Errno::ENOENT
         end
       }
-      awesome_print(@@dialogues)
     end
     
     def self.handle_failed(type)

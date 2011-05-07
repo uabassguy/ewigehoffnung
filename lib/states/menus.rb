@@ -13,7 +13,7 @@ module EH::States
     include EH
     def initialize(window)
       super(window)
-      @background = EH::Sprite.new(window, "menu/start_background")
+      @background = EH.sprite("menu/start_background") # FIXME use window background
       @w = EH::GUI::Window.new(self, 0, 0, 1024, 768, Trans.menu(:titlescreen_title), false)
       @w.add(:newgame, EH::GUI::Button.new(160, 544, 256, 64, Trans.menu(:newgame), lambda { EH.window.advance(GameState.new(EH.window)); @song.stop }, false))
       @w.add(:loadgame, EH::GUI::Button.new(608, 544, 256, 64, Trans.menu(:loadgame), lambda { EH.window.advance(LoadMenu.new(EH.window)) }, false))
@@ -42,7 +42,7 @@ module EH::States
     include EH
     def initialize(window)
       super(window)
-      @background = EH::Sprite.new(window, "menu/ingame_background")
+      @background = EH.sprite("menu/ingame_background")
       @restart = false
       @w = EH::GUI::Window.new(self, 0, 0, 1024, 768, Trans.menu(:options))
       @w.add(:details, Window.new(self, 288, 56, 704, 128, Trans.menu(:options_details), false, "gui/options_details"))
@@ -92,7 +92,7 @@ module EH::States
     include EH
     def initialize(window, party)
       super(window)
-      @background = EH::Sprite.new(window, "menu/ingame_background")
+      @background = EH.sprite("menu/ingame_background")
       @w = EH::GUI::Window.new(self, 0, 0, 1024, 768, Trans.menu(:menu))
       @w.add(:items, Button.new(32, 32, 224, 32, Trans.menu(:items), lambda {}))
       @w.add(:equip, Button.new(32, 96, 224, 32, Trans.menu(:equipment), lambda { @window.advance(EquipMenu.new(@window, self, party)) }))
@@ -123,7 +123,7 @@ module EH::States
       super(window)
       @previous = previous
       @party = party
-      @background = EH::Sprite.new(window, "menu/ingame_background")
+      @background = EH.sprite("menu/ingame_background")
       @w = EH::GUI::Window.new(self, 0, 0, 1024, 768, Trans.menu(:equipment))
       @w.add(:charselect, CharSelector.new(32, 32, party))
       @w.add(:inventory, Inventory.new(32, 96, 256, 360, @party.members[@w.get(:charselect).index], [:pants, :melee, :armor, :cloth, :ranged, :boots, :ammo]))
@@ -196,7 +196,7 @@ module EH::States
       super(window)
       @previous = previous
       @party = party
-      @background = EH::Sprite.new(window, "menu/ingame_background")
+      @background = EH.sprite("menu/ingame_background")
       @w = EH::GUI::Window.new(self, 0, 0, 1024, 768, Trans.menu(:magic))
       @w.add(:charselect, CharSelector.new(32, 32, party))
     end

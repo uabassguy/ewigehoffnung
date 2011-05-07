@@ -6,9 +6,9 @@ module EH::GUI
     def initialize(x, y, w, h, text, proc, bg=true, align=:center)
       super(x, y, w, h)
       if bg
-        @bg = EH::Sprite.new(EH.window, "gui/button_background")
+        @bg = EH.sprite("gui/button_background")
       end
-      @hi = EH::Sprite.new(EH.window, "gui/button_highlight")
+      @hi = EH.sprite("gui/button_highlight")
       @font = EH.font(EH::DEFAULT_FONT, h)
       @text = text
       @proc = proc
@@ -53,10 +53,10 @@ module EH::GUI
         if !@enabled
           color.saturation = 125
         end
-        @bg.img.draw(@x + @xoff, @y + @yoff, EH::GUI_Z + 9, @w/@bg.width.to_f, @h/@bg.height.to_f, color)
+        @bg.draw(@x + @xoff, @y + @yoff, EH::GUI_Z + 9, @w/@bg.width.to_f, @h/@bg.height.to_f, color)
       end
       if @selected and @enabled
-        @hi.img.draw(@x + @xoff, @y + @yoff, EH::GUI_Z + 11, @w/@hi.width.to_f, @h/@hi.height.to_f)
+        @hi.draw(@x + @xoff, @y + @yoff, EH::GUI_Z + 11, @w/@hi.width.to_f, @h/@hi.height.to_f)
       end
     end
   end
@@ -65,7 +65,7 @@ module EH::GUI
     attr_reader :bg
     attr_accessor :proc
     def initialize(x, y, file, proc, w=-1, h=-1)
-      @bg = EH::Sprite.new(EH.window, file.to_s)
+      @bg = EH.sprite(file.to_s)
       @sound = EH::Sample.new(EH.window, "click1")
       if w < 0
         @w = w = @bg.width
@@ -91,9 +91,9 @@ module EH::GUI
       if !@enabled
         color.saturation = 125
       end
-      @bg.img.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + 10, @w/@bg.width.to_f, @h/@bg.height.to_f, color)
+      @bg.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + 10, @w/@bg.width.to_f, @h/@bg.height.to_f, color)
       if @selected and @enabled
-        @hi.img.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + 11, @w/@hi.width.to_f, @h/@hi.height.to_f)
+        @hi.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + 11, @w/@hi.width.to_f, @h/@hi.height.to_f)
       end
     end
   end

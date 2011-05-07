@@ -10,7 +10,7 @@ module EH::GUI
       @index = 0
       @changed = false
       @party = party
-      @background = EH::Sprite.new(EH.window, "gui/charselect_background")
+      @background = EH.sprite("gui/charselect_background")
       @font = EH.font(EH::DEFAULT_FONT, 24)
       @left = Button.new(x, y, 32, 32, "<", lambda {left}, false)
       @right = Button.new(x+w-32, y, 32, 32, ">", lambda {right}, false)
@@ -42,7 +42,7 @@ module EH::GUI
       end
     end
     def draw
-      @background.img.draw(@x, @y, EH::GUI_Z + 9, @w/@background.width, @h/@background.height)
+      @background.draw(@x, @y, EH::GUI_Z + 9, @w/@background.width, @h/@background.height)
       @font.draw(@party.members[@index].name, @x+(@w/2)-(@font.text_width(@party.members[@index].name)/2), @y+(@h/6), EH::GUI_Z + 10, 1, 1, Gosu::Color::BLACK)
       @left.draw
       @right.draw

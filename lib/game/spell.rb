@@ -23,7 +23,7 @@ module EH::Game
     attr_reader :name, :icon, :type, :cost
     def initialize(sym, icon, type, cost)
       @name, @type, @cost = sym, type, cost
-      @icon = EH::Sprite.new(EH.window, "icons/spells/#{icon}")
+      @icon = EH.sprite("icons/spells/#{icon}")
     end
     
     def cast(caster, target=nil)

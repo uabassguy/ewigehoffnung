@@ -13,11 +13,12 @@ module EH::Game::NPC
   end
   
   def self.make_msg_str(str)
-    if str.include?("dialogue:")
-      return EH::Trans.dialogue(str.gsub("dialogue:", "").to_sym)
-    else
-      return str
-    end
+    ["dialogue:", "dlg:", "msg:", ":"].each { |prefix|
+      if str.include?(prefix)
+        return EH::Trans.dialogue(str.gsub(prefix, "").to_sym)
+      end
+    }
+    return str
   end
   
   def self.particles(ary, npc)
@@ -28,23 +29,19 @@ module EH::Game::NPC
     npc.properties.store("#{name}-y", pos[1])
     npc.properties.store("#{name}-effect", ary[1])
     if ary.include?("follow")
-      prc = proc { |np|
+      prc = lambda { |np|
         np.behaviour.update.push(
-          Task.new(proc { |n|
+          Task.new(lambda { |n|
               n.properties["#{name}-emitter"].x = n.x+16
               n.properties["#{name}-emitter"].y = n.y+16
             }, false, false)
         )
       }
     else
-      prc = proc {}
+      prc = lambda {}
     end
     task = Task.new(
-      proc { |np, other|
-        EH.window.state.map.misc.push(MapParticle.new(npc.properties["#{name}-x"], npc.properties["#{name}-y"], npc.properties["#{name}-effect"]))
-        np.properties.store("#{name}-emitter", EH.window.state.map.misc.last)
-        prc.call(np)
-      },
+      [],
       false, true)
     return task
   end
@@ -54,7 +51,7 @@ module EH::Game::NPC
     ret = ary.include?("retry")
     remove = ary.include?("remove")
     task = MotionTask.new(
-      proc { |np, other|
+      lambda { |np, other|
         np.find_path_to(ary[0].to_pos[0], ary[0].to_pos[1])
       },
       true, remove)
@@ -66,7 +63,7 @@ module EH::Game::NPC
     msg = self.make_msg_str(ary.first)
     wait = ary.include?("wait")
     remove = ary.include?("remove")
-    task = Task.new(proc { |np, other| EH.window.state.map.message(msg) }, wait, remove)
+    task = Task.new(lambda { |np, other| EH.window.state.map.message(msg) }, wait, remove)
     return task
   end
   

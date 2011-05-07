@@ -37,7 +37,7 @@ module EH
   class Particle
     attr_accessor :wind, :gravity
     def initialize(x, y, file, lifetime, fade_in, fade_out, sx, sy, angle, color, mode)
-      @img = EH::Sprite.new(EH.window, "particles/#{file}")
+      @img = EH.sprite("particles/#{file}")
       @dead = false
       @age = 0
       @wind = @gravity = 0
@@ -77,7 +77,7 @@ module EH
         a = 0
       end
       color.alpha = a.to_i;
-      @img.img.draw_rot(@x, @y, EH::PARTICLE_Z, @angle, 0.5, 0.5, 1, 1, color, @mode)
+      @img.draw_rot(@x, @y, EH::PARTICLE_Z, @angle, 0.5, 0.5, 1, 1, color, @mode)
     end
   end
   

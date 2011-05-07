@@ -8,32 +8,36 @@ module EH
     attr_accessor :color
     @@cache = {}
     def initialize(window, file, tile=false)
-      @file = file
-      @color = Gosu::Color.new(255, 255, 255, 255)
-      if @@cache[file]
-        @img = @@cache[file]
-        return
-      end
-      begin
-        @img = Gosu::Image.new(window, "graphics/#{file.to_s}.png", tile)
-        @@cache.store(file, @img)
-      rescue RuntimeError
-        puts("ERROR: Failed to open graphic #{file}")
-        file = "missing"
-        retry # this is failsafe because the file is checked on startup
-      end
+      warn("WARNING: class Sprite is deprecated (#{file})")
+      return EH.sprite(file, tile)
+    end
+    def draw(a=nil, b=nil, c=nil, d=nil, e=nil)
     end
     def img
-      return @img
-    end
-    def draw(x, y, z)
-      @img.draw(x, y, z)
+      return EH.sprite("missing", false)
     end
     def width
-      return @img.width
+      return 1
     end
     def height
-      return @img.height
+      return 1
     end
   end
+  
+  @@cache = {}
+  def self.sprite(file, tile=false)
+    if @@cache[file]
+      return @@cache[file]
+    end
+    begin
+      img = Gosu::Image.new(window, "graphics/#{file}.png", tile)
+      @@cache.store(file, img)
+      return img
+    rescue RuntimeError
+      warn("ERROR: Failed to open graphic #{file}")
+      file = "missing"
+      retry
+    end
+  end
+  
 end

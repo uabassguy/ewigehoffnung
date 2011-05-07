@@ -1,6 +1,8 @@
 
 npc_1 {
-    init = []
+    init = [
+        <particles @x|@y smoke follow>
+    ]
     trigger = []
     update = []
     motion = [
@@ -12,7 +14,7 @@ npc_1 {
 npc_2 {
     init = []
     trigger = [
-        <msg dialogue:test_npc2_greeting wait>
+        <msg :test_npc2_greeting wait>
     ]
     update = []
     motion = []

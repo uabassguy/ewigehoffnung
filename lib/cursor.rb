@@ -3,7 +3,7 @@ module EH
   
   class Cursor
     def initialize
-      @cursor = EH::Sprite.new(EH.window, "cursors/normal")
+      @cursor = EH.sprite("cursors/normal")
       clear
       @x = 512
       @y = 384

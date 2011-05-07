@@ -8,10 +8,9 @@ module EH::Game
   class MapNPC < MapObject
     attr_accessor :behaviour
     attr_reader :goal
-    def initialize(x, y, props, proc=proc {})
+    def initialize(x, y, props)
       super(x, y, props)
       @x, @y = x, y
-      @trigger = proc
       @behaviour = nil
       @goal = CompositeGoal.new(:retry)
       @speed = 2

@@ -10,8 +10,9 @@ module EH::GUI
     def initialize(state, x, y, w, h, titlestr, close=true, bg=nil, move=false, z=-1)
       @state = state
       @xoff = @yoff = 0
-      if bg != nil
-        @bg = EH::Sprite.new(EH.window, bg)
+      if bg
+        @bg = EH.sprite(bg)
+        #@bg = EH.sprite(bg)
       else
         @bg = nil
       end
@@ -21,9 +22,9 @@ module EH::GUI
       end
       @elements = {}
       @bar = [
-        EH::Sprite.new(state.window, "gui/bar_left", true),
-        EH::Sprite.new(state.window, "gui/bar_center", true),
-        EH::Sprite.new(state.window, "gui/bar_right", true)
+        EH.sprite("gui/bar_left", true),
+        EH.sprite("gui/bar_center", true),
+        EH.sprite("gui/bar_right", true)
       ]
       @titlefont = EH.font("arial", 24)
       @title = titlestr
@@ -34,6 +35,7 @@ module EH::GUI
         @close = nil
       end
       @move = move
+      @changed = false
     end
     def empty
       @elements = {}
@@ -69,14 +71,14 @@ module EH::GUI
       @close.update(self) if @close
     end
     def draw
-      @bg.img.draw(@x, @y+24, @z, @w/@bg.width.to_f, @h/@bg.height.to_f) if @bg
+      @bg.draw(@x, @y+24, @z, @w/@bg.width.to_f, @h/@bg.height.to_f) if @bg
       @elements.each_value { |el|
         el.xoff = @x
         el.yoff = @y + 24 # titlebar
         el.draw
       }
       @bar[0].draw(@x, @y, @z)
-      @bar[1].img.draw(@x+16, @y, @z, (@w-32)/@bar[1].width)
+      @bar[1].draw(@x+16, @y, @z, (@w-32)/@bar[1].width)
       @bar[2].draw(@x+@w-16, @y, @z)
       @titlefont.draw(@title, @x+(@w/2)-(@titlefont.text_width(@title)/2), @y+1, @z+1, 1, 1, Gosu::Color::BLACK)
       @close.draw if @close
@@ -106,12 +108,13 @@ module EH::GUI
     # ch = content element height
     def initialize(x, y, w, h, ch)
       super(x, y, w, h)
-      @bg = EH::Sprite.new(EH.window, "gui/container_background")
+      @bg = EH.sprite("gui/container_background")
       @scrollbar = Scrollbar.new(x+w-24, y, 24, h)
       @ch = ch
       @content_offset = 0
       @items = []
       @item = nil
+      @changed = false
     end
     def add(element)
       element.x = @x
@@ -134,7 +137,7 @@ module EH::GUI
     end
     def draw
       @scrollbar.draw
-      @bg.img.draw(@x+@xoff, @y+@yoff, EH::GUI_Z, (@w-24)/@bg.width.to_f, @h/@bg.height.to_f)
+      @bg.draw(@x+@xoff, @y+@yoff, EH::GUI_Z, (@w-24)/@bg.width.to_f, @h/@bg.height.to_f)
       @items.each { |item|
         if item.y + item.yoff < @y
           next
@@ -168,8 +171,8 @@ module EH::GUI
     attr_reader :h
     def initialize(x, y, w, h)
       super
-      @bg = EH::Sprite.new(EH.window, "gui/scrollbar_background")
-      @scroller = EH::Sprite.new(EH.window, "gui/scroller")
+      @bg = EH.sprite("gui/scrollbar_background")
+      @scroller = EH.sprite("gui/scroller")
       @held = false
       @sy = @y
       @sh = 48
@@ -197,8 +200,8 @@ module EH::GUI
       end
     end
     def draw
-      @bg.img.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + 14, @w/@bg.width, @h/@bg.height.to_f)
-      @scroller.img.draw(@x+@xoff, @sy+@yoff, EH::GUI_Z + 15, 1, @sh/@scroller.height.to_f)
+      @bg.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + 14, @w/@bg.width, @h/@bg.height.to_f)
+      @scroller.draw(@x+@xoff, @sy+@yoff, EH::GUI_Z + 15, 1, @sh/@scroller.height.to_f)
     end
   end
   
