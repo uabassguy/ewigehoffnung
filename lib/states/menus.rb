@@ -180,11 +180,13 @@ module EH::States
       @w.draw
       draw_cursor
     end
-    # TODO ask for amount, right now it drops everything
+    # TODO ask for amount, right now it drops only one
     def drop_item
       @party.members[@w.get(:charselect).index].inventory.remove(@w.get(:inventory).selected)
       @w.get(:inventory).assemble_items
       @w.get(:iteminfo).item = nil
+      @cursor.clear
+      @w.get(:equip).reset_slots
       @w.get(:itemdrop).disable
     end
   end

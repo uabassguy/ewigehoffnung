@@ -8,10 +8,11 @@ end
 require "awesome_print"
 require "gosu"
 
-# Set up constants before loading any other files
+# Main entrance point of the engine
 module EH
-  # System
+  # Source locations
   LIBRARY_PATH = File.dirname(__FILE__)
+  # For storing saves and updates in case the source folder is write protected
   HOME_PATH = "#{ENV["HOME"]}/.ewigehoffnung/"
   if !File.directory?(HOME_PATH)
     Dir.mkdir("#{ENV["HOME"]}/.ewigehoffnung")
@@ -20,6 +21,7 @@ module EH
     Dir.mkdir("#{HOME_PATH}saves")
   end
   VERSION = 0.1
+  #--
   # Game
   MAP_Z = 1
   MAPOBJECT_Z = 50 
@@ -33,9 +35,11 @@ module EH
   DEFAULT_CONFIG = "default.cfg"
   
   @window = nil
+  # Returns the global Gosu::Window instance
   def self.window
     return @window
   end
+  # Globally sets the Gosu::Window instance
   def self.window=(w)
     @window = w
   end
@@ -57,6 +61,7 @@ module EH
   
   @@fonts = {}
   
+  # Returns a cached font instance
   def self.font(name, size)
     if @@fonts["#{name}-#{size}".to_sym]
       return @@fonts["#{name}-#{size}".to_sym]
@@ -73,6 +78,7 @@ module EH
     return @config.hash
   end
   
+  # Graceful exit
   def self.exit(int)
     @config.save
     puts("INFO: Shutting down")
@@ -81,6 +87,7 @@ module EH
   
 end
 
+# Few helper functions
 class Numeric
   def even?
     if self % 2 == 0

@@ -1,4 +1,5 @@
 
+#--
 # Main state logic - obviously
 
 module EH
@@ -26,16 +27,25 @@ module EH
         @font.draw("Mouse: #{mouse_x.to_i}|#{mouse_y.to_i}", 32, 32, 999999)
       end
     end
+    # Advance to the next state
+    # 
+    # Requires an EH::States::State instance
     def advance(state)
       @state.finish
       @state = state
     end
+    # Save current state so we can go back to it later
+    #
+    # The GameState is saved when switching to a MenuState
     def save
       @saved = @state
     end
     def load
       @state = @saved
     end
+    # Checks if a specific key is pressed
+    # 
+    # Only returns true again if the key was held loose
     def pressed?(key)
       p = button_down?(key)
       if p

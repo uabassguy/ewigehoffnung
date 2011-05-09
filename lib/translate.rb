@@ -40,6 +40,8 @@ module EH
         :lang_english => "Englisch",
         :lang_german => "Deutsch",
         :restart_warning => "Das Spiel muss neugestartet werden, um alle Einstellungen zu übernehmen.",
+        :walk_here => "Hingehen",
+        :ground => "Boden",
       },
       "en" => {
         :menu => "Menu",
@@ -60,6 +62,8 @@ module EH
         :lang_english => "English",
         :lang_german => "German",
         :restart_warning => "The game must be restarted to apply all settings.",
+        :walk_here => "Walk here",
+        :ground => "Ground",
       },
     }
     

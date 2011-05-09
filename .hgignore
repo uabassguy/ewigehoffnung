@@ -5,6 +5,7 @@ test/*
 commit
 *.sh
 .redcar/*
+doc
 
 syntax: regexp
 .*\#.*\#$

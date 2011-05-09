@@ -1,6 +1,8 @@
 
 module EH::GUI
   # TODO try to autogenerate backgrounds/highlights for new sizes
+  # Button to be used in menus.
+  # Executes the given lambda when clicked
   class Button < Element
     attr_accessor :background
     def initialize(x, y, w, h, text, proc, bg=true, align=:center)
@@ -28,9 +30,9 @@ module EH::GUI
     def enable
       @enabled = true
     end
-    def update(window)
-      @selected = EH.inside?(window.state.x, window.state.y, @x+@xoff, @y+@yoff, @x+@w+@xoff, @y+@h+@yoff)
-      if @selected && window.state.window.pressed?(Gosu::MsLeft)
+    def update
+      @selected = EH.inside?(EH.window.state.x, EH.window.state.y, @x+@xoff, @y+@yoff, @x+@w+@xoff, @y+@h+@yoff)
+      if @selected && EH.window.pressed?(Gosu::MsLeft)
         if @enabled
           @sound.play(0.25)
           @proc.call
@@ -61,6 +63,7 @@ module EH::GUI
     end
   end
   
+  # Same as Button, but draws an image instead of text
   class ImageButton < Button
     attr_reader :bg
     attr_accessor :proc
@@ -75,9 +78,9 @@ module EH::GUI
       end
       super(x, y, w, h, "", proc, false)
     end
-    def update(window)
-      @selected = EH.inside?(window.state.x, window.state.y, @x+@xoff, @y+@yoff, @x+@w+@xoff, @y+@h+@yoff)
-      if @selected && window.state.window.pressed?(Gosu::MsLeft)
+    def update
+      @selected = EH.inside?(EH.window.state.x, EH.window.state.y, @x+@xoff, @y+@yoff, @x+@w+@xoff, @y+@h+@yoff)
+      if @selected && EH.window.pressed?(Gosu::MsLeft)
         if @enabled
           @sound.play(0.25)
           @proc.call

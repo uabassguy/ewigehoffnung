@@ -39,7 +39,7 @@ module EH::GUI
       @inv = inv
       assemble_items
     end
-    def update(window)
+    def update
       super
     end
   end

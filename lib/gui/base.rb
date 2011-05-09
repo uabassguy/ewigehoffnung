@@ -61,14 +61,14 @@ module EH::GUI
     def add(name, el)
       @elements.store(name, el)
     end
-    def update(state=nil)
+    def update
       @elements.each_value { |el|
-        el.update(self)
+        el.update
         if el.remove?
           @elements.delete(@elements.key(el))
         end
       }
-      @close.update(self) if @close
+      @close.update if @close
     end
     def draw
       @bg.draw(@x, @y+24, @z, @w/@bg.width.to_f, @h/@bg.height.to_f) if @bg
@@ -94,7 +94,7 @@ module EH::GUI
       @xoff = @yoff = 0
       @x, @y, @w, @h = x, y, w, h
     end
-    def update(window)
+    def update
     end
     def draw
     end
@@ -121,8 +121,8 @@ module EH::GUI
       element.y = @y + ((@items.size+1)*@ch)
       @items.push(element)
     end
-    def update(window)
-      @scrollbar.update(window)
+    def update
+      @scrollbar.update
       @scrollbar.xoff, @scrollbar.yoff = @xoff, @yoff
       @content_offset = @scrollbar.offset * -@ch
       @items.each { |item|
@@ -132,7 +132,7 @@ module EH::GUI
         elsif item.y + item.yoff + item.h > @y+@h
           next
         end
-        item.update(window)
+        item.update
       }
     end
     def draw
@@ -180,7 +180,7 @@ module EH::GUI
     def offset
       return ((@sy-@y)/((@y)-(@y+@h-@sh)+1))*-100
     end
-    def update(window)
+    def update
       x = EH.window.mouse_x
       y = EH.window.mouse_y
       if EH.inside?(x, y, @x, @sy, @x+@w, @sy+@sh) and EH.window.button_down?(MsLeft) and !@held
@@ -208,3 +208,4 @@ module EH::GUI
 end
 
 require "gui/button.rb"
+require "gui/context_menu.rb"

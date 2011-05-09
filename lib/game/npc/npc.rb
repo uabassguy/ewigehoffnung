@@ -5,9 +5,10 @@ require "game/npc/goal.rb"
 # TODO move goal logic to mapobject
 
 module EH::Game
+  # Interactive map object
   class MapNPC < MapObject
     attr_accessor :behaviour
-    attr_reader :goal
+    attr_reader :goal, :gamename
     def initialize(x, y, props)
       super(x, y, props)
       @x, @y = x, y
@@ -15,11 +16,13 @@ module EH::Game
       @goal = CompositeGoal.new(:retry)
       @speed = 2
       @name = "npc-#{props[:file].downcase}-#{rand(1000)}"
+      @gamename = props[:name] ? props[:name] : @name
     end
     def setup
       super
       @behaviour.on_init if @behaviour
     end
+    # Generates a path from the current position to the given screen coordinates by using A*
     def find_path_to(x, y)
       #puts("from #{@x/32}|#{@y/32} to #{x}|#{y}")
       curr = EH.window.state.map.current.astar(AStar::Node.new(@x/32, @y/32), AStar::Node.new(x, y))

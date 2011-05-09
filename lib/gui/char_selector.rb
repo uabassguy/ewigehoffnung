@@ -15,9 +15,9 @@ module EH::GUI
       @left = Button.new(x, y, 32, 32, "<", lambda {left}, false)
       @right = Button.new(x+w-32, y, 32, 32, ">", lambda {right}, false)
     end
-    def update(window)
-      @left.update(window)
-      @right.update(window)
+    def update
+      @left.update
+      @right.update
     end
     def left
       @index -= 1

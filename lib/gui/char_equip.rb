@@ -85,13 +85,13 @@ module EH::GUI
       setup_equipment
       @changed = true
     end
-    def update(window)
+    def update
       super
       @equipped.each_value { |el|
-        el.update(window)
+        el.update
       }
       @slots.each_value { |but|
-        but.update(window)
+        but.update
       }
     end
     def draw
