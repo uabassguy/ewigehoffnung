@@ -73,19 +73,21 @@ module EH::GUI
         @close.x, @close.y, @close.zoff = @x+@w-24, @y, @zoff
         @close.update
       end
-      m = [EH.window.mouse_x, EH.window.mouse_y]
-      if EH.inside?(m.x, m.y, @x, @y, @x+@w, @y+@h) or @dragging
-        if EH.window.button_down?(Gosu::MsLeft)
-          if !@dragging
-            @dragging = true
-            @dragx = m.x - @x
-            @dragy = m.y - @y
+      if @move
+        m = [EH.window.mouse_x, EH.window.mouse_y]
+        if EH.inside?(m.x, m.y, @x, @y, @x+@w, @y+24) or @dragging
+          if EH.window.button_down?(Gosu::MsLeft)
+            if !@dragging
+              @dragging = true
+              @dragx = m.x - @x
+              @dragy = m.y - @y
+            else
+              @x = m.x - @dragx
+              @y = m.y - @dragy
+            end
           else
-            @x = m.x - @dragx
-            @y = m.y - @dragy
+            @dragging = false
           end
-        else
-          @dragging = false
         end
       end
     end
