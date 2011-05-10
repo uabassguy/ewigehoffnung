@@ -1,6 +1,5 @@
 
 module EH::GUI
-  # TODO try to autogenerate backgrounds/highlights for new sizes
   # Button to be used in menus.
   # Executes the given lambda when clicked
   class Button < Element
@@ -10,7 +9,7 @@ module EH::GUI
       if bg
         @bg = EH.sprite("gui/button_background")
       end
-      @hi = EH.sprite("gui/button_highlight")
+      @hi = EH.sprite("gui/button_highlight", true)
       @font = EH.font(EH::DEFAULT_FONT, h)
       @text = text
       @proc = proc
@@ -46,7 +45,7 @@ module EH::GUI
       when :center
         @font.draw(@text, @x + @xoff + (@w/2) - (@font.text_width(@text)/2), @y + @yoff + (@h/9), EH::GUI_Z + 10 + @zoff, 1, 1, Gosu::Color::BLACK)
       when :left
-        @font.draw(@text, @x + @xoff + 8, @y + @yoff + (@h/9), EH::GUI_Z + 10 + @zoff, 1, 1, Gosu::Color::BLACK)
+        @font.draw(@text, @x + @xoff + 4, @y + @yoff + (@h/9), EH::GUI_Z + 10 + @zoff, 1, 1, Gosu::Color::BLACK)
       when :right
         @font.draw(@text, @x + @xoff + (@w-@font.text_width(@text)), @y + @yoff + (@h/9), EH::GUI_Z + 10 + @zoff, 1, 1, Gosu::Color::BLACK)
       end

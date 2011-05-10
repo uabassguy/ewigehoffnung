@@ -17,7 +17,7 @@ module EH::Game
       @maps = []
       @misc = []
       @tonepic = EH.sprite("pixel", true)
-      @message = nil
+      @message = nil # TODO replace with EH::GUI::Textfield
       @font = EH.font(EH::DEFAULT_FONT, 24)
       @msgimg = EH.sprite("gui/msg_background")
     end
@@ -133,7 +133,6 @@ module EH::Game
       @tonepic.draw(0, 0, 500000, 1024, 768, @tone) if @tone
       if @message
         @msgimg.draw(@mx, @my, EH::CURSOR_Z-10, @msgimg.width/@mw.to_f, @msgimg.height/@mh.to_f)
-        # TODO multiline rendering (array)
         @font.draw(@message, @mx+8, @my+8, EH::CURSOR_Z-9, 1, 1, 0xff000000)
       end
     end
