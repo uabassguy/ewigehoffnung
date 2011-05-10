@@ -6,13 +6,12 @@ module EH::GUI
   class Window # make hash?
     attr_reader :state
     # height includes titlebar
-    attr_accessor :xoff, :yoff # completely unused, just used for windows in windows
+    attr_accessor :xoff, :yoff, :zoff # completely unused, just used for windows in windows
     def initialize(state, x, y, w, h, titlestr, close=true, bg=nil, move=false, z=-1)
       @state = state
-      @xoff = @yoff = 0
+      @xoff = @yoff = @zoff = 0
       if bg
         @bg = EH.sprite(bg)
-        #@bg = EH.sprite(bg)
       else
         @bg = nil
       end
@@ -61,6 +60,7 @@ module EH::GUI
     def add(name, el)
       @elements.store(name, el)
     end
+    
     def update
       @elements.each_value { |el|
         el.update
@@ -68,8 +68,12 @@ module EH::GUI
           @elements.delete(@elements.key(el))
         end
       }
-      @close.update if @close
+      if @close
+        @close.xoff, @close.yoff, @close.zoff = @x, 0, @zoff
+        @close.update
+      end
     end
+    
     def draw
       @bg.draw(@x, @y+24, @z, @w/@bg.width.to_f, @h/@bg.height.to_f) if @bg
       @elements.each_value { |el|
@@ -86,12 +90,12 @@ module EH::GUI
   end
   
   class Element
-    attr_accessor :x, :y, :xoff, :yoff
+    attr_accessor :x, :y, :xoff, :yoff, :zoff
     attr_reader :w, :h
     # x and y are relative to the windows topleft corner plus title bar
     def initialize(x, y, w, h)
       @remove = false
-      @xoff = @yoff = 0
+      @xoff = @yoff = @zoff = 0
       @x, @y, @w, @h = x, y, w, h
     end
     def update

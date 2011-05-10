@@ -33,9 +33,12 @@ module EH::States
   
   require "game/map/map_loader.rb"
   require "game/party.rb"
+  require "game/osd/magic.rb"
   # Runs the map and basic game logic
   class GameState < State
-    attr_reader :map, :party
+    
+    attr_reader :map, :party, :osd
+    
     def initialize(window)
       super(window)
       EH.window.state = self
@@ -48,11 +51,12 @@ module EH::States
       EH::Trans.parse_dialogues
       @party = EH::Game::Party.new
       @map = EH::Game::MapLoader.new
-      @map.load("test")
-      # TODO move @objects to @map
+      @map.load("test") # TODO fetch from init.def
       @setup = false
       @context = nil
+      @osd = {}
     end
+    
     def update
       if @window.pressed?(Gosu::KbEscape)
         @window.save
@@ -75,15 +79,26 @@ module EH::States
       end
       @party.update
       @map.update
+      @osd.each_value { |w|
+        w.update
+        if w.remove?
+          @osd.delete(@osd.key(w))
+        end
+      }
       update_cursor
       @window.unpress
       @setup = true
     end
+    
     def draw
       @map.draw
+      @osd.each_value { |w|
+        w.draw
+      }
       @context.draw if @context
       draw_cursor
     end
+    
     # Looks for an objects on the current map at the given screen coordinates
     # 
     # Returns +nil+ if nothing was found
@@ -96,6 +111,14 @@ module EH::States
         end
       }
       return nil
+    end
+    
+    def player
+      @map.objects.each { |obj|
+        if obj.class == EH::Game::Player
+          return obj
+        end
+      }
     end
   end
 end

@@ -16,6 +16,8 @@ module EH::GUI
       @right = Button.new(x+w-32, y, 32, 32, ">", lambda {right}, false)
     end
     def update
+      @left.xoff = @right.xoff = @xoff
+      @left.yoff = @right.yoff = @yoff
       @left.update
       @right.update
     end
@@ -42,8 +44,8 @@ module EH::GUI
       end
     end
     def draw
-      @background.draw(@x, @y, EH::GUI_Z + 9, @w/@background.width, @h/@background.height)
-      @font.draw(@party.members[@index].name, @x+(@w/2)-(@font.text_width(@party.members[@index].name)/2), @y+(@h/6), EH::GUI_Z + 10, 1, 1, Gosu::Color::BLACK)
+      @background.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + 9, @w/@background.width, @h/@background.height)
+      @font.draw(@party.members[@index].name, @x+@xoff+(@w/2)-(@font.text_width(@party.members[@index].name)/2), @y+@yoff+(@h/6), EH::GUI_Z + 10, 1, 1, Gosu::Color::BLACK)
       @left.draw
       @right.draw
     end

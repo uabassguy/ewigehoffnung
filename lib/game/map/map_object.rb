@@ -43,7 +43,6 @@ module EH::Game
     end
     
     def update_move(map)
-      # FIXME movement totally borks when moving away from 0|0, 1|0 and 0|1
       moved = false
       if @dx > 0
         if @stepped or @through or map.passable?((@tx*32)+@dx, @ty*32)
@@ -164,3 +163,6 @@ module EH::Game
     
   end
 end
+
+require "game/npc/npc.rb"
+require "game/map/player.rb"

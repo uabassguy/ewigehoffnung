@@ -1,5 +1,4 @@
 
-require "game/map/map_object.rb"
 require "game/npc/goal.rb"
 
 # TODO move goal logic to mapobject
@@ -59,5 +58,10 @@ module EH::Game
         end
       end
     end
+    
+    def destroy_goal
+      @goal.reset
+    end
+    
   end
 end

@@ -142,6 +142,12 @@ class Array
   def to_color
     return Gosu::Color.new(self[0], self[1], self[2], self[3])
   end
+  def x
+    return self[0]
+  end
+  def y
+    return self[1]
+  end
 end
 
 if !File.exists?("graphics/missing.png")

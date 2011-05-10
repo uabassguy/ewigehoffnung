@@ -42,6 +42,8 @@ module EH
         :restart_warning => "Das Spiel muss neugestartet werden, um alle Einstellungen zu übernehmen.",
         :walk_here => "Hingehen",
         :ground => "Boden",
+        :you => "Du",
+        :talk_to => "Ansprechen",
       },
       "en" => {
         :menu => "Menu",
@@ -64,6 +66,8 @@ module EH
         :restart_warning => "The game must be restarted to apply all settings.",
         :walk_here => "Walk here",
         :ground => "Ground",
+        :you => "You",
+        :talk_to => "Talk to",
       },
     }
     
