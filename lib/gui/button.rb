@@ -57,7 +57,7 @@ module EH::GUI
         @bg.draw(@x + @xoff, @y + @yoff, EH::GUI_Z + 9 + @zoff, @w/@bg.width.to_f, @h/@bg.height.to_f, color)
       end
       if @selected and @enabled
-        @hi.draw(@x + @xoff, @y + @yoff, EH::GUI_Z + 11 + @zoff, @w/@hi.width.to_f, @h/@hi.height.to_f)
+        @hi.draw(@x + @xoff, @y + @yoff, EH::GUI_Z + 11 + @zoff, @w/@hi.width.to_f, @h/@hi.height.to_f, 0xff999999, :additive)
       end
     end
   end
@@ -84,7 +84,7 @@ module EH::GUI
       end
       @bg.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + 10 + @zoff, @w/@bg.width.to_f, @h/@bg.height.to_f, color)
       if @selected and @enabled
-        @hi.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + 11 + @zoff, @w/@hi.width.to_f, @h/@hi.height.to_f)
+        @hi.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + 11 + @zoff, @w/@hi.width.to_f, @h/@hi.height.to_f, 0xff999999, :additive)
       end
     end
   end

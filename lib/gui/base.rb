@@ -90,6 +90,18 @@ module EH::GUI
           end
         end
       end
+      if @dragging
+        if @x > 1024 - @w
+          @x = 1024 - @w
+        elsif @x < 0
+          @x = 0
+        end
+        if @y > 744
+          @y = 744
+        elsif @y < 0
+          @y = 0
+        end
+      end
     end
     
     def draw
