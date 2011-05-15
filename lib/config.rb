@@ -6,6 +6,7 @@ module EH
       @hash = {
         :language => "de",
         :volume => 0.5, # 0 = normal, 1 = twice as loud
+        :contrast => 1.0, # 1.0 = off
       }
     end
     def load(file=EH::DEFAULT_CONFIG)

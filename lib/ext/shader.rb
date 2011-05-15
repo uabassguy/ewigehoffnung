@@ -1,7 +1,4 @@
-begin
-  require 'rubygems'
-rescue
-end
+
 require 'gl'
 
 class Shader
@@ -46,10 +43,10 @@ class Shader
       glBindTexture(GL_TEXTURE_2D, @@canvas_texture_id)
       
       glBegin(GL_QUADS)
-        glTexCoord2f(0.0, 1.0); glVertex2f(0.0,           0.0)
-        glTexCoord2f(1.0, 1.0); glVertex2f(@window.width, 0.0)
-        glTexCoord2f(1.0, 0.0); glVertex2f(@window.width, @window.height)
-        glTexCoord2f(0.0, 0.0); glVertex2f(0.0,           @window.height)
+      glTexCoord2f(0.0, 1.0); glVertex2f(0.0,           0.0)
+      glTexCoord2f(1.0, 1.0); glVertex2f(@window.width, 0.0)
+      glTexCoord2f(1.0, 0.0); glVertex2f(@window.width, @window.height)
+      glTexCoord2f(0.0, 0.0); glVertex2f(0.0,           @window.height)
       glEnd
       
       # done, disable shader
@@ -92,13 +89,19 @@ class Shader
     
     # create vertex shader
     @vertex_shader_id = glCreateShader(GL_VERTEX_SHADER)
-    glShaderSource(@vertex_shader_id, "void main(void)\r\n{\r\ngl_Position = ftransform();\r\ngl_TexCoord[0] = gl_MultiTexCoord0;\r\n}\r\n")
+    puts("INFO: Compiling vertex shader (#{@shader_filename})")
+    if File.exist?(@shader_filename + ".vert")
+      glShaderSource(@vertex_shader_id, File.read(@shader_filename + ".vert"))
+    else
+      glShaderSource(@vertex_shader_id, "void main(void)\r\n{\r\ngl_Position = ftransform();\r\ngl_TexCoord[0] = gl_MultiTexCoord0;\r\n}\r\n")
+    end
     glCompileShader(@vertex_shader_id)
     glAttachShader(@program_id, @vertex_shader_id)
     
     # create fragment shader
     @fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER)
-    glShaderSource(@fragment_shader_id, File.read(@shader_filename))
+    puts("INFO: Compiling fragment shader (#{@shader_filename})")
+    glShaderSource(@fragment_shader_id, File.read(@shader_filename + ".frag"))
     glCompileShader(@fragment_shader_id)
     glAttachShader(@program_id, @fragment_shader_id)
     

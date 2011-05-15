@@ -2,6 +2,8 @@
 #--
 # Main state logic - obviously
 
+require "ext/shader.rb"
+
 module EH
   class GameWindow < Gosu::Window
     attr_accessor :state
@@ -14,6 +16,10 @@ module EH
       @unpress = []
       @font = EH.font(EH::DEFAULT_FONT, 20)
       @bg = EH.sprite("pixel", true)
+      if (EH.config[:contrast] != 1.0)
+        @contrast = Shader.new(self, "glsl/contrast")
+        @contrast["contrast"] = EH.config[:contrast]
+      end
     end
     def update
       @state.update
@@ -25,6 +31,9 @@ module EH
       if $DEBUG
         @bg.draw(16, 16, 999999, 160, 48, 0x99000000)
         @font.draw("Mouse: #{mouse_x.to_i}|#{mouse_y.to_i}", 32, 32, 999999)
+      end
+      if @contrast
+        @contrast.apply
       end
     end
     # Advance to the next state
