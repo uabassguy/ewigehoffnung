@@ -1,0 +1,8 @@
+
+{
+name = wolf
+strength = 40
+file = "wolf"
+type = animal
+weapons = [claw]
+}

@@ -1,0 +1,11 @@
+
+on_turn
+{
+attack weakest
+}
+
+on_defeat
+{
+vanish
+drop [wolf_corpse]
+}

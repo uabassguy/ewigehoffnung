@@ -23,6 +23,7 @@ module EH::States
       @cursor.update(@x, @y)
     end
     def draw
+      draw_cursor
     end
     def draw_cursor
       @cursor.draw
@@ -46,6 +47,7 @@ module EH::States
       EH::Game.items = EH::Parse.items
       EH::Game.skills = EH::Parse.skills
       EH::Game.spells = EH::Parse.spells
+      EH::Game.enemies = EH::Parse.enemies
       EH::Trans.parse_items
       EH::Trans.parse_skills
       EH::Trans.parse_dialogues
@@ -120,5 +122,27 @@ module EH::States
         end
       }
     end
+    
+    def battle(enemies, bg, ctrl)
+      EH.window.save
+      EH.window.advance(BattleState.new(@party, enemies, bg, ctrl))
+    end
+    
   end
+  
+  class BattleState
+    def initialize(party, enemies, bg, ctrl)
+      super(EH.window)
+      @battle = EH::Game::Combat::Battle.new(party, enemies, bg, ctrl)
+    end
+    def update
+      super
+      @battle.update
+    end
+    def draw
+      super
+      @battle.draw
+    end
+  end
+  
 end

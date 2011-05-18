@@ -12,7 +12,7 @@ require "game/npc/behaviour.rb"
 
 require "rexml/document"
 
-# TODO function to look for key in a line and return it
+# TODO function to look for key in a line and return it; then refactor
 
 module EH::Parse
   include REXML
@@ -22,7 +22,7 @@ module EH::Parse
     begin
       file = File.open("def/spells.def")
     rescue
-      puts("ERROR: Couldn't find spells.def")
+      warn("ERROR: Couldn't find spells.def")
       return ary
     end
     block = false
@@ -130,7 +130,7 @@ module EH::Parse
     if el.elements["data[1]"].attributes["encoding"] == "csv"
       tiles = self.xml_csv(el.elements["data[1]"])
     else
-      puts("ERROR: Unsupported layer encoding (must be csv)")
+      warn("ERROR: Unsupported layer encoding (must be csv)")
     end
     tiles = [] if !tiles
     return EH::Layer.new(el.attributes["width"].to_i, el.attributes["height"].to_i, props, tiles)
@@ -157,7 +157,7 @@ module EH::Parse
     begin
       file = File.open("def/characters.def")
     rescue
-      puts("ERROR: Couldn't find characters.def")
+      warn("ERROR: Couldn't find characters.def")
       return ary
     end
     block = false
@@ -213,7 +213,7 @@ module EH::Parse
     begin
       file = File.open("def/skills.def")
     rescue
-      puts("ERROR: Couldn't find skills.def")
+      warn("ERROR: Couldn't find skills.def")
       return ary
     end
     block = false
@@ -254,7 +254,7 @@ module EH::Parse
     begin
       file = File.open("def/items.def")
     rescue
-      puts("ERROR: Couldn't find items.def")
+      warn("ERROR: Couldn't find items.def")
       return ary
     end
     block = false
@@ -306,7 +306,7 @@ module EH::Parse
     begin
       file = File.open("def/particles.def")
     rescue
-      puts("ERROR: Couldn't find particles.def")
+      warn("ERROR: Couldn't find particles.def")
       return hash
     end
     block = false
@@ -500,6 +500,65 @@ module EH::Parse
     ret.each { |task|
       ary.push(EH::Game::NPC.send(task.first.to_sym, task, npc))
     }
+    return ary
+  end
+  
+  def self.enemy_behaviour(name)
+    return EH::Game::Combat::Behaviour.new
+  end
+  
+  def self.enemies
+    ary = []
+    begin
+      file = File.open("def/enemies.def")
+    rescue
+      warn("ERROR: Couldn't find enemies.def")
+      return ary
+    end
+    block = false
+    
+    name = graphic = ""
+    strength = 0
+    type = :animal
+    weapons = []
+        
+    file.each_line { |line|
+      line.sub!("\n", "")
+      if line[0] == "#" or line.length == 0
+        break if line.index("#EOF")
+        next
+      end
+      if line[0] == "{"
+        block = true
+      end
+      if line[0] == "}"
+        block = false
+        ary.push(EH::Game::Combat::Enemy.new(name, strength, graphic, type, weapons, enemy_behaviour(name)))
+        name = graphic = ""
+        strength = 0
+        type = :animal
+        weapons = []
+      end
+      if block
+        if line.start_with?("name")
+          line.gsub!(/name *= */, "")
+          name = line.gsub("\"", "")
+        elsif line.start_with?("file")
+          line.gsub!(/file *= */, "")
+          graphic = line.gsub("\"", "")
+        elsif line.start_with?("strength")
+          line.gsub!(/strength *= */, "")
+          strength = line.gsub("\"", "").to_i
+        elsif line.start_with?("type")
+          line.gsub!(/type *= */, "")
+          type = line.gsub("\"", "").to_sym
+        elsif line.start_with?("weapons")
+          line.gsub!(/weapons *= */, "")
+          weapons = parse_sym_array(line.gsub("\"", ""))
+        end
+      end
+    }
+    puts("INFO: Parsed #{ary.size} enemies")
     return ary
   end
   

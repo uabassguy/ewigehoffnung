@@ -15,7 +15,7 @@ type = item
 name = bow
 icon = "bow"
 weight = 3
-effects = []
+effects = [arrow]
 type = ranged
 }
 
@@ -23,7 +23,7 @@ type = ranged
 name = knife
 icon = "knife"
 weight = 1
-effects = []
+effects = [bleed]
 type = melee
 }
 
@@ -40,7 +40,7 @@ type = ammo
 name = leather_harness
 icon = "harness_leather"
 weight = 6
-effects = []
+effects = [bleed_cancel]
 type = armor
 }
 
@@ -64,7 +64,7 @@ type = pants
 name = leather_boots
 icon = "boots_leather"
 weight = 1
-effects = []
+effects = [bleed_cancel]
 type = boots
 }
 
@@ -92,6 +92,16 @@ icon = "sage"
 weight = 0.1
 effects = [heal]
 type = herb
+}
+
+#=========== Loot ============
+
+{
+name = wolf_corpse
+icon = "wolf_corpse"
+weight = 35
+effects = []
+type = loot
 }
 
 #EOF
