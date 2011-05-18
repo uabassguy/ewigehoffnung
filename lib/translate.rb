@@ -19,6 +19,14 @@ module EH
       "de" => {},
       "en" => {},
     }
+    @@enemies = {
+      "de" => {},
+      "en" => {},
+    }
+    @@weapons = {
+      "de" => {},
+      "en" => {},
+    }
     # menus are hardcoded anyway, so we dont parse anything
     @@menu = {
       "de" => {
@@ -235,6 +243,47 @@ module EH
       }
     end
     
+    def self.parse_enemies
+      begin
+        file = File.open("def/#{EH.config[:language]}/enemies.trans", "r")
+        block = false
+        name = desc = ""
+        enemy = nil
+        file.each_line { |line|
+          line.gsub!("\n", "")
+          if line.start_with?("#") or line.length == 0
+            if line == "#EOF"
+              break
+            end
+            next
+          end
+          if line[0] == "{"
+            block = true
+          end
+          if line[0] == "}"
+            block = false
+            @@enemies[EH.config[:language]].store(enemy.name, name)
+            @@enemies[EH.config[:language]].store("#{enemy.name}_desc", desc)
+            next
+          end
+          if block
+            if line.start_with?("name")
+              line.gsub!(/name *= */, "")
+              name = line.gsub("\"", "")
+            elsif line.start_with?("desc")
+              line.gsub!(/desc *= */, "")
+              desc = line.gsub("\"", "")
+            end
+          else
+            enemy = EH::Game.find_enemy(line.to_sym)
+          end
+        }
+        file.close
+      rescue Errno::ENOENT
+        self.handle_failed("skill")
+      end
+    end
+    
     def self.handle_failed(type)
       puts("FATAL: No #{type} translations for selected language (#{EH.config[:language]}) found!")
       if EH.config[:language] != "de"
@@ -261,6 +310,12 @@ module EH
     end
     def self.dialogue(sym)
       return @@dialogues[EH.config[:language]][sym]
+    end
+    def self.enemy(sym)
+      return @@enemies[EH.config[:language]][sym]
+    end
+    def self.weapon(sym)
+      return @@weapons[EH.config[:language]][sym]
     end
   end
 end

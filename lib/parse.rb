@@ -401,7 +401,7 @@ module EH::Parse
     str.gsub!("]", "")
     str.gsub!(" ", "")
     str.each_line(",") { |c|
-      ary.push(c.to_sym)
+      ary.push(c.sub(",", "").to_sym)
     }
     return ary
   end
@@ -412,7 +412,7 @@ module EH::Parse
     str.gsub!("]", "")
     str.gsub!(" ", "")
     str.each_line(",") { |c|
-      ary.push(c.to_i)
+      ary.push(c.sub(",", "").to_i)
     }
     return ary
   end
@@ -504,7 +504,8 @@ module EH::Parse
   end
   
   def self.enemy_behaviour(name)
-    return EH::Game::Combat::Behaviour.new
+    # TODO stub
+    return EH::Game::Combat::Behaviour.new([])
   end
   
   def self.enemies
@@ -533,7 +534,11 @@ module EH::Parse
       end
       if line[0] == "}"
         block = false
-        ary.push(EH::Game::Combat::Enemy.new(name, strength, graphic, type, weapons, enemy_behaviour(name)))
+        weaps = []
+        weapons.each { |w|
+          weaps.push(EH::Game.weapons[w])
+        }
+        ary.push(EH::Game::Combat::Enemy.new(name.to_sym, strength, graphic, type, weaps, enemy_behaviour(name)))
         name = graphic = ""
         strength = 0
         type = :animal
@@ -560,6 +565,56 @@ module EH::Parse
     }
     puts("INFO: Parsed #{ary.size} enemies")
     return ary
+  end
+  
+  def self.weapons
+    hash = {}
+    begin
+      file = File.open("def/weapons.def")
+    rescue
+      warn("ERROR: Couldn't find weapons.def")
+      return hash
+    end
+    block = false
+    
+    name = icon = ""
+    type = :melee
+    effects = []
+    
+    file.each_line { |line|
+      line.gsub!("\n", "")
+      if line[0] == "#" or line.length == 0
+        if line == "#EOF"
+          break
+        end
+        next
+      end
+      if line[0] == "{"
+        block = true
+      end
+      if line[0] == "}"
+        block = false
+        hash.store(name, EH::Game::Combat::Weapon.new(name, type, effects, icon))
+        next
+      end
+      if block
+        if line.start_with?("icon")
+          line.gsub!(/icon *= */, "")
+          icon = line.gsub("\"", "")
+        elsif line.start_with?("type")
+          line.gsub!(/type *= */, "")
+          type = line.gsub("\"", "").to_sym
+        elsif line.start_with?("effects")
+          line.gsub!(/effects *= */, "")
+          effects = parse_sym_array(line.gsub("\"", ""))
+        end
+      else
+        name = line.gsub("\"", "").to_sym
+      end
+    }
+    file.close
+    puts("INFO: Parsed #{hash.size} weapons")
+    return hash
   end
   
 end

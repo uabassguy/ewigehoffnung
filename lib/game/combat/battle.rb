@@ -9,13 +9,40 @@ module EH::Game
     @enemies = ary
   end
   
+  def self.find_enemy(name)
+    @enemies.each { |enemy|
+      if enemy.name == name
+        return enemy
+      end
+    }
+    return nil
+  end
+  
+  def self.weapons
+    return @weapons
+  end
+  
+  def self.weapons=(hash)
+    @weapons = hash
+  end
+  
+  def self.find_weapon(name)
+    @weapons.each { |w|
+      if w.name == name
+        return w
+      end
+    }
+  end
+  
   module Combat
     
+    # For enemies
     class Behaviour
-      def initialize
+      def initialize(ary)
       end
     end
     
+    # Used for scripted battles (dialogues and stuff)
     class Control
       def initialize(sym)
         @battle = nil
@@ -38,9 +65,18 @@ module EH::Game
       end
     end
     
+    class Weapon
+      attr_reader :name, :type, :effects, :icon
+      def initialize(name, type, effects, icon)
+        @name, @type, @effects, @icon = name, type, effects, EH.sprite("icons/#{icon}")
+      end
+    end
+    
     # Superclass for enemies and actors
     class BattleObject
-      def initialize
+      attr_reader :graphic
+      def initialize(graphic)
+        @graphic = EH.sprite("combat/#{graphic}")
       end
       def update
       end
@@ -49,10 +85,10 @@ module EH::Game
     end
     
     class Enemy < BattleObject
-      attr_reader :name, :behaviour
+      attr_reader :name, :strength, :type, :weapons, :behaviour
       def initialize(name, strength, graphic, type, weapons, bhv)
+        super(graphic)
         @name, @strength, @type, @weapons = name, strength, type, weapons
-        @graphic = EH.sprite(graphic)
         @behaviour = bhv
       end
     end
@@ -61,7 +97,7 @@ module EH::Game
     class Actor < BattleObject
       attr_reader :character
       def initialize(char)
-        super
+        super(char.charset)
         @character = char
       end
     end
@@ -69,7 +105,7 @@ module EH::Game
     class Party
       def initialize(party)
         @members = []
-        create_members(party)
+        create_actors(party)
       end
       private
       def create_actors(ary)
