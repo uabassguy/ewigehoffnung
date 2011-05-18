@@ -4,14 +4,14 @@ module EH
   class Sample
     attr_reader :file
     @@cache = {}
-    def initialize(window, file)
+    def initialize(file)
       @file = file
       if @@cache[file]
         @sample = @@cache[file]
         return
       end
       begin
-        @sample = Gosu::Sample.new(window, "sounds/#{file}.wav")
+        @sample = Gosu::Sample.new("sounds/#{file}.wav")
         @@cache.store(file, @sample)
       rescue RuntimeError
         puts("ERROR: Failed to open sound #{file}")

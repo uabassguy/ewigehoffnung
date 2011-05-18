@@ -4,7 +4,7 @@
 module EH::GUI
   
   class Window # make hash?
-    attr_reader :state
+    attr_reader :state, :x, :y, :w, :h
     # height includes titlebar
     attr_accessor :xoff, :yoff, :zoff # completely unused, just used for windows in windows
     def initialize(state, x, y, w, h, titlestr, close=true, bg=nil, move=false, z=-1)

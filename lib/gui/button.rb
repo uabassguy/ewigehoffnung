@@ -4,6 +4,8 @@ module EH::GUI
   # Executes the given lambda when clicked
   class Button < Element
     attr_accessor :background, :proc
+    @@sound = EH::Sample.new("click1")
+    @@error = EH::Sample.new("error1")
     def initialize(x, y, w, h, text, proc, bg=true, align=:center)
       super(x, y, w, h)
       if bg
@@ -17,8 +19,6 @@ module EH::GUI
       @background = bg
       @align = align
       @enabled = true
-      @sound = EH::Sample.new(EH.window, "click1")
-      @error = EH::Sample.new(EH.window, "error1")
     end
     def toggle
       @enabled = !@enabled
@@ -33,10 +33,10 @@ module EH::GUI
       @selected = EH.inside?(EH.window.state.x, EH.window.state.y, @x+@xoff, @y+@yoff, @x+@w+@xoff, @y+@h+@yoff)
       if @selected && EH.window.pressed?(Gosu::MsLeft)
         if @enabled
-          @sound.play(0.25)
+          @@sound.play(0.25)
           @proc.call
         else
-          @error.play
+          @@error.play
         end
       end
     end
@@ -68,7 +68,6 @@ module EH::GUI
     attr_accessor :proc
     def initialize(x, y, file, proc, w=-1, h=-1)
       @bg = EH.sprite(file.to_s)
-      @sound = EH::Sample.new(EH.window, "click1")
       if w < 0
         @w = w = @bg.width
       end

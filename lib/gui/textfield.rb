@@ -30,7 +30,7 @@ module EH::GUI
     end
     
     def draw
-      @bg.draw(@x+@xoff, @y+@yoff, EH::GUI_Z, (@w)/@bg.width.to_f, @h/@bg.height.to_f)
+      @bg.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + @zoff, (@w)/@bg.width.to_f, @h/@bg.height.to_f)
       y = 0
       @text.each { |line|
         case @align
