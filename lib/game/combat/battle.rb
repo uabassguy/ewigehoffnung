@@ -158,6 +158,15 @@ module EH::Game
       def initialize(char, x, y, z)
         super(char.charset, x, y, z)
         @character = char
+        @health = Bar.new(x - 8, y - 12, 100, 48, 6, :health, 100, false)
+      end
+      def update
+        super
+        @health.update
+      end
+      def draw
+        super
+        @health.draw
       end
     end
     
@@ -182,58 +191,6 @@ module EH::Game
       end
     end
     
-    class Bar
-      def initialize(x, y, z, w, h, scheme, max, background)
-        schemes = [:health, :endurance, :timer]
-        @background = background
-        @x, @y, @z = x, y, z
-        @w, @h = w, h
-        @scheme = scheme
-        @max = max
-        @speed = @sub = 0
-      end
-      
-      def update
-        if @sub > 0
-          @value -= @speed
-          @sub -= @speed
-        else
-          @sub = 0
-        end
-      end
-      
-      def draw
-        if @background
-          cb = Gosu::Color::BLACK
-          EH.window.draw_quad(@x, @y, cb, @x+@w, @y, cb, @x+@w, @y+@h, cb, @x, @y+@h, cb, @z)
-          case @scheme
-          when :health
-            cl = Gosu::Color::RED
-            cr = Gosu::Color::GREEN
-          else
-            cl = Gosu::Color::BLACK
-            cr = Gosu::Color::WHITE
-          end
-        else
-          case @scheme
-          when :health
-            if @value >= 75
-              cl = cr = Gosu::Color::GREEN
-            else
-              cl = cr = Gosu::Color::RED
-            end
-          else
-            cl = cr = Gosu::Color::WHIE
-          end
-        end
-        EH.window.draw_quad(@x, @y, cl, @x+@w, @y, cr, @x+@w, @y+@h, cr, @x, @y+@h, cl, @z)
-      end
-      
-      def subtract(amount, speed)
-        @sub = amount
-        @speed = speed
-      end
-    end
     
     class Battle
       attr_reader :enemies, :background
@@ -243,7 +200,6 @@ module EH::Game
         @enemies = enemies
         @party = Party.new(party)
         @control = control
-        @bar = Bar.new(32, 32, 100, 128, 16, :health, 100, true)
         if @control
           @control.battle = self
         end
@@ -258,7 +214,6 @@ module EH::Game
         @party.members.each { |actor|
           actor.update
         }
-        @bar.update
       end
       
       def draw
@@ -270,10 +225,11 @@ module EH::Game
         @party.members.each { |actor|
           actor.draw
         }
-        @bar.draw
       end
       
     end
     
   end
 end
+
+require "game/combat/bar.rb"
