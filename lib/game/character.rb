@@ -17,13 +17,14 @@ module EH::Game
   class Character
     attr_reader :name, :age, :weight, :strength, :charset, :gender
     attr_reader :inventory, :skills, :const, :mind, :equipment, :race, :magic
-    attr_reader :endurance, :state
+    attr_reader :endurance, :state, :agility
     attr_accessor :health
     # health is only used as a percentage for easier displaying, the real stuff is in @const
-    def initialize(name, charset, age, weight, strength, gender, race)
+    def initialize(name, charset, age, weight, strength, gender, race, agi)
       @name, @age, @charset, @race, @gender = name, age, charset, race, gender
       @weight, @strength = weight, strength
       @health = @endurance = 100
+      @agility = 100
       @inventory = EH::Game::Inventory.new(20, @strength)
       @skills = EH::Game::Skills.new
       @const = EH::Game::Constitution.new

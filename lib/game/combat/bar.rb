@@ -61,8 +61,18 @@ module EH::Game::Combat
           else
             cl = cr = Gosu::Color::RED
           end
+        when :timer
+          if @value >= (@max / 4) * 3
+            cl = cr = Gosu::Color::RED
+          elsif @value >= @max / 2
+            cl = cr = 0xFFFFB400
+          elsif @value >= @max / 4
+            cl = cr = Gosu::Color::YELLOW
+          else
+            cl = cr = Gosu::Color::GREEN
+          end
         else
-          cl = cr = Gosu::Color::WHIE
+          cl = cr = Gosu::Color::WHITE
         end
       end
       if @value > 0

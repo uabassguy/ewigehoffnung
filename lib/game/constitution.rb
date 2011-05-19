@@ -36,7 +36,7 @@ module EH::Game
     def initialize
       @wounds = []
     end
-    # this shouldnt be called every frame, rather on each change of constitution
+    # this should only be called when needed
     def update(char)
       str = char.strength
       dmg = 0

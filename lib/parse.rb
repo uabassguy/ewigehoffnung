@@ -163,7 +163,7 @@ module EH::Parse
     block = false
     
     name = charset = race = ""
-    age = weight = strength = 0
+    age = weight = strength = agility = 0
     gender = :male
         
     file.each_line { |line|
@@ -177,10 +177,10 @@ module EH::Parse
       end
       if line[0] == "}"
         block = false
-        ary.push(EH::Game::Character.new(name, charset, age, weight, strength, gender, race))
+        ary.push(EH::Game::Character.new(name, charset, age, weight, strength, gender, race, agility))
         name = charset = race = ""
         gender = :male
-        age = weight = strength = 0
+        age = weight = strength = agility = 0
       end
       if block
         if line.start_with?("name")
@@ -201,6 +201,9 @@ module EH::Parse
         elsif line.start_with?("gender")
           line.gsub!(/gender *= */, "")
           gender = line.gsub("\"", "").to_sym
+        elsif line.start_with?("agility")
+          line.gsub!(/agility *= */, "")
+          agility = line.gsub("\"", "").to_i
         end
       end
     }

@@ -79,20 +79,6 @@ module EH::Game
       
     end
     
-    # Used for scripted battles (dialogues and stuff)
-    class Control
-      def initialize(sym)
-        @battle = nil
-      end
-      def battle=(b)
-        @battle = b
-      end
-      def update
-      end
-      def draw
-      end
-    end
-    
     class Background
       def initialize(file, color=nil)
         @sprite = EH.sprite("backgrounds/#{file}")
@@ -155,18 +141,29 @@ module EH::Game
     # Party member
     class Actor < BattleObject
       attr_reader :character
+      attr_accessor :ready_shown
       def initialize(char, x, y, z)
         super(char.charset, x, y, z)
         @character = char
-        @health = Bar.new(x - 8, y - 12, 100, 48, 6, :health, 100, false)
+        @health = Bar.new(x - 8, y - 8, 100, 48, 6, :health, 100, false)
+        @health.set(@character.health)
+        @next = Bar.new(x - 8, y - 16, 100, 48, 6, :health, 100, false)
+        @next.visible = false
+        @ready = false
+        @ready_shown = false
       end
       def update
         super
         @health.update
+        @next.update
       end
       def draw
         super
         @health.draw
+        @next.draw
+      end
+      def ready?
+        return @ready
       end
     end
     
@@ -191,6 +188,16 @@ module EH::Game
       end
     end
     
+    class GUI
+      def initialize
+        @x = 0
+        @y = 640
+        @z = 5000
+      end
+      def push(type, *parms)
+        puts("STUB: GUI.push(#{type}, #{parms.inspect})")
+      end
+    end
     
     class Battle
       attr_reader :enemies, :background
@@ -203,6 +210,7 @@ module EH::Game
         if @control
           @control.battle = self
         end
+        @gui = GUI.new
       end
       
       def update
@@ -213,6 +221,12 @@ module EH::Game
         }
         @party.members.each { |actor|
           actor.update
+          if actor.ready? and !actor.ready_shown
+            @gui.push(:ready, actor)
+            actor.ready_shown = true
+          else
+            actor.ready_shown = false
+          end
         }
       end
       
@@ -233,3 +247,4 @@ module EH::Game
 end
 
 require "game/combat/bar.rb"
+require "game/combat/control.rb"
