@@ -504,8 +504,53 @@ module EH::Parse
   end
   
   def self.enemy_behaviour(name)
-    # TODO stub
-    return EH::Game::Combat::Behaviour.new([])
+    hash = {}
+    begin
+      file = File.open("def/enemies/#{name}.bhv")
+    rescue
+      warn("ERROR: Couldn't find enemies/#{name}.bhv")
+      return hash
+    end
+    
+    actions = [:on_turn, :on_defeat]
+    number = 0
+    block = false
+    
+    action = nil
+    ary = []
+    
+    file.each_line { |line|
+      number += 1
+      line.gsub!("\n", "")
+      if line[0] == "#" or line.length == 0
+        if line == "#EOF"
+          break
+        end
+        next
+      end
+      if line[0] == "{"
+        block = true
+      elsif line[0] == "}" and block and action
+        hash.store(action, ary)
+        action = nil
+        ary = []
+        block = false
+        next
+      else
+        if !action and !block
+          action = line.gsub("\"", "").to_sym
+          if !actions.include?(action)
+            warn("WARNING: Unknown action key #{action} at enemies/#{name}.bhv, line #{number}")
+            action = nil
+            block = false
+          end
+        elsif block and action
+          ary.push(line.gsub("\"", ""))
+        end
+      end
+    }
+    file.close
+    return EH::Game::Combat::Behaviour.new(hash)
   end
   
   def self.enemies

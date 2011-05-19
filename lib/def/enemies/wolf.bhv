@@ -7,5 +7,5 @@ attack weakest
 on_defeat
 {
 vanish
-drop [wolf_corpse]
+drop wolf_corpse
 }

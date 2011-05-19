@@ -92,6 +92,7 @@ module EH::States
       update_cursor
       @window.unpress
       @setup = true
+      battle([], "white_ties_grass", EH::Game::Combat::Control.new(:test))
     end
     
     def draw
@@ -132,7 +133,7 @@ module EH::States
     
   end
   
-  class BattleState
+  class BattleState < State
     def initialize(party, enemies, bg, ctrl)
       super(EH.window)
       @battle = EH::Game::Combat::Battle.new(party, enemies, bg, ctrl)

@@ -94,6 +94,34 @@ effects = [heal]
 type = herb
 }
 
+#=========== Food ============
+
+{
+name = meat_raw
+icon = "meat_raw"
+weight = 1.5
+effects = [raw_food]
+type = food
+}
+
+{
+name = meat
+icon = "meat"
+weight = 1
+effects = [food]
+type = food
+}
+
+#======== Craftables =========
+
+{
+name = wolf_fur
+icon = "wolf_fur"
+weight = 2
+effects = []
+type = craftable
+}
+
 #=========== Loot ============
 
 {
