@@ -12,8 +12,8 @@ module EH::Game::Combat
       @scheme = scheme
       @value = @max = max
       @speed = @sub = @add = 0
+      @fade = 256
       @visible = true
-      @fade = 0
     end
       
     def update
@@ -32,15 +32,15 @@ module EH::Game::Combat
       else
         @add = 0
       end
-      if @fade > 0
+      if @fade > 0 and @fade <= 255
         @fade -= @speed
-      elsif @fade < 0
-        @visible = false
+      elsif @fade <= 0
         @fade = 0
+        @visible = false
       end
     end
     
-    def fade(speed=10)
+    def fade(speed=15)
       @speed = speed
       @fade = 255
     end
@@ -50,46 +50,50 @@ module EH::Game::Combat
         return
       end
       if @background
-        cb = Gosu::Color::BLACK
+        cb = Gosu::Color.new(255, 0, 0, 0)
         EH.window.draw_quad(@x, @y, cb, @x+@w, @y, cb, @x+@w, @y+@h, cb, @x, @y+@h, cb, @z)
         case @scheme
         when :health
-          cl = Gosu::Color::RED
-          cr = Gosu::Color::GREEN
+          cl = Gosu::Color.new(255, 255, 0, 0)
+          cr = Gosu::Color.new(255, 0, 255, 0)
         else
-          cl = Gosu::Color::BLACK
-          cr = Gosu::Color::WHITE
+          cl = Gosu::Color.new(255, 0, 0, 0)
+          cr = Gosu::Color.new(255, 255, 255, 255)
         end
       else
         # TODO fluent fade
         case @scheme
         when :health
           if @value >= (@max / 4) * 3
-            cl = cr = Gosu::Color::GREEN
+            cl = cr = Gosu::Color.new(255, 0, 255, 0)
           elsif @value >= @max / 2
-            cl = cr = Gosu::Color::YELLOW
+            cl = cr = Gosu::Color.new(255, 255, 255, 0)
           elsif @value >= @max / 4
-            cl = cr = 0xFFFFB400
+            cl = cr = Gosu::Color.new(255, 255, 180, 0)
           else
-            cl = cr = Gosu::Color::RED
+            cl = cr = Gosu::Color.new(255, 255, 0, 0)
           end
         when :timer
           if @value >= (@max / 4) * 3
-            cl = cr = Gosu::Color::RED
+            cl = cr = Gosu::Color.new(255, 255, 0, 0)
           elsif @value >= @max / 2
-            cl = cr = 0xFFFFB400
+            cl = cr = Gosu::Color.new(255, 255, 180, 0)
           elsif @value >= @max / 4
-            cl = cr = Gosu::Color::YELLOW
+            cl = cr = Gosu::Color.new(255, 255, 255, 0)
           else
-            cl = cr = Gosu::Color::GREEN
+            cl = cr = Gosu::Color.new(255, 0, 255, 0)
           end
         else
-          cl = cr = Gosu::Color::WHITE
+          cl = cr = Gosu::Color.new(255, 255, 255, 255)
         end
       end
-      if @fade > 0
-        cl.alpha = @fade
-        cr.alpha = @fade
+      if @fade <= 255
+        f = @fade
+        if f < 0
+          f = 0
+        end
+        cl.alpha = f
+        cr.alpha = f
       end
       if @value > 0
         w = @value / (@max / @w.to_f)

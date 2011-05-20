@@ -62,6 +62,11 @@ module EH::GUI
       @elements.store(name, el)
     end
     
+    def save_pos(xsym, ysym)
+      @xsym, @ysym = xsym, ysym
+      @save_pos = true
+    end
+    
     def update
       @elements.each_value { |el|
         el.update
@@ -75,7 +80,7 @@ module EH::GUI
       end
       if @move
         m = [EH.window.mouse_x, EH.window.mouse_y]
-        if EH.inside?(m.x, m.y, @x, @y, @x+@w, @y+24) or @dragging
+        if EH.inside?(m.x, m.y, @x, @y, @x+@w-24, @y+24) or @dragging
           if EH.window.button_down?(Gosu::MsLeft)
             if !@dragging
               @dragging = true
@@ -101,6 +106,10 @@ module EH::GUI
         elsif @y < 0
           @y = 0
         end
+      end
+      if @save_pos
+        EH.config[@xsym] = @x
+        EH.config[@ysym] = @y
       end
     end
     

@@ -118,7 +118,11 @@ module EH::Game
       def update
       end
       def draw
-        @graphics[@frame].draw(@x, @y, @z, 1, 1, @color)
+        if @graphics[@frame]
+          @graphics[@frame].draw(@x, @y, @z, 1, 1, @color)
+        else
+          @graphics.first.draw(@x, @y, @z, 1, 1, @color)
+        end
       end
     end
     
@@ -132,9 +136,36 @@ module EH::Game
     end
     
     class BattleEnemy < BattleObject
-      attr_reader :name, :strength, :type, :weapons, :behaviour
+      attr_reader :name, :strength, :type, :weapons, :behaviour, :data
+      attr_accessor :gui
       def initialize(enemy, x, y, z)
         super(enemy.graphic, x, y, z)
+        @data = enemy
+        @gui = nil
+        @frame = 8
+        @w, @h = @graphics.first.width, @graphics.first.height
+      end
+      
+      def update
+        super
+        x, y = EH.window.mouse_x, EH.window.mouse_y
+        if EH.inside?(x, y, @x, @y, @x+@w, @y+@h) and EH.window.pressed?(Gosu::MsLeft)
+          if x - 160 < 0
+            x = 160
+          elsif x > 1024-320
+            x = 1024-320
+          end
+          if y - 128 < 0
+            y = 128
+          elsif y > 512
+            y = 512
+          end
+          @gui.open_info(self, 256, 160)
+        end
+      end
+      
+      def draw
+        super
       end
     end
     
@@ -156,7 +187,6 @@ module EH::Game
       end
       def update
         super
-        @health.update
         if @moving
           @health.x, @health.y = @x - 8, @y - 8
           @next.x, @health.y = @x - 8, @y - 16
@@ -169,6 +199,7 @@ module EH::Game
           @next.visible = true
           @next.set(@next.max - @ready_time)
         end
+        @health.update
         @next.update
       end
       def draw
@@ -212,14 +243,40 @@ module EH::Game
         @y = 544
         @z = 5000
         @bg = EH.sprite("gui/battle_infoback")
+        @w = {} # Currently shown windows
       end
+      
       def push(type, *parms)
         puts("STUB: GUI.push(#{type}, #{parms.inspect})")
       end
-      def update
+      
+      def open_info(obj, x, y)
+        if EH.config[:combat_gui_info_window_x]
+          x = EH.config[:combat_gui_info_window_x]
+        end
+        if EH.config[:combat_gui_info_window_y]
+          y = EH.config[:combat_gui_info_window_y]
+        end
+        @w[:info] = EH::GUI::Window.new(EH.window.state, x, y, 320, 256, "Info", true, "gui/container_background", true)
+        @w[:info].add(:text, EH::GUI::Textfield.new(8, 8, 304, 240, "#{obj}"))
+        @w[:info].title = "#{EH::Trans.enemy(obj.data.name)}"
+        @w[:info].save_pos(:combat_gui_info_window_x, :combat_gui_info_window_y)
       end
+      
+      def update
+        @w.each_value { |w|
+          w.update
+          if w.remove?
+            @w.delete(@w.key(w))
+          end
+        }
+      end
+      
       def draw
         @bg.draw(@x, @y, @z, 1024/@bg.width.to_f, (768-544)/@bg.height.to_f)
+        @w.each_value { |w|
+          w.draw
+        }
       end
     end
     
@@ -228,13 +285,25 @@ module EH::Game
       
       def initialize(party, enemies, bg, control=nil)
         @background = Background.new(bg)
-        @enemies = enemies
+        @enemies = []
         @party = Party.new(party)
         @control = control
         if @control
           @control.battle = self
         end
         @gui = GUI.new
+        x = y = 0
+        enemies.each { |e|
+          # TODO this is crap too
+          e = BattleEnemy.new(e, 64+(x*64)+rand(32), 128+(y*96)+rand(48), 50)
+          y += 1
+          if y >= 4
+            y = 0
+            x += 1
+          end
+          e.gui = @gui
+          @enemies.push(e)
+        }
       end
       
       def update

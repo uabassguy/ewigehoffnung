@@ -30,8 +30,8 @@ module EH::GUI
       @enabled = true
     end
     def update
-      @selected = EH.inside?(EH.window.state.x, EH.window.state.y, @x+@xoff, @y+@yoff, @x+@w+@xoff, @y+@h+@yoff)
-      if @selected && EH.window.pressed?(Gosu::MsLeft)
+      @selected = EH.inside?(EH.window.mouse_x, EH.window.mouse_y, @x+@xoff, @y+@yoff, @x+@w+@xoff, @y+@h+@yoff)
+      if @selected and EH.window.pressed?(Gosu::MsLeft)
         if @enabled
           @@sound.play(0.25)
           @proc.call

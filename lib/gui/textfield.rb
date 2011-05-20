@@ -17,7 +17,9 @@ module EH::GUI
             str += "#{word} "
           else
             str.rstrip!
-            @text.push(str)
+            if str != ""
+              @text.push(str)
+            end
             str = "#{word} "
           end
           if word == ary.last
