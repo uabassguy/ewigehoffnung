@@ -147,14 +147,28 @@ module EH::Game
         @character = char
         @health = Bar.new(x - 8, y - 8, 100, 48, 6, :health, 100, false)
         @health.set(@character.health)
-        @next = Bar.new(x - 8, y - 16, 100, 48, 6, :health, 100, false)
+        @next = Bar.new(x - 8, y - 16, 100, 48, 6, :health, 600 - (@character.agility*5), false)
         @next.visible = false
         @ready = false
         @ready_shown = false
+        @moving = false
+        @ready_time = 600 - (@character.agility*5)
       end
       def update
         super
         @health.update
+        if @moving
+          @health.x, @health.y = @x - 8, @y - 8
+          @next.x, @health.y = @x - 8, @y - 16
+        end
+        if @ready_time == 0
+          ready!
+          @ready_time = -1
+        elsif @ready_time > 0
+          @ready_time -= 1
+          @next.visible = true
+          @next.set(@next.max - @ready_time)
+        end
         @next.update
       end
       def draw
@@ -164,6 +178,10 @@ module EH::Game
       end
       def ready?
         return @ready
+      end
+      def ready!
+        @next.fade
+        @ready = true
       end
     end
     
@@ -191,11 +209,17 @@ module EH::Game
     class GUI
       def initialize
         @x = 0
-        @y = 640
+        @y = 544
         @z = 5000
+        @bg = EH.sprite("gui/battle_infoback")
       end
       def push(type, *parms)
         puts("STUB: GUI.push(#{type}, #{parms.inspect})")
+      end
+      def update
+      end
+      def draw
+        @bg.draw(@x, @y, @z, 1024/@bg.width.to_f, (768-544)/@bg.height.to_f)
       end
     end
     
@@ -224,10 +248,11 @@ module EH::Game
           if actor.ready? and !actor.ready_shown
             @gui.push(:ready, actor)
             actor.ready_shown = true
-          else
+          elsif !actor.ready?
             actor.ready_shown = false
           end
         }
+        @gui.update
       end
       
       def draw
@@ -239,6 +264,7 @@ module EH::Game
         @party.members.each { |actor|
           actor.draw
         }
+        @gui.draw
       end
       
     end

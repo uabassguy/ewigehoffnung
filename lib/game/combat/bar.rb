@@ -3,7 +3,7 @@ module EH::Game::Combat
 
   class Bar
     attr_reader :value, :max
-    attr_accessor :visible
+    attr_accessor :visible, :x, :y, :z
     def initialize(x, y, z, w, h, scheme, max, background)
       schemes = [:health, :endurance, :timer]
       @background = background
@@ -13,6 +13,7 @@ module EH::Game::Combat
       @value = @max = max
       @speed = @sub = @add = 0
       @visible = true
+      @fade = 0
     end
       
     def update
@@ -31,6 +32,17 @@ module EH::Game::Combat
       else
         @add = 0
       end
+      if @fade > 0
+        @fade -= @speed
+      elsif @fade < 0
+        @visible = false
+        @fade = 0
+      end
+    end
+    
+    def fade(speed=10)
+      @speed = speed
+      @fade = 255
     end
       
     def draw
@@ -75,9 +87,13 @@ module EH::Game::Combat
           cl = cr = Gosu::Color::WHITE
         end
       end
+      if @fade > 0
+        cl.alpha = @fade
+        cr.alpha = @fade
+      end
       if @value > 0
-        x = @value / (@max / @w.to_f)
-        EH.window.draw_quad(@x, @y, cl, @x+x, @y, cr, @x+x, @y+@h, cr, @x, @y+@h, cl, @z)
+        w = @value / (@max / @w.to_f)
+        EH.window.draw_quad(@x, @y, cl, @x+w, @y, cr, @x+w, @y+@h, cr, @x, @y+@h, cl, @z)
       end
     end
       

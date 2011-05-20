@@ -24,7 +24,12 @@ module EH::Game
       @name, @age, @charset, @race, @gender = name, age, charset, race, gender
       @weight, @strength = weight, strength
       @health = @endurance = 100
-      @agility = 100
+      @agility = agi
+      if @agility > 100
+        @agility = 0
+      elsif @agility < 0
+        @agility = 0
+      end
       @inventory = EH::Game::Inventory.new(20, @strength)
       @skills = EH::Game::Skills.new
       @const = EH::Game::Constitution.new
