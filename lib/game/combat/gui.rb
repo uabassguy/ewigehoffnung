@@ -2,6 +2,7 @@
 module EH::Game::Combat
   
   class GUI
+    
     def initialize
       @x = 0
       @y = 544
@@ -9,6 +10,8 @@ module EH::Game::Combat
       @bg = EH.sprite("gui/battle_infoback")
       @w = {} # Currently shown windows
       @ready = []
+      @paused = false
+      @chosen = @choose = nil
     end
       
     def push(type, *parms)
@@ -19,16 +22,21 @@ module EH::Game::Combat
     end
       
     def open_info(obj, x, y)
-      if EH.config[:combat_gui_info_window_x]
-        x = EH.config[:combat_gui_info_window_x]
+      if @choose and !@chosen
+        @chosen = obj
+        puts("chose object")
+      else
+        if EH.config[:combat_gui_info_window_x]
+          x = EH.config[:combat_gui_info_window_x]
+        end
+        if EH.config[:combat_gui_info_window_y]
+          y = EH.config[:combat_gui_info_window_y]
+        end
+        @w[:info] = EH::GUI::Window.new(x, y, 320, 256, "Info", true, "gui/container_background", true)
+        @w[:info].add(:text, EH::GUI::Textfield.new(8, 8, 304, 240, "#{obj}"))
+        @w[:info].title = "#{EH::Trans.enemy(obj.data.name)}"
+        @w[:info].save_pos(:combat_gui_info_window_x, :combat_gui_info_window_y)
       end
-      if EH.config[:combat_gui_info_window_y]
-        y = EH.config[:combat_gui_info_window_y]
-      end
-      @w[:info] = EH::GUI::Window.new(x, y, 320, 256, "Info", true, "gui/container_background", true)
-      @w[:info].add(:text, EH::GUI::Textfield.new(8, 8, 304, 240, "#{obj}"))
-      @w[:info].title = "#{EH::Trans.enemy(obj.data.name)}"
-      @w[:info].save_pos(:combat_gui_info_window_x, :combat_gui_info_window_y)
     end
       
     def update
@@ -38,6 +46,9 @@ module EH::Game::Combat
           @w.delete(@w.key(w))
         end
       }
+      if @choose and @chosen
+        @choose.call
+      end
     end
       
     def draw
@@ -47,6 +58,10 @@ module EH::Game::Combat
       }
     end
     
+    def paused?
+      return @paused
+    end
+    
     private
     
     def ready(ary)
@@ -54,7 +69,7 @@ module EH::Game::Combat
       char = actor.character
       if @ready.empty?
         @w[:ready] = EH::GUI::Window.new(768, @y, 256, 224, char.name, false, "gui/container_background")
-        setup_ready_skills
+        setup_ready_skills(actor)
       end
       @ready.push(actor)
     end
@@ -68,32 +83,48 @@ module EH::Game::Combat
           @w[:ready].close
         else
           @w[:ready].title = @ready.first.character.name
-          setup_ready_skills
+          setup_ready_skills(@ready.first.character)
         end
       end
     end
     
-    def setup_ready_skills
+    def setup_ready_skills(actor)
       w = @w[:ready]
       w.empty
-      w.add(:attack, EH::GUI::Button.new(8, 8, 240, 32, EH::Trans.menu(:attack), lambda { open_attack }))
-      w.add(:skill, EH::GUI::Button.new(8, 48, 240, 32, EH::Trans.menu(:skill), lambda { open_skill }))
-      w.add(:item, EH::GUI::Button.new(8, 88, 240, 32, EH::Trans.menu(:item), lambda { open_item }))
+      w.add(:attack, EH::GUI::Button.new(8, 8, 240, 32, EH::Trans.menu(:attack), lambda {open_attack(actor)}))
+      w.add(:skill, EH::GUI::Button.new(8, 48, 240, 32, EH::Trans.menu(:skill), lambda {open_skill(actor)}))
+      w.add(:item, EH::GUI::Button.new(8, 88, 240, 32, EH::Trans.menu(:item), lambda {open_item(actor)}))
     end
     
-    def open_attack
+    def open_attack(actor)
       puts("STUB: GUI.open_attack")
-      shift_ready
+      @paused = true
+      @choose = lambda { attack(actor, @chosen) }
+      open_abort(actor)
     end
     
-    def open_skill
+    def open_skill(actor)
       puts("STUB: GUI.open_skill")
-      shift_ready
+      @paused = true
+      open_abort(actor)
     end
     
-    def open_item
+    def open_item(actor)
       puts("STUB: GUI.open_item")
-      shift_ready
+      @paused = true
+      open_abort(actor)
+    end
+    
+    def open_abort(actor)
+      @w[:ready].empty
+      @w[:ready].add(:abort, EH::GUI::Button.new(8, 8, 240, 32, EH::Trans.menu(:abort), lambda {abort_action(actor)}))
+    end
+    
+    def abort_action(actor)
+      @paused = false
+      @choose = nil
+      @chosen = nil
+      setup_ready_skills(actor)
     end
     
   end

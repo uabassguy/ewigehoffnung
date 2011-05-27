@@ -55,6 +55,7 @@ module EH
         :you => "Du",
         :talk_to => "Ansprechen",
         :attack => "Angreifen",
+        :abort => "Abbrechen",
       },
       "en" => {
         :menu => "Menu",
@@ -82,6 +83,7 @@ module EH
         :you => "You",
         :talk_to => "Talk to",
         :attack => "Attack",
+        :abort => "Abort",
       },
     }
     

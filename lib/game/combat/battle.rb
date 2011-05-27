@@ -104,6 +104,7 @@ module EH::Game
     
     # Superclass for enemies and actors
     class BattleObject
+      attr_reader :target
       def initialize(graphic, x, y, z=EH::MAPOBJECT_Z, color=Gosu::Color::WHITE)
         @frame = 0
         @x, @y, @z = x, y, z
@@ -114,15 +115,22 @@ module EH::Game
         else
           @graphics = [EH.sprite("missing")]
         end
+        @target = nil
       end
-      def update
+      
+      def update(pause)
       end
+      
       def draw
         if @graphics[@frame]
           @graphics[@frame].draw(@x, @y, @z, 1, 1, @color)
         else
           @graphics.first.draw(@x, @y, @z, 1, 1, @color)
         end
+      end
+      
+      def attacked(hit)
+        @target = nil
       end
     end
     
@@ -146,7 +154,7 @@ module EH::Game
         @w, @h = @graphics.first.width, @graphics.first.height
       end
       
-      def update
+      def update(pause)
         super
         x, y = EH.window.mouse_x, EH.window.mouse_y
         if EH.inside?(x, y, @x, @y, @x+@w, @y+@h) and EH.window.pressed?(Gosu::MsLeft)
@@ -185,19 +193,21 @@ module EH::Game
         @moving = false
         @ready_time = 600 - (@character.agility*5)
       end
-      def update
+      def update(pause)
         super
-        if @moving
-          @health.x, @health.y = @x - 8, @y - 8
-          @next.x, @health.y = @x - 8, @y - 16
-        end
-        if @ready_time == 0
-          ready!
-          @ready_time = -1
-        elsif @ready_time > 0
-          @ready_time -= 1
-          @next.visible = true
-          @next.set(@next.max - @ready_time)
+        if !pause
+          if @moving
+            @health.x, @health.y = @x - 8, @y - 8
+            @next.x, @health.y = @x - 8, @y - 16
+          end
+          if @ready_time == 0
+            ready!
+            @ready_time = -1
+          elsif @ready_time > 0
+            @ready_time -= 1
+            @next.visible = true
+            @next.set(@next.max - @ready_time)
+          end
         end
         @health.update
         @next.update
@@ -263,21 +273,36 @@ module EH::Game
         }
       end
       
+      def attack(attacker, target)
+        puts("STUB: Battle.attack(#{attacker.inspect}, #{target.inspect})")
+      end
+      
+      def spell(attacker, targets, spell)
+        puts("STUB: Battle.spell(#{attacker.inspect}, #{targets.inspect}, #{spell.inspect})")
+      end
+      
+      def item(attacker, target, item)
+        puts("STUB: Battle.item(#{attacker.inspect}, #{target.inspect}, #{item.inspect})")
+      end
+      
       def update
+        pause = @gui.paused?
         @background.update
         @control.update
-        @enemies.each { |enemy|
-          enemy.update
-        }
-        @party.members.each { |actor|
-          actor.update
-          if actor.ready? and !actor.ready_shown
-            @gui.push(:ready, actor)
-            actor.ready_shown = true
-          elsif !actor.ready?
-            actor.ready_shown = false
-          end
-        }
+        if !@gui.paused?
+          @enemies.each { |enemy|
+            enemy.update(pause)
+          }
+          @party.members.each { |actor|
+            actor.update(pause)
+            if actor.ready? and !actor.ready_shown
+              @gui.push(:ready, actor)
+              actor.ready_shown = true
+            elsif !actor.ready?
+              actor.ready_shown = false
+            end
+          }
+        end
         @gui.update
       end
       
