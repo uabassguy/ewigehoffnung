@@ -2,7 +2,9 @@
 #--
 # Main state logic - obviously
 
-require_relative "ext/shader.rb"
+if EH.config[:opengl]
+  require_relative "ext/shader.rb"
+end
 
 module EH
   class GameWindow < Gosu::Window

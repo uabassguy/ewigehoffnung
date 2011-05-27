@@ -80,7 +80,7 @@ module EH
   
   begin
     require "gl"
-  rescue
+  rescue LoadError
     warn("WARNING: OpenGL gem not found, disabling shader support")
     config[:opengl] = false
   end
