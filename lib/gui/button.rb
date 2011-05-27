@@ -65,7 +65,6 @@ module EH::GUI
   # Same as Button, but draws an image instead of text
   class ImageButton < Button
     attr_reader :bg
-    attr_accessor :proc
     def initialize(x, y, file, proc, w=-1, h=-1)
       @bg = EH.sprite(file.to_s)
       if w < 0

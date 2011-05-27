@@ -1,4 +1,7 @@
 
+require_relative "gui/select_spell.rb"
+require_relative "gui/select_item.rb"
+
 module EH::Game::Combat
   
   class GUI
@@ -78,24 +81,33 @@ module EH::Game::Combat
       @using = []
     end
     
+    def abort_action(actor)
+      @paused = false
+      @choose = nil
+      @chosen = nil
+      @w[:select_spell].close! if @w[:select_spell]
+      @w[:select_item].close! if @w[:select_item]
+      setup_ready_actions(actor)
+    end
+    
     private
     
     def attack(attacker, target)
       @attacking = [attacker, target]
       shift_ready
-      abort_action(@ready.first)
+      abort_actions(@ready.first)
     end
     
     def cast(attacker, target, spell)
       @casting = [attacker, target, spell]
       shift_ready
-      abort_action(@ready.first)
+      abort_actions(@ready.first)
     end
     
     def use(attacker, target, item)
       @using = [attacker, target, item]
       shift_ready
-      abort_action(@ready.first)
+      abort_actions(@ready.first)
     end
     
     def ready(ary)
@@ -103,7 +115,7 @@ module EH::Game::Combat
       char = actor.character
       if @ready.empty?
         @w[:ready] = EH::GUI::Window.new(768, @y, 256, 224, char.name, false, "gui/container_background")
-        setup_ready_skills(actor)
+        setup_ready_actions(actor)
       end
       @ready.push(actor)
     end
@@ -114,19 +126,19 @@ module EH::Game::Combat
       else
         @ready.shift
         if @ready.empty?
-          @w[:ready].close
+          @w[:ready].close!
         else
           @w[:ready].title = @ready.first.character.name
-          setup_ready_skills(@ready.first.character)
+          setup_ready_actions(@ready.first.character)
         end
       end
     end
     
-    def setup_ready_skills(actor)
+    def setup_ready_actions(actor)
       w = @w[:ready]
       w.empty
       w.add(:attack, EH::GUI::Button.new(8, 8, 240, 32, EH::Trans.menu(:attack), lambda {open_attack(actor)}))
-      w.add(:skill, EH::GUI::Button.new(8, 48, 240, 32, EH::Trans.menu(:skill), lambda {open_skill(actor)}))
+      w.add(:skill, EH::GUI::Button.new(8, 48, 240, 32, EH::Trans.menu(:magic), lambda {open_spell(actor)}))
       w.add(:item, EH::GUI::Button.new(8, 88, 240, 32, EH::Trans.menu(:item), lambda {open_item(actor)}))
     end
     
@@ -136,9 +148,20 @@ module EH::Game::Combat
       open_abort(actor)
     end
     
-    def open_skill(actor)
-      puts("STUB: GUI.open_skill")
+    def open_spell(actor)
       @paused = true
+      if EH.config[:combat_gui_spell_select_window_x]
+        x = EH.config[:combat_gui_spell_select_window_x]
+      else
+        x = 192
+      end
+      if EH.config[:combat_gui_spell_select_window_y]
+        y = EH.config[:combat_gui_spell_select_window_y]
+      else
+        y = 192
+      end
+      @w.store(:select_spell, SelectSpell.new(x, y, actor))
+      @w[:select_spell].parent = self
       open_abort(actor)
     end
     
@@ -151,13 +174,6 @@ module EH::Game::Combat
     def open_abort(actor)
       @w[:ready].empty
       @w[:ready].add(:abort, EH::GUI::Button.new(8, 8, 240, 32, EH::Trans.menu(:abort), lambda {abort_action(actor)}))
-    end
-    
-    def abort_action(actor)
-      @paused = false
-      @choose = nil
-      @chosen = nil
-      setup_ready_skills(actor)
     end
     
   end

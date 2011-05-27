@@ -4,9 +4,10 @@
 module EH::GUI
   
   class Window # make hash?
-    attr_reader :state, :x, :y, :w, :h
+    attr_reader :state, :x, :y, :w, :h, :close
     # height includes titlebar
     attr_accessor :xoff, :yoff, :zoff # completely unused, just used for windows in windows
+    attr_accessor :parent
     def initialize(x, y, w, h, titlestr, close=true, bg=nil, move=false, z=-1)
       @state = EH.window.state
       @xoff = @yoff = @zoff = 0
@@ -36,6 +37,7 @@ module EH::GUI
       @move = move
       @changed = false
       @dragging = false
+      @parent = nil
     end
     def empty
       @elements = {}
@@ -49,7 +51,7 @@ module EH::GUI
     def get(sym)
       return @elements[sym]
     end
-    def close
+    def close!
       @remove = true
     end
     def remove?
