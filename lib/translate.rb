@@ -3,6 +3,7 @@
 module EH
   module Trans
     # TODO auto-setup hashes, this is crap
+    # languages must be loaded from the available folders
     @@items = {
       "de" => {},
       "en" => {},
@@ -56,6 +57,7 @@ module EH
         :talk_to => "Ansprechen",
         :attack => "Angreifen",
         :abort => "Abbrechen",
+        :select_spell => "Zauber auswählen",
       },
       "en" => {
         :menu => "Menu",
@@ -84,6 +86,7 @@ module EH
         :talk_to => "Talk to",
         :attack => "Attack",
         :abort => "Abort",
+        :select_spell => "Select spell",
       },
     }
     
@@ -148,7 +151,7 @@ module EH
           if line[0] == "}"
             block = false
             @@spells[EH.config[:language]].store(spell.name, name)
-            @@spells[EH.config[:language]].store("#{spell.name}_desc", desc)
+            @@spells[EH.config[:language]].store("#{spell.name}_desc".to_sym, desc)
             next
           end
           if block
@@ -160,7 +163,7 @@ module EH
               desc = line.gsub("\"", "")
             end
           else
-            spell = EH::Game.find_spell(line)
+            spell = EH::Game.find_spell(line.to_sym)
           end
         }
         file.close

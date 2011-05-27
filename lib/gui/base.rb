@@ -153,6 +153,7 @@ module EH::GUI
   
   # scrollable
   class Container < Element
+    attr_reader :ch
     # ch = content element height
     def initialize(x, y, w, h, ch)
       super(x, y, w, h)

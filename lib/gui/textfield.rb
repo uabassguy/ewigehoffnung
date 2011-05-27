@@ -8,6 +8,34 @@ module EH::GUI
       @bg = EH.sprite("gui/container_background")
       @font = EH.font(EH::DEFAULT_FONT, size)
       @text = []
+      setup_text(text)
+      @align = align
+    end
+    
+    def text=(text)
+      @text = []
+      setup_text(text)
+    end
+    
+    def draw
+      @bg.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + @zoff, (@w)/@bg.width.to_f, @h/@bg.height.to_f)
+      y = 0
+      @text.each { |line|
+        case @align
+        when :center
+          @font.draw(line, @x + @xoff + (@w/2) - (@font.text_width(line)/2), @y + @yoff + (@font.height/9) + y, EH::GUI_Z + 10 + @zoff, 1, 1, Gosu::Color::BLACK)
+        when :left
+          @font.draw(line, @x + @xoff + 4, @y + @yoff + (@font.height/9) + y, EH::GUI_Z + 10 + @zoff, 1, 1, Gosu::Color::BLACK)
+        when :right
+          @font.draw(line, @x + @xoff + (@w-@font.text_width(line)), @y + @yoff + (@font.height/9) + y, EH::GUI_Z + 10 + @zoff, 1, 1, Gosu::Color::BLACK)
+        end
+        y += @font.height
+      }
+    end
+    
+    private
+    
+    def setup_text(text)
       lines = text.split("\n")
       lines.each { |line|
         ary = line.split(" ")
@@ -27,23 +55,6 @@ module EH::GUI
             @text.push(str)
           end
         }
-      }
-      @align = align
-    end
-    
-    def draw
-      @bg.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + @zoff, (@w)/@bg.width.to_f, @h/@bg.height.to_f)
-      y = 0
-      @text.each { |line|
-        case @align
-        when :center
-          @font.draw(line, @x + @xoff + (@w/2) - (@font.text_width(line)/2), @y + @yoff + (@font.height/9) + y, EH::GUI_Z + 10 + @zoff, 1, 1, Gosu::Color::BLACK)
-        when :left
-          @font.draw(line, @x + @xoff + 4, @y + @yoff + (@font.height/9) + y, EH::GUI_Z + 10 + @zoff, 1, 1, Gosu::Color::BLACK)
-        when :right
-          @font.draw(line, @x + @xoff + (@w-@font.text_width(line)), @y + @yoff + (@font.height/9) + y, EH::GUI_Z + 10 + @zoff, 1, 1, Gosu::Color::BLACK)
-        end
-        y += @font.height
       }
     end
     

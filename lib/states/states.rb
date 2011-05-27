@@ -43,14 +43,15 @@ module EH::States
     def initialize(window)
       super(window)
       EH.window.state = self
-      EH::Game.characters = EH::Parse.characters
       EH::Game.items = EH::Parse.items
       EH::Game.skills = EH::Parse.skills
       EH::Game.spells = EH::Parse.spells
       EH::Game.weapons = EH::Parse.weapons
       EH::Game.enemies = EH::Parse.enemies # needs the weapons
+      EH::Game.characters = EH::Parse.characters
       EH::Trans.parse_items
       EH::Trans.parse_skills
+      EH::Trans.parse_spells
       EH::Trans.parse_dialogues
       EH::Trans.parse_enemies
       @party = EH::Game::Party.new

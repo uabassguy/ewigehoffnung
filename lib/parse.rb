@@ -50,7 +50,7 @@ module EH::Parse
       if block
         if line.start_with?("name")
           line.gsub!(/name *= */, "")
-          name = line.gsub("\"", "")
+          name = line.gsub("\"", "").to_sym
         elsif line.start_with?("icon")
           line.gsub!(/icon *= */, "")
           icon = line.gsub("\"", "")

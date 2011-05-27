@@ -1,17 +1,31 @@
 
-stop_bleed {
+stop_bleed
+{
 name = "Wunde verschließen"
-desc = ""
+desc = "Wunde verschließen"
+}
+
+protect
+{
+name = "Beschützen"
+desc = "Beschützt ein Gruppenmitglied vor negativen magischen Einwirkungen"
+}
+
+heat
+{
+name = "Hitze"
+desc = "Hitze"
+}
+
+cold
+{
+name = "Kälte"
+desc = "Kälte"
 }
 
 #EOF
 
- {
-name = ""
-desc = ""
-}
-
- {
+{
 name = ""
 desc = ""
 }

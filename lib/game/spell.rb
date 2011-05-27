@@ -17,6 +17,7 @@ module EH::Game
         return spell
       end
     }
+    return nil
   end
   
   class Spell

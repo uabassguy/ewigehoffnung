@@ -95,19 +95,19 @@ module EH::Game::Combat
     def attack(attacker, target)
       @attacking = [attacker, target]
       shift_ready
-      abort_actions(@ready.first)
+      abort_action(@ready.first)
     end
     
     def cast(attacker, target, spell)
       @casting = [attacker, target, spell]
       shift_ready
-      abort_actions(@ready.first)
+      abort_action(@ready.first)
     end
     
     def use(attacker, target, item)
       @using = [attacker, target, item]
       shift_ready
-      abort_actions(@ready.first)
+      abort_action(@ready.first)
     end
     
     def ready(ary)

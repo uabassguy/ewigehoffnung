@@ -17,7 +17,7 @@ module EH::Game
   class Character
     attr_reader :name, :age, :weight, :strength, :charset, :gender
     attr_reader :inventory, :skills, :const, :mind, :equipment, :race, :magic
-    attr_reader :endurance, :state, :agility
+    attr_reader :endurance, :state, :agility, :spells
     attr_accessor :health
     # health is only used as a percentage for easier displaying, the real stuff is in @const
     def initialize(name, charset, age, weight, strength, gender, race, agi)
@@ -37,6 +37,10 @@ module EH::Game
       @equipment = EH::Game::Equipment.new
       @magic = EH::Game::Magic.new(self)
       @state = EH::Game::NORMAL
+      @spells = {}
+      EH::Game.spells.each { |spell|
+        @spells.store(spell, 0)
+      }
     end
     
     def update
