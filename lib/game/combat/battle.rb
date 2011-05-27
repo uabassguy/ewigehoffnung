@@ -298,6 +298,6 @@ module EH::Game
   end
 end
 
-require "game/combat/bar.rb"
-require "game/combat/control.rb"
-require "game/combat/gui.rb"
+require_relative "bar.rb"
+require_relative "control.rb"
+require_relative "gui.rb"

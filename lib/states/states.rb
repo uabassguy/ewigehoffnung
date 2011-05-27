@@ -1,8 +1,8 @@
 
 # Superclass for game states
 
-require "cursor.rb"
-require "particles.rb"
+require_relative "../cursor.rb"
+require_relative "../particles.rb"
 
 module EH::States
   # Skeleton for game states
@@ -32,9 +32,9 @@ module EH::States
     end
   end
   
-  require "game/map/map_loader.rb"
-  require "game/party.rb"
-  require "game/osd/magic.rb"
+  require_relative "../game/map/map_loader.rb"
+  require_relative "../game/party.rb"
+  require_relative "../game/osd/magic.rb"
   # Runs the map and basic game logic
   class GameState < State
     

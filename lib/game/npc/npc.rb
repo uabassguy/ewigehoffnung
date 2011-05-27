@@ -1,5 +1,5 @@
 
-require "game/npc/goal.rb"
+require_relative "goal.rb"
 
 # TODO move goal logic to mapobject
 

@@ -1,7 +1,7 @@
 
 require "rubygems"
-require "eh.rb"
-require "game_window.rb"
+require_relative "eh.rb"
+require_relative "game_window.rb"
 
 # :main:EH
 

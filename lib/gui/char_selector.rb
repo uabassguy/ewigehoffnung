@@ -1,5 +1,5 @@
 
-require "gui/base.rb"
+require_relative "base.rb"
 
 module EH::GUI
   

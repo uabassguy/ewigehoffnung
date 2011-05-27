@@ -1,5 +1,5 @@
 
-require "game/map/map_object.rb"
+require_relative "map_object.rb"
 
 module EH::Game
   class Player < MapNPC

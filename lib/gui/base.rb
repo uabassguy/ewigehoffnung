@@ -250,5 +250,5 @@ module EH::GUI
   
 end
 
-require "gui/button.rb"
-require "gui/context_menu.rb"
+require_relative "button.rb"
+require_relative "context_menu.rb"

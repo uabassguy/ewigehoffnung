@@ -2,7 +2,7 @@
 #--
 # Main state logic - obviously
 
-require "ext/shader.rb"
+require_relative "ext/shader.rb"
 
 module EH
   class GameWindow < Gosu::Window

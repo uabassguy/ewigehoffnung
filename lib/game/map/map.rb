@@ -1,8 +1,8 @@
 
 module EH::Game
-  require "ext/astar/node.rb"
-  require "ext/astar/priority_queue.rb"
-  require "game/map/tile.rb"
+  require_relative "../../ext/astar/node.rb"
+  require_relative "../../ext/astar/priority_queue.rb"
+  require_relative "tile.rb"
   
   class Map
     attr_reader :props, :layers, :properties

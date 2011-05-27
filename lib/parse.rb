@@ -1,14 +1,14 @@
 
 # Parsers
 
-require "game/map/map.rb"
-require "game/item.rb"
-require "game/spell.rb"
+require_relative "game/map/map.rb"
+require_relative "game/item.rb"
+require_relative "game/spell.rb"
 
-require "tileset.rb"
-require "layer.rb"
+require_relative "tileset.rb"
+require_relative "layer.rb"
 
-require "game/npc/behaviour.rb"
+require_relative "game/npc/behaviour.rb"
 
 require "rexml/document"
 

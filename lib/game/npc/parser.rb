@@ -1,5 +1,5 @@
 
-require "game/map/map_particle.rb"
+require_relative "../map/map_particle.rb"
 
 module EH::Game::NPC
   include EH::Game

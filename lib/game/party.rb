@@ -1,5 +1,5 @@
 
-require "game/character.rb"
+require_relative "character.rb"
 
 module EH::Game
   

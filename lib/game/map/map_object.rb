@@ -164,5 +164,5 @@ module EH::Game
   end
 end
 
-require "game/npc/npc.rb"
-require "game/map/player.rb"
+require_relative "../npc/npc.rb"
+require_relative "../map/player.rb"

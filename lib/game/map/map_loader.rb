@@ -5,7 +5,7 @@
 # 
 # 4 => current
 
-require "game/map/fog.rb"
+require_relative "fog.rb"
 
 module EH::Game
   class MapLoader

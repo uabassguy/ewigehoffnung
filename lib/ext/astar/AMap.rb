@@ -1,8 +1,8 @@
 #AStar Map
 #by Marcin Coles
 #27/Sep/2007
-require 'astar/PriorityQueue'
-require 'astar/Node'
+require_relative 'priority_queue.rb'
+require_relative 'node.rb'
 
 module AStar
 

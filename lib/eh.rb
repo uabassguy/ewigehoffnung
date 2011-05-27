@@ -70,7 +70,7 @@ module EH
     end
   end
   
-  require "config.rb"
+  require_relative "config.rb"
   
   @config = Config.new
   @config.load
@@ -79,7 +79,7 @@ module EH
   end
   
   begin
-    require 'gl'
+    require "gl"
   rescue
     warn("WARNING: OpenGL gem not found, disabling shader support")
     config[:opengl] = false
@@ -165,13 +165,13 @@ end
 
 puts("INFO: Loaded core module (v#{EH::VERSION})\nLIB #{EH::LIBRARY_PATH}\nHOME #{EH::HOME_PATH}")
 
-require "translate.rb"
-require "parse.rb"
-require "sample.rb"
-require "song.rb"
-require "sprite.rb"
-require "gui/base.rb"
-require "states/menus.rb"
-require "game/map/player.rb"
-require "game/npc/npc.rb"
-require "game/combat/battle.rb"
+require_relative "translate.rb"
+require_relative "parse.rb"
+require_relative "sample.rb"
+require_relative "song.rb"
+require_relative "sprite.rb"
+require_relative "gui/base.rb"
+require_relative "states/menus.rb"
+require_relative "game/map/player.rb"
+require_relative "game/npc/npc.rb"
+require_relative "game/combat/battle.rb"

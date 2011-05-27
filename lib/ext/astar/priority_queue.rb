@@ -3,7 +3,7 @@
 #27/Sep/2007
 #note - not really a priority queue at this point
 
-require 'ext/astar/node.rb'
+require_relative "node.rb"
 
 module AStar
 

@@ -1,12 +1,12 @@
 
-require "states/states.rb"
-require "gui/char_selector.rb"
-require "gui/inventory.rb"
-require "gui/item_info.rb"
-require "gui/char_equip.rb"
-require "gui/image.rb"
-require "gui/textfield.rb"
-require "gui/slider.rb"
+require_relative "states.rb"
+require_relative "../gui/char_selector.rb"
+require_relative "../gui/inventory.rb"
+require_relative "../gui/item_info.rb"
+require_relative "../gui/char_equip.rb"
+require_relative "../gui/image.rb"
+require_relative "../gui/textfield.rb"
+require_relative "../gui/slider.rb"
 
 module EH::States
   class StartMenu < State

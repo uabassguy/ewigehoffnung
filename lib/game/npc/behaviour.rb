@@ -1,6 +1,6 @@
 
-require "game/npc/task.rb"
-require "game/npc/parser.rb"
+require_relative "task.rb"
+require_relative "parser.rb"
 
 module EH::Game::NPC
   

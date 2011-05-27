@@ -1,10 +1,10 @@
 
-require "game/inventory.rb"
-require "game/skills.rb"
-require "game/constitution.rb"
-require "game/mind.rb"
-require "game/equipment.rb"
-require "game/magic.rb"
+require_relative "inventory.rb"
+require_relative "skills.rb"
+require_relative "constitution.rb"
+require_relative "mind.rb"
+require_relative "equipment.rb"
+require_relative "magic.rb"
 
 module EH::Game
   def self.characters

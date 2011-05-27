@@ -1,5 +1,5 @@
 
-require "def/spells.rb"
+require_relative "../def/spells.rb"
 
 module EH::Game
   
