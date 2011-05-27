@@ -78,6 +78,14 @@ module EH
     return @config.hash
   end
   
+  begin
+    require 'gl'
+  rescue
+    warn("WARNING: OpenGL gem not found, disabling shader support")
+    config[:opengl] = false
+  end
+
+  
   # Graceful exit
   def self.exit(int)
     @config.save

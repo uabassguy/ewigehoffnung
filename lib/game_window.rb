@@ -16,7 +16,7 @@ module EH
       @unpress = []
       @font = EH.font(EH::DEFAULT_FONT, 20)
       @bg = EH.sprite("pixel", true)
-      if (EH.config[:contrast] != 1.0)
+      if (EH.config[:contrast] != 1.0 and EH.config[:opengl])
         @contrast = Shader.new(self, "glsl/contrast")
         @contrast["contrast"] = EH.config[:contrast]
       end

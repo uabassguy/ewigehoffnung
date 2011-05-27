@@ -1,6 +1,4 @@
 
-require 'gl'
-
 class Shader
   include Gl
   
