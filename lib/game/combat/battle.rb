@@ -102,6 +102,15 @@ module EH::Game
       end
     end
     
+    class Enemy
+      attr_reader :name, :strength, :type, :weapons, :behaviour, :graphic
+      def initialize(name, strength, graphic, type, weapons, bhv)
+        @graphic = graphic
+        @name, @strength, @type, @weapons = name, strength, type, weapons
+        @behaviour = bhv
+      end
+    end
+    
     # Superclass for enemies and actors
     class BattleObject
       attr_reader :target
@@ -132,20 +141,15 @@ module EH::Game
       def attacked(hit)
         @target = nil
       end
-    end
-    
-    class Enemy
-      attr_reader :name, :strength, :type, :weapons, :behaviour, :graphic
-      def initialize(name, strength, graphic, type, weapons, bhv)
-        @graphic = graphic
-        @name, @strength, @type, @weapons = name, strength, type, weapons
-        @behaviour = bhv
+      
+      def name
+        return ""
       end
     end
     
     class BattleEnemy < BattleObject
-      attr_reader :name, :strength, :type, :weapons, :behaviour, :data
-      attr_accessor :gui
+      attr_reader :data
+      attr_writer :gui
       def initialize(enemy, x, y, z)
         super(enemy.graphic, x, y, z)
         @data = enemy
@@ -174,6 +178,10 @@ module EH::Game
       
       def draw
         super
+      end
+      
+      def name
+        return @data.name
       end
     end
     
@@ -223,6 +231,10 @@ module EH::Game
       def ready!
         @next.fade
         @ready = true
+      end
+      
+      def name
+        return @character.name
       end
     end
     
@@ -274,35 +286,45 @@ module EH::Game
       end
       
       def attack(attacker, target)
-        puts("STUB: Battle.attack(#{attacker.inspect}, #{target.inspect})")
+        puts("STUB: Battle.attack(#{attacker.name}, #{target.name})")
       end
       
       def spell(attacker, targets, spell)
-        puts("STUB: Battle.spell(#{attacker.inspect}, #{targets.inspect}, #{spell.inspect})")
+        puts("STUB: Battle.spell(#{attacker.name}, #{targets.name}, #{spell.name})")
       end
       
       def item(attacker, target, item)
-        puts("STUB: Battle.item(#{attacker.inspect}, #{target.inspect}, #{item.inspect})")
+        puts("STUB: Battle.item(#{attacker.name}, #{target.name}, #{item.name})")
       end
       
       def update
         pause = @gui.paused?
         @background.update
         @control.update
-        if !@gui.paused?
-          @enemies.each { |enemy|
-            enemy.update(pause)
-          }
-          @party.members.each { |actor|
-            actor.update(pause)
-            if actor.ready? and !actor.ready_shown
-              @gui.push(:ready, actor)
-              actor.ready_shown = true
-            elsif !actor.ready?
-              actor.ready_shown = false
-            end
-          }
+        if !@gui.attacking.empty?
+          attack(@gui.attacking.first, @gui.attacking.last)
+          @gui.attacked
         end
+        if !@gui.casting.empty?
+          spell(@gui.casting.first, @gui.casting.last)
+          @gui.spell_cast
+        end
+        if !@gui.using.empty?
+          attack(@gui.using.first, @gui.using.last)
+          @gui.item_used
+        end
+        @enemies.each { |enemy|
+          enemy.update(pause)
+        }
+        @party.members.each { |actor|
+          actor.update(pause)
+          if actor.ready? and !actor.ready_shown
+            @gui.push(:ready, actor)
+            actor.ready_shown = true
+          elsif !actor.ready?
+            actor.ready_shown = false
+          end
+        }
         @gui.update
       end
       

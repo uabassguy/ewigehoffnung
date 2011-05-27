@@ -3,6 +3,8 @@ module EH::Game::Combat
   
   class GUI
     
+    attr_reader :attacking, :casting, :using
+    
     def initialize
       @x = 0
       @y = 544
@@ -12,6 +14,9 @@ module EH::Game::Combat
       @ready = []
       @paused = false
       @chosen = @choose = nil
+      @attacking = []
+      @casting = []
+      @using = []
     end
       
     def push(type, *parms)
@@ -24,7 +29,6 @@ module EH::Game::Combat
     def open_info(obj, x, y)
       if @choose and !@chosen
         @chosen = obj
-        puts("chose object")
       else
         if EH.config[:combat_gui_info_window_x]
           x = EH.config[:combat_gui_info_window_x]
@@ -62,7 +66,37 @@ module EH::Game::Combat
       return @paused
     end
     
+    def attacked
+      @attacking = []
+    end
+    
+    def spell_cast
+      @casting = []
+    end
+    
+    def item_used
+      @using = []
+    end
+    
     private
+    
+    def attack(attacker, target)
+      @attacking = [attacker, target]
+      shift_ready
+      abort_action(@ready.first)
+    end
+    
+    def cast(attacker, target, spell)
+      @casting = [attacker, target, spell]
+      shift_ready
+      abort_action(@ready.first)
+    end
+    
+    def use(attacker, target, item)
+      @using = [attacker, target, item]
+      shift_ready
+      abort_action(@ready.first)
+    end
     
     def ready(ary)
       actor = ary.first
@@ -97,7 +131,6 @@ module EH::Game::Combat
     end
     
     def open_attack(actor)
-      puts("STUB: GUI.open_attack")
       @paused = true
       @choose = lambda { attack(actor, @chosen) }
       open_abort(actor)
