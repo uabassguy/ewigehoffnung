@@ -4,17 +4,17 @@
 {
 name = stop_bleed
 icon = "stop_bleed"
-type = healing_magic
+type = healing
 cost = 2
 }
 
 # Mind
 
 {
-name = 
-icon = ""
+name = protect
+icon = "protect"
 type = mind
-cost = 0
+cost = 1
 }
 
 # Elemental
@@ -31,4 +31,12 @@ name = cold
 icon = "cold"
 type = elemental
 cost = 10
+}
+
+#EOF
+{
+name = 
+icon = ""
+type = 
+cost = 
 }

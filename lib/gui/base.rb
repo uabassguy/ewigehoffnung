@@ -7,8 +7,8 @@ module EH::GUI
     attr_reader :state, :x, :y, :w, :h
     # height includes titlebar
     attr_accessor :xoff, :yoff, :zoff # completely unused, just used for windows in windows
-    def initialize(state, x, y, w, h, titlestr, close=true, bg=nil, move=false, z=-1)
-      @state = state
+    def initialize(x, y, w, h, titlestr, close=true, bg=nil, move=false, z=-1)
+      @state = EH.window.state
       @xoff = @yoff = @zoff = 0
       if bg
         @bg = EH.sprite(bg)
@@ -55,13 +55,16 @@ module EH::GUI
     def remove?
       return @remove
     end
+    # Set the title
     def title=(str)
       @title = str
     end
+    # Add an element
     def add(name, el)
       @elements.store(name, el)
     end
     
+    # Enable position saving
     def save_pos(xsym, ysym)
       @xsym, @ysym = xsym, ysym
       @save_pos = true

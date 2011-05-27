@@ -14,7 +14,7 @@ module EH::Game
         elsif y < 0
           y = 0
         end
-        super(EH.window.state, x, y, 640, 480, EH::Trans.menu(:magic), true, "osd/magic_bg", true)
+        super(x, y, 640, 480, EH::Trans.menu(:magic), true, "osd/magic_bg", true)
         @caster, @target = caster, target
         add(:char, EH::GUI::CharSelector.new(16, 16, @state.party))
       end

@@ -37,8 +37,10 @@ module EH
         :options => "Optionen",
         :update => "Update",
         :items => "Gegenstände",
+        :item => "Gegenstand",
         :equipment => "Ausrüstung",
         :skills => "Fertigkeiten",
+        :skill => "Fertigkeit",
         :magic => "Magie",
         :save => "Speichern",
         :load => "Laden",
@@ -52,6 +54,7 @@ module EH
         :ground => "Boden",
         :you => "Du",
         :talk_to => "Ansprechen",
+        :attack => "Angreifen",
       },
       "en" => {
         :menu => "Menu",
@@ -61,8 +64,10 @@ module EH
         :options => "Options",
         :update => "Update",
         :items => "Items",
+        :item => "Item",
         :equipment => "Equipment",
         :skills => "Skills",
+        :skill => "Skill",
         :magic => "Magic",
         :save => "Save",
         :load => "Load",
@@ -76,6 +81,7 @@ module EH
         :ground => "Ground",
         :you => "You",
         :talk_to => "Talk to",
+        :attack => "Attack",
       },
     }
     
