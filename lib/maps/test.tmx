@@ -116,15 +116,17 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="events1" width="20" height="15">
-  <object name="Ejera" type="npc" x="224" y="64" width="32" height="32">
+ <objectgroup color="#00aa00" name="events1" width="20" height="15">
+  <object name="npc_1" type="npc" x="224" y="64" width="32" height="32">
    <properties>
     <property name="file" value="ejera"/>
+    <property name="name" value="Ejera"/>
    </properties>
   </object>
-  <object name="Salyjea" type="npc" x="352" y="256" width="32" height="32">
+  <object name="npc_2" type="npc" x="352" y="256" width="32" height="32">
    <properties>
     <property name="file" value="salyjea"/>
+    <property name="name" value="Salyjea"/>
    </properties>
   </object>
  </objectgroup>

@@ -5,17 +5,19 @@ module EH::Game::NPC
     # action: proc to execute
     # wait: stall later tasks until this one finished
     # remove_after: delete task when finished
-    def initialize(action, wait, remove_after=false)
-      @action = action
+    def initialize(parameters, wait, remove_after=false)
+      @array = parameters
       @wait, @remove = wait, remove_after
       @finished = false
     end
   
     def execute(npc, other=nil)
-      #@action.call(npc, other) if !@finished
-      if !@wait
-        @finished = true
-      end
+      puts("Task.execute")
+      ap @array
+    end
+    
+    def empty?
+      return @array.empty?
     end
   
     def wait?

@@ -21,7 +21,7 @@ module EH::Parse
     def initialize(file, parsables, klass)
       begin
         @file = File.open(file)
-      rescue => ex
+      rescue
         warn("ERROR: Failed to open file #{file}")
       end
       @parsables = parsables
@@ -51,20 +51,20 @@ module EH::Parse
           block = false
           parsed.push(@klass.send(:new))
           vars.each { |var|
-            parsed.last.ivs(var.to_s.sub("_parsed", "").to_sym, ivg(var))
+            parsed.last.ivs(var.to_s[0...-7].to_sym, ivg(var))
           }
           next
         end
         if block
           line.gsub!("\"", "")
-          key = line.gsub(/\s\=.+/, "")
-          val = cast_type(line.gsub(/.+\s\=\s/, ""), @parsables[key])
+          line =~ /(.+)\s\=\s(.+)/
+          key = $1
+          val = cast_type($2, @parsables[key])
           ivs("@#{key}_parsed".to_sym, val)
         end
       }
-      puts("INFO: Parsed #{parsed.length} #{File.basename(@file).sub(".def", "")}")
+      puts("INFO: Parsed #{parsed.length} #{File.basename(@file).sub('.def', '')}")
       @file.close
-      ap parsed
       return parsed
     end
     
@@ -80,11 +80,8 @@ module EH::Parse
         return 0
       when :float
         return 0.0
-      when :array
-      when :symarray
+      when :array, :symarray
         return []
-      when :image
-        return nil
       end
     end
     
@@ -99,20 +96,11 @@ module EH::Parse
       when :float
         return str.to_f
       when :array
-        s = str.gsub(" ", "")
-        s.gsub!("[", "")
-        s.gsub!("]", "")
-        return s.split(",")
+        s = str.gsub!(/\s|\[|\]/, '')
+        return s.split(',')
       when :symarray
-        ary2 = []
-        s = str.gsub(" ", "")
-        s.gsub!("[", "")
-        s.gsub!("]", "")
-        ary = s.split(",")
-        ary.each { |str|
-          ary2.push(str.to_sym)
-        }
-        return ary2
+        s = str.gsub!(/\s|\[|\]/, '')
+        return(s.split(',').map(&:to_sym))
       when :image
         return EH.sprite(str)
       end
@@ -143,7 +131,7 @@ module EH::Parse
       layers.last.fill_tilemap(tiles.first) # TODO check for gids to choose right tileset
     }
     root.each_element("//objectgroup") { |el|
-      objects += self.objectgroup(el, file)
+      objects.concat(self.objectgroup(el, file))
     }
     return EH::Game::Map.new(properties, layers, objects)
   end
@@ -193,7 +181,7 @@ module EH::Parse
     el.each_element("object") { |obj|
       props = self.xml_properties(obj.elements["properties[1]"])
       props.store(:layer, el.attributes["name"])
-      props.store(:name, obj.attributes["name"].gsub("-", "_"))
+      props.store(:id, obj.attributes["name"].gsub("-", "_"))
       if obj.attributes["type"] == "npc"
         ary.push(EH::Game::MapNPC.new(obj.attributes["x"].to_i, obj.attributes["y"].to_i, props))
         ary.last.behaviour = self.behaviour(map, ary.last)
@@ -380,7 +368,7 @@ module EH::Parse
           if line.include?("{")
             block = true
             name = line.gsub(/\s?\{/, "")
-            if npc.properties[:name] != name
+            if npc.properties[:id] != name
               ary = block = false
               next
             end
@@ -391,20 +379,44 @@ module EH::Parse
     rescue Errno::ENOENT
       # we dont care about missing definition files
     end
-    #awesome_print(b)
     return b
   end
   
   def self.task_array(inp, npc)
     ret = []
+    wait = remove = false
     inp.each { |el|
-      ret.push(el.split(" "))
+      ary = el.split(" ")
+      ary.each { |parm|
+        if parm.include?("|")
+          if parm.include?("@")
+            parm.sub!("@x", "#{npc.x}")
+            parm.sub!("@y", "#{npc.y}")
+          end
+          ary[ary.index(parm)] = parm.to_pos
+          next
+        elsif ary.first == :msg and parm.include?(":")
+          ary[ary.index(parm)] = EH::Trans.dialogue(parm.gsub(":", "").to_sym)
+          next
+        end
+        if parm == "wait"
+          ary.delete(parm)
+          wait = true
+          next
+        elsif parm == "remove"
+          ary.delete(parm)
+          remove = true
+          next
+        end
+        ary[ary.index(parm)] = parm.to_sym
+      }
+      ary.compact!
+      ret.push(ary)
     }
-    ary = []
-    ret.each { |task|
-      ary.push(EH::Game::NPC.send(task.first.to_sym, task, npc))
-    }
-    return ary
+    ret.compact!
+    task = EH::Game::NPC::Task.new(ret, wait, remove)
+    ap task
+    return task
   end
   
   # TODO create special parser

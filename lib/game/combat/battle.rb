@@ -301,11 +301,11 @@ module EH::Game
           @gui.attacked
         end
         if !@gui.casting.empty?
-          spell(@gui.casting.first, @gui.casting.last)
+          spell(@gui.casting.first, @gui.casting[1], @gui.casting.last)
           @gui.spell_cast
         end
         if !@gui.using.empty?
-          attack(@gui.using.first, @gui.using.last)
+          item(@gui.using.first, @gui.using[1], @gui.using.last)
           @gui.item_used
         end
         @enemies.each { |enemy|

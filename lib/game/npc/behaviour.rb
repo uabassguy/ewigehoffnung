@@ -9,11 +9,11 @@ module EH::Game::NPC
     attr_reader :init, :trigger, :motion, :update
   
     def initialize(npc, init=[], trigger=[], motion=[], update=[])
+      @self = npc
       @init = init
       @trigger = trigger
       @motion = motion
       @update = update
-      @self = npc
     end
     
     def on_init
@@ -42,14 +42,9 @@ module EH::Game::NPC
       exec_task(@curr_motion)
     end
     
-    def exec_tasks(ary, other=nil)
-      ary.compact!
-      ary.each { |task|
-        ary[ary.index(task)] = exec_task(task, other)
-        task.reset
-      }
-      ary.compact!
-      return ary
+    def exec_tasks(task, other=nil)
+      ap task
+      task.execute(self, other)
     end
     
     def exec_task(task, other=nil)

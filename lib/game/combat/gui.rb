@@ -53,6 +53,10 @@ module EH::Game::Combat
           @w.delete(@w.key(w))
         end
       }
+      w = @w[:select_spell]
+      if w and w.selected
+        @choose = lambda { cast(w.actor, @chosen, w.selected) }
+      end
       if @choose and @chosen
         @choose.call
       end

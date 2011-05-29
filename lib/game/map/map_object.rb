@@ -13,7 +13,7 @@ module EH::Game
       @tx, @ty = x/32, y/32 # tile based position, used for collision
       @z = EH::MAPOBJECT_Z
       @z += props[:z] if props[:z]
-      @speed = 0 # speed
+      @speed = 0
       @speed += props[:speed] if props[:speed]
       @dx = @dy = 0 # distance to move, should be multiple of @speed
       @dead = false
@@ -31,11 +31,12 @@ module EH::Game
     
     def setup
       if !@setup
-        return
+        return false
       end
       if @setup
         @setup = false
       end
+      return true
     end
     
     def update

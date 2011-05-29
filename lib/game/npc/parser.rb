@@ -63,7 +63,8 @@ module EH::Game::NPC
     msg = self.make_msg_str(ary.first)
     wait = ary.include?("wait")
     remove = ary.include?("remove")
-    task = Task.new(lambda { |np, other| EH.window.state.map.message(msg) }, wait, remove)
+    #task = Task.new(lambda { |np, other| EH.window.state.map.message(msg) }, wait, remove)
+    task = Task.new({}, wait, remove)
     return task
   end
   
