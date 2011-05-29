@@ -317,7 +317,7 @@ module EH::Parse
       b = nil
       
       name = array = type = ""
-      init = trigger = motion = update = []
+      init = trigger = motion = update = EH::Game::NPC::DummyTask.new
       
       file.each_line { |line|
         line.sub!("\n", "")
@@ -355,15 +355,11 @@ module EH::Parse
           if line.include?("}")
             block = false
             b = EH::Game::NPC::Behaviour.new(npc, init, trigger, motion, update)
-            init = trigger = motion = update = []
+            init = trigger = motion = update = EH::Game::NPC::DummyTask.new
             break
           end
-          if line.match(/\s?=\s?\[/)
-            if !line.include?("]")
-              type = line.gsub(/\s?=\s?\[/, "")
-              ary = true
-            end
-          end
+          type = line.gsub(/\s?=\s?\[/, "")
+          ary = true
         else
           if line.include?("{")
             block = true

@@ -14,22 +14,19 @@ module EH::Game::NPC
       @trigger = trigger
       @motion = motion
       @update = update
+      ap self
     end
     
     def on_init
-      exec_tasks(@init)
-      if !@motion.empty?
-        @curr_motion = @motion.last
-        on_endmotion
-      end
+      exec_task(@init)
     end
   
     def on_trigger(other)
-      @trigger = exec_tasks(@trigger, other)
+      exec_task(@trigger, other)
     end
   
     def on_update
-      @update = exec_tasks(@update)
+      exec_task(@update)
       on_endmotion if !@motion.empty? and @self.goal.state == :finished
     end
     
@@ -42,15 +39,10 @@ module EH::Game::NPC
       exec_task(@curr_motion)
     end
     
-    def exec_tasks(task, other=nil)
-      ap task
-      task.execute(self, other)
-    end
-    
     def exec_task(task, other=nil)
       if task.class == MotionTask
         task.execute(@self, other)
-        return task
+        return
       end
       task.execute(@self, other) if !task.finished?
       if task.finished?
@@ -58,7 +50,6 @@ module EH::Game::NPC
           task = nil
         end
       end
-      return task
     end
   
   end

@@ -54,4 +54,10 @@ module EH::Game::NPC
     end
   end
   
+  class DummyTask < Task
+    def initialize
+      super([], false, false)
+    end
+  end
+  
 end
