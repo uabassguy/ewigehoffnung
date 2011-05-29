@@ -17,54 +17,106 @@ require "rexml/document"
 module EH::Parse
   include REXML
   
-  def self.spells
-    ary = []
-    begin
-      file = File.open("def/spells.def")
-    rescue
-      warn("ERROR: Couldn't find spells.def")
-      return ary
+  class Parser
+    def initialize(file, parsables, klass)
+      begin
+        @file = File.open(file)
+      rescue => ex
+        warn("ERROR: Failed to open file #{file}")
+      end
+      @parsables = parsables
+      @klass = klass
     end
-    block = false
     
-    name = icon = ""
-    type = nil
-    cost = 0
+    def parse
+      parsed = []
+      vars = []
+      block = false
+      
+      @parsables.each_key { |str|
+        vars.push("@#{str}_parsed".to_sym)
+      }
         
-    file.each_line { |line|
-      line.sub!("\n", "")
-      if line[0] == "#" or line.length == 0
-        break if line.index("#EOF")
-        next
-      end
-      if line[0] == "{"
-        block = true
-      end
-      if line[0] == "}"
-        block = false
-        ary.push(EH::Game::Spell.new(name, icon, type, cost))
-        name = icon = ""
-        type = nil
-        cost = 0
-      end
-      if block
-        if line.start_with?("name")
-          line.gsub!(/name *= */, "")
-          name = line.gsub("\"", "").to_sym
-        elsif line.start_with?("icon")
-          line.gsub!(/icon *= */, "")
-          icon = line.gsub("\"", "")
-        elsif line.start_with?("type")
-          line.gsub!(/type *= */, "")
-          type = line.gsub("\"", "").to_sym
-        elsif line.start_with?("cost")
-          line.gsub!(/cost *= */, "")
-          cost = line.gsub("\"", "").to_i
+      @file.each_line { |line|
+        line.sub!("\n", "")
+        if line[0] == "#" or line.length == 0
+          break if line.index("#EOF")
+          next
         end
+        if line[0] == "{"
+          block = true
+          next
+        end
+        if line[0] == "}"
+          block = false
+          parsed.push(@klass.send(:new))
+          vars.each { |var|
+            parsed.last.ivs(var.to_s.sub("_parsed", "").to_sym, ivg(var))
+          }
+          next
+        end
+        if block
+          line.gsub!("\"", "")
+          key = line.gsub(/\s\=.+/, "")
+          val = cast_type(line.gsub(/.+\s\=\s/, ""), @parsables[key])
+          ivs("@#{key}_parsed".to_sym, val)
+        end
+      }
+      puts("INFO: Parsed #{parsed.length} #{File.basename(@file).sub(".def", "")}")
+      @file.close
+      ap parsed
+      return parsed
+    end
+    
+    private
+    
+    def eval_type(sym)
+      case sym
+      when :string
+        return ""
+      when :symbol
+        return :nil
+      when :int
+        return 0
+      when :float
+        return 0.0
+      when :array
+      when :symarray
+        return []
+      when :image
+        return nil
       end
-    }
-    puts("INFO: Parsed #{ary.size} spells")
-    return ary
+    end
+    
+    def cast_type(str, sym)
+      case sym
+      when :string
+        return str
+      when :symbol
+        return str.to_sym
+      when :int
+        return str.to_i
+      when :float
+        return str.to_f
+      when :array
+        s = str.gsub(" ", "")
+        s.gsub!("[", "")
+        s.gsub!("]", "")
+        return s.split(",")
+      when :symarray
+        ary2 = []
+        s = str.gsub(" ", "")
+        s.gsub!("[", "")
+        s.gsub!("]", "")
+        ary = s.split(",")
+        ary.each { |str|
+          ary2.push(str.to_sym)
+        }
+        return ary2
+      when :image
+        return EH.sprite(str)
+      end
+    end
   end
   
   def self.map(file)
@@ -556,63 +608,25 @@ module EH::Parse
     return EH::Game::Combat::Behaviour.new(hash)
   end
   
-  def self.enemies
-    ary = []
-    begin
-      file = File.open("def/enemies.def")
-    rescue
-      warn("ERROR: Couldn't find enemies.def")
-      return ary
-    end
-    block = false
-    
-    name = graphic = ""
-    strength = 0
-    type = :animal
-    weapons = []
-        
-    file.each_line { |line|
-      line.sub!("\n", "")
-      if line[0] == "#" or line.length == 0
-        break if line.index("#EOF")
-        next
-      end
-      if line[0] == "{"
-        block = true
-      end
-      if line[0] == "}"
-        block = false
-        weaps = []
-        weapons.each { |w|
-          weaps.push(EH::Game.weapons[w])
-        }
-        ary.push(EH::Game::Combat::Enemy.new(name.to_sym, strength, graphic, type, weaps, enemy_behaviour(name)))
-        name = graphic = ""
-        strength = 0
-        type = :animal
-        weapons = []
-      end
-      if block
-        if line.start_with?("name")
-          line.gsub!(/name *= */, "")
-          name = line.gsub("\"", "")
-        elsif line.start_with?("file")
-          line.gsub!(/file *= */, "")
-          graphic = line.gsub("\"", "")
-        elsif line.start_with?("strength")
-          line.gsub!(/strength *= */, "")
-          strength = line.gsub("\"", "").to_i
-        elsif line.start_with?("type")
-          line.gsub!(/type *= */, "")
-          type = line.gsub("\"", "").to_sym
-        elsif line.start_with?("weapons")
-          line.gsub!(/weapons *= */, "")
-          weapons = parse_sym_array(line.gsub("\"", ""))
-        end
-      end
+  def self.spells
+    p = {
+      "name" => :symbol,
+      "icon" => :image,
+      "type" => :symbol,
+      "cost" => :int,
     }
-    puts("INFO: Parsed #{ary.size} enemies")
-    return ary
+    return Parser.new("def/spells.def", p, EH::Game::Spell).parse
+  end
+  
+  def self.enemies
+    p = {
+      "name" => :symbol,
+      "file" => :image,
+      "type" => :symbol,
+      "strength" => :int,
+      "weapons" => :symarray,
+    }
+    return Parser.new("def/enemies.def", p, EH::Game::Combat::Enemy).parse
   end
   
   def self.weapons

@@ -20,7 +20,7 @@ desc = "Heat"
 cold
 {
 name = "Cold"
-desc = "cold"
+desc = "Cold"
 }
 
 #EOF

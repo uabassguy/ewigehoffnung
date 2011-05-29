@@ -160,45 +160,45 @@ module EH::GUI
       @bg = EH.sprite("gui/container_background")
       @scrollbar = Scrollbar.new(x+w-24, y, 24, h)
       @ch = ch
-      @content_offset = 0
       @items = []
       @item = nil
       @changed = false
     end
     def add(element)
       element.x = @x
-      element.y = @y + ((@items.size+1)*@ch)
+      element.y = @y + @yoff + ((@items.size+1)*@ch)
       @items.push(element)
     end
+    
     def update
       @scrollbar.update
-      @scrollbar.xoff, @scrollbar.yoff = @xoff, @yoff
-      @content_offset = @scrollbar.offset * -@ch
+      @scrollbar.xoff, @scrollbar.yoff, @scrollbar.zoff = @xoff, @yoff, @zoff
+      offset = @scrollbar.offset * -@ch
       @items.each { |item|
-        item.yoff = @yoff + (@content_offset/@ch)
-        if item.y + item.yoff < @y
-          next
-        elsif item.y + item.yoff + item.h > @y+@h
+        item.xoff, item.zoff = @xoff, @zoff
+        item.yoff = @yoff + (offset/@ch) - @ch
+        if item.y + item.yoff + item.h < @scrollbar.y + @scrollbar.yoff
           next
         end
         item.update
       }
     end
+    
     def draw
       @scrollbar.draw
       @bg.draw(@x+@xoff, @y+@yoff, EH::GUI_Z, (@w-24)/@bg.width.to_f, @h/@bg.height.to_f)
       @items.each { |item|
-        if item.y + item.yoff < @y
-          next
-        elsif item.y + item.yoff + item.h > @y+@h
+        if item.y + item.yoff + item.h < @scrollbar.y + @scrollbar.yoff
           next
         end
         item.draw
       }
     end
+    
     def selected
       return @item
     end
+    
     def changed?
       if @changed
         @changed = false
@@ -207,11 +207,14 @@ module EH::GUI
         return false
       end
     end
+    
     private
+    
     def clicked(item)
       @changed = true
       @item = item
     end
+    
   end
   
   class Scrollbar < Element

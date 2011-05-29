@@ -10,6 +10,7 @@ module EH::GUI
       @item = nil
       assemble_items
     end
+    
     def assemble_items
       @items = []
       items = {}
@@ -29,18 +30,12 @@ module EH::GUI
         @items.push(Button.new(@x, @y+(y*ITEM_HEIGHT), @w-24, ITEM_HEIGHT, "#{amount}x #{Trans.item(item.name)}", lambda { clicked(item) }, false, :left))
         y += 1
       }
-      if items.length <= @h/ITEM_HEIGHT
-        @scrollbar.sh = @h
-      else
-        @scrollbar.sh = @scrollbar.h - ((@h/ITEM_HEIGHT)*items.length)
-      end
     end
+    
     def inventory=(inv)
       @inv = inv
       assemble_items
     end
-    def update
-      super
-    end
+    
   end
 end

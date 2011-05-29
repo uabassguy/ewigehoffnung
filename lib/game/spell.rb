@@ -22,11 +22,6 @@ module EH::Game
   
   class Spell
     attr_reader :name, :icon, :type, :cost
-    def initialize(sym, icon, type, cost)
-      @name, @type, @cost = sym, type, cost
-      @icon = EH.sprite("icons/spells/#{icon}")
-    end
-    
     def cast(caster, target=nil)
       puts("#{caster} casts #{self.name} on #{target}")
       if EH::Game::Spells.respond_to?(self.name)

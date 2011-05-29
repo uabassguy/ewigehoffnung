@@ -154,6 +154,11 @@ class Array
   end
 end
 
+class Object
+  alias ivg instance_variable_get
+  alias ivs instance_variable_set
+end
+
 if !File.exists?("graphics/missing.png")
   puts("FATAL: Couldn't find graphics, exiting.")
   EH.exit(1)

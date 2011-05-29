@@ -104,11 +104,6 @@ module EH::Game
     
     class Enemy
       attr_reader :name, :strength, :type, :weapons, :behaviour, :graphic
-      def initialize(name, strength, graphic, type, weapons, bhv)
-        @graphic = graphic
-        @name, @strength, @type, @weapons = name, strength, type, weapons
-        @behaviour = bhv
-      end
     end
     
     # Superclass for enemies and actors
