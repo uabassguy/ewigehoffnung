@@ -17,7 +17,8 @@ npc_2 {
     init = [
     ]
     trigger = [
-        <msg :test_npc2_greeting wait>
+        <msg :test_npc2_greeting>
+        <particles @x|@y cursor_leaves>
     ]
     update = [
     ]

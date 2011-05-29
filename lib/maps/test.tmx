@@ -123,7 +123,7 @@
     <property name="name" value="Ejera"/>
    </properties>
   </object>
-  <object name="npc_2" type="npc" x="352" y="256" width="32" height="32">
+  <object name="npc_2" type="npc" x="32" y="64" width="32" height="32">
    <properties>
     <property name="file" value="salyjea"/>
     <property name="name" value="Salyjea"/>

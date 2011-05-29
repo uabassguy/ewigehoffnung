@@ -8,13 +8,12 @@ module EH::Game::NPC
     
     attr_reader :init, :trigger, :motion, :update
   
-    def initialize(npc, init=[], trigger=[], motion=[], update=[])
+    def initialize(npc, init, trigger, motion, update)
       @self = npc
       @init = init
       @trigger = trigger
       @motion = motion
       @update = update
-      ap self
     end
     
     def on_init

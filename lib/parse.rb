@@ -382,8 +382,19 @@ module EH::Parse
     ret = []
     wait = remove = false
     inp.each { |el|
+      delete = []
       ary = el.split(" ")
       ary.each { |parm|
+        if parm == "remove"
+          delete.push(parm)
+          remove = true
+          next
+        end
+        if parm == "wait"
+          delete.push(parm)
+          wait = true
+          next
+        end
         if parm.include?("|")
           if parm.include?("@")
             parm.sub!("@x", "#{npc.x}")
@@ -395,24 +406,14 @@ module EH::Parse
           ary[ary.index(parm)] = EH::Trans.dialogue(parm.gsub(":", "").to_sym)
           next
         end
-        if parm == "wait"
-          ary.delete(parm)
-          wait = true
-          next
-        elsif parm == "remove"
-          ary.delete(parm)
-          remove = true
-          next
-        end
         ary[ary.index(parm)] = parm.to_sym
       }
+      delete.each { |el| ary.delete(el) }
       ary.compact!
       ret.push(ary)
     }
     ret.compact!
-    task = EH::Game::NPC::Task.new(ret, wait, remove)
-    ap task
-    return task
+    return EH::Game::NPC::Task.new(ret, wait, remove)
   end
   
   # TODO create special parser
