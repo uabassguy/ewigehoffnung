@@ -20,11 +20,6 @@ module EH::Game
   
   class Skill
     attr_reader :name, :desc, :img
-    def initialize(name, desc, icon)
-      @name = name
-      @desc = desc
-      @img = EH.sprite("icons/skills/#{icon}")
-    end
   end
   
   # skills and their respective levels, instanced once for every character

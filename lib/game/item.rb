@@ -3,12 +3,6 @@ module EH::Game
   class Item
     attr_reader :name, :desc, :icon, :weight, :effects, :type, :img
     attr_reader :icon_file
-    def initialize(name, desc, icon, weight, effects=[], type=:item)
-      @name, @desc, @weight, @effects, @type = name, desc, weight, effects, type
-      @icon = EH.sprite("icons/items/#{icon}")
-      @icon_file = "icons/items/#{icon}"
-      @img = EH.sprite("items/#{icon}")
-    end
   end
   
   def self.items

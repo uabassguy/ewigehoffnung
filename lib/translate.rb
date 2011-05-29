@@ -122,7 +122,7 @@ module EH
               desc = line.gsub("\"", "")
             end
           else
-            item = EH::Game.find_item(line)
+            item = EH::Game.find_item(line.to_sym)
           end
         }
         file.close
@@ -204,7 +204,7 @@ module EH
               desc = line.gsub("\"", "")
             end
           else
-            skill = EH::Game.find_skill(line)
+            skill = EH::Game.find_skill(line.to_sym)
           end
         }
         file.close

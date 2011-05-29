@@ -204,158 +204,7 @@ module EH::Parse
     return ary
   end
   
-  def self.characters
-    ary = []
-    begin
-      file = File.open("def/characters.def")
-    rescue
-      warn("ERROR: Couldn't find characters.def")
-      return ary
-    end
-    block = false
-    
-    name = charset = race = ""
-    age = weight = strength = agility = 0
-    gender = :male
-        
-    file.each_line { |line|
-      line.sub!("\n", "")
-      if line[0] == "#" or line.length == 0
-        break if line.index("#EOF")
-        next
-      end
-      if line[0] == "{"
-        block = true
-      end
-      if line[0] == "}"
-        block = false
-        ary.push(EH::Game::Character.new(name, charset, age, weight, strength, gender, race, agility))
-        name = charset = race = ""
-        gender = :male
-        age = weight = strength = agility = 0
-      end
-      if block
-        if line.start_with?("name")
-          line.gsub!(/name *= */, "")
-          name = line.gsub("\"", "")
-        elsif line.start_with?("file")
-          line.gsub!(/file *= */, "")
-          charset = line.gsub("\"", "")
-        elsif line.start_with?("race")
-          line.gsub!(/race *= */, "")
-          race = line.gsub("\"", "")
-        elsif line.start_with?("strength")
-          line.gsub!(/strength *= */, "")
-          strength = line.gsub("\"", "").to_i
-        elsif line.start_with?("age")
-          line.gsub!(/age *= */, "")
-          age = line.gsub("\"", "").to_i
-        elsif line.start_with?("gender")
-          line.gsub!(/gender *= */, "")
-          gender = line.gsub("\"", "").to_sym
-        elsif line.start_with?("agility")
-          line.gsub!(/agility *= */, "")
-          agility = line.gsub("\"", "").to_i
-        end
-      end
-    }
-    puts("INFO: Parsed #{ary.size} characters")
-    return ary
-  end
-  
-  def self.skills
-    ary = []
-    begin
-      file = File.open("def/skills.def")
-    rescue
-      warn("ERROR: Couldn't find skills.def")
-      return ary
-    end
-    block = false
-    name = desc = icon = ""
-    file.each_line { |line|
-      line.sub!("\n", "")
-      if line[0] == "#" or line.length == 0
-        break if line.index("#EOF")
-        next
-      end
-      if line[0] == "{"
-        block = true
-      end
-      if line[0] == "}"
-        block = false
-        ary.push(EH::Game::Skill.new(name, desc, icon))
-        name = desc = icon = ""
-      end
-      if block
-        if line.start_with?("name")
-          line.gsub!(/name *= */, "")
-          name = line.gsub("\"", "")
-        elsif line.start_with?("desc")
-          line.gsub!(/desc *= */, "")
-          desc = line.gsub("\"", "")
-        elsif line.start_with?("icon")
-          line.gsub!(/icon *= */, "")
-          icon = line.gsub("\"", "")
-        end
-      end
-    }
-    puts("INFO: Parsed #{ary.size} skills")
-    return ary
-  end
-  
-  def self.items
-    ary = []
-    begin
-      file = File.open("def/items.def")
-    rescue
-      warn("ERROR: Couldn't find items.def")
-      return ary
-    end
-    block = false
-    name = desc = icon = type = ""
-    weight = 0.0
-    effects = []
-    file.each_line { |line|
-      line.sub!("\n", "")
-      if line[0] == "#" or line.length == 0
-        break if line.index("#EOF")
-        next
-      end
-      if line[0] == "{"
-        block = true
-      end
-      if line[0] == "}"
-        block = false
-        ary.push(EH::Game::Item.new(name, desc, icon, weight, effects, type))
-        name = desc = icon = ""
-      end
-      if block
-        if line.start_with?("name")
-          line.gsub!(/name *= */, "")
-          name = line.gsub("\"", "")
-        elsif line.start_with?("desc")
-          line.gsub!(/desc *= */, "")
-          desc = line.gsub("\"", "")
-        elsif line.start_with?("icon")
-          line.gsub!(/icon *= */, "")
-          icon = line.gsub("\"", "")
-        elsif line.start_with?("weight")
-          line.gsub!(/weight *= */, "")
-          weight = line.gsub("\"", "").to_f
-        elsif line.start_with?("effects")
-          line.gsub!(/effects *= */, "")
-          effects = parse_sym_array(line.gsub("\"", ""))
-        elsif line.start_with?("type")
-          line.gsub!(/type *= */, "")
-          type = line.gsub("\"", "").to_sym
-        end
-      end
-    }
-    puts("INFO: Parsed #{ary.size} items")
-    return ary
-  end
-  
+  # TODO create special parser
   def self.particles
     hash = {}
     begin
@@ -558,6 +407,7 @@ module EH::Parse
     return ary
   end
   
+  # TODO create special parser
   def self.enemy_behaviour(name)
     hash = {}
     begin
@@ -608,6 +458,51 @@ module EH::Parse
     return EH::Game::Combat::Behaviour.new(hash)
   end
   
+  def self.characters
+    p = {
+      "name" => :string,
+      "age" => :int,
+      "strength" => :int,
+      "weight" => :int,
+      "agility" => :int,
+      "file" => :string,
+      "race" => :string,
+      "gender" => :symbol,
+    }
+    chars = Parser.new("def/characters.def", p, EH::Game::Character).parse
+    chars.each { |char|
+      char.setup
+      char.validate
+    }
+    return chars
+  end
+  
+  def self.skills
+    p = {
+      "name" => :symbol,
+      "icon" => :image,
+    }
+    return Parser.new("def/skills.def", p, EH::Game::Skill).parse
+  end
+  
+  def self.items
+    p = {
+      "name" => :symbol,
+      "icon" => :string,
+      "weight" => :float,
+      "effects" => :symarray,
+      "type" => :symbol,
+    }
+    items = Parser.new("def/items.def", p, EH::Game::Item).parse
+    items.each { |item|
+      icon = item.icon
+      item.ivs("@icon".to_sym, EH.sprite("icons/items/#{icon}"))
+      item.ivs("@icon_file".to_sym, "icons/items/#{icon}")
+      item.ivs("@img".to_sym, EH.sprite("items/#{icon}"))
+    }
+    return items
+  end
+  
   def self.spells
     p = {
       "name" => :symbol,
@@ -629,6 +524,7 @@ module EH::Parse
     return Parser.new("def/enemies.def", p, EH::Game::Combat::Enemy).parse
   end
   
+  # TODO create special parser
   def self.weapons
     hash = {}
     begin

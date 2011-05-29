@@ -1,40 +1,40 @@
 
 {
 name = healing
-icon = "healing"
+icon = "skills/healing"
 }
 
 {
 name = crafting
-icon = "crafting"
+icon = "skills/crafting"
 }
 
 {
 name = botany
-icon = "botany"
+icon = "skills/botany"
 }
 
 {
 name = healing_magic
-icon = "healing_magic"
+icon = "skills/healing_magic"
 }
 
 {
 name = mind
-icon = "mind"
+icon = "skills/mind"
 }
 
 {
 name = elemental
-icon = "elemental"
+icon = "skills/elemental"
 }
 
 {
 name = ranged
-icon = "ranged"
+icon = "skills/ranged"
 }
 
 {
 name = melee
-icon = "melee"
+icon = "skills/melee"
 }

@@ -20,16 +20,9 @@ module EH::Game
     attr_reader :endurance, :state, :agility, :spells
     attr_accessor :health
     # health is only used as a percentage for easier displaying, the real stuff is in @const
-    def initialize(name, charset, age, weight, strength, gender, race, agi)
-      @name, @age, @charset, @race, @gender = name, age, charset, race, gender
-      @weight, @strength = weight, strength
+    
+    def setup
       @health = @endurance = 100
-      @agility = agi
-      if @agility > 100
-        @agility = 0
-      elsif @agility < 0
-        @agility = 0
-      end
       @inventory = EH::Game::Inventory.new(20, @strength)
       @skills = EH::Game::Skills.new
       @const = EH::Game::Constitution.new
@@ -41,6 +34,16 @@ module EH::Game
       EH::Game.spells.each { |spell|
         @spells.store(spell, 0)
       }
+      @charset = @file
+      @file = EH.sprite(@file)
+    end
+    
+    def validate
+      if @agility > 100
+        @agility = 0
+      elsif @agility < 0
+        @agility = 0
+      end
     end
     
     def update

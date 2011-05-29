@@ -2,7 +2,7 @@
 {
 name = wolf
 strength = 40
-file = "wolf"
+file = "combat/wolf"
 type = animal
 weapons = [claw]
 }

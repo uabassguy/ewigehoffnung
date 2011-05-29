@@ -3,7 +3,7 @@
 
 {
 name = stop_bleed
-icon = "stop_bleed"
+icon = "spells/stop_bleed"
 type = healing
 cost = 2
 }
@@ -12,7 +12,7 @@ cost = 2
 
 {
 name = protect
-icon = "protect"
+icon = "spells/protect"
 type = mind
 cost = 1
 }
@@ -21,14 +21,14 @@ cost = 1
 
 {
 name = heat
-icon = "heat"
+icon = "spells/heat"
 type = elemental
 cost = 10
 }
 
 {
 name = cold
-icon = "cold"
+icon = "spells/cold"
 type = elemental
 cost = 10
 }
@@ -36,7 +36,7 @@ cost = 10
 #EOF
 {
 name = 
-icon = ""
+icon = "spells/"
 type = 
 cost = 
 }
