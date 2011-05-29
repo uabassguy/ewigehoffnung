@@ -2,6 +2,7 @@
 module EH::Game
   
   class MapParticle
+    attr_accessor :follow, :xoff, :yoff
     def initialize(x, y, effect)
       @emitter = EH::Particles.new(effect, x, y)
     end

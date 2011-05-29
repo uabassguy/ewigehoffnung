@@ -7,7 +7,7 @@ module EH::Game
   # Interactive map object
   class MapNPC < MapObject
     attr_accessor :behaviour
-    attr_reader :goal, :gamename
+    attr_reader :goal, :gamename, :children
     def initialize(x, y, props)
       super(x, y, props)
       @x, @y = x, y
@@ -16,6 +16,7 @@ module EH::Game
       @speed = 2
       @name = "npc-#{props[:file].downcase}-#{rand(1000)}"
       @gamename = props[:name] ? props[:name] : @name
+      @children = []
     end
     def setup
       super
@@ -35,6 +36,13 @@ module EH::Game
       return @goal
     end
     def update
+      @children.each { |child|
+        if child.follow
+          child.x = @x + child.xoff
+          child.y = @y + child.yoff
+        end
+        child.update
+      }
       @behaviour.on_update if @behaviour
       moved = update_move(EH.window.state.map.current)
       @goal.update if @goal.size > 0
@@ -57,6 +65,11 @@ module EH::Game
           end
         end
       end
+    end
+    
+    def draw
+      super
+      @children.map(&:draw)
     end
     
     def destroy_goal

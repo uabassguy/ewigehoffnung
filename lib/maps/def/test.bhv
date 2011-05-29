@@ -3,8 +3,10 @@ npc_1 {
     init = [
         <particles @x|@y smoke follow>
     ]
-    trigger = []
-    update = []
+    trigger = [
+    ]
+    update = [
+    ]
     motion = [
         <path_to 19|14>
         <path_to 0|0>
@@ -12,10 +14,13 @@ npc_1 {
 }
 
 npc_2 {
-    init = []
+    init = [
+    ]
     trigger = [
         <msg :test_npc2_greeting wait>
     ]
-    update = []
-    motion = []
+    update = [
+    ]
+    motion = [
+    ]
 }

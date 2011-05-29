@@ -1,6 +1,6 @@
 
 require_relative "task.rb"
-require_relative "parser.rb"
+require_relative "../map/map_particle.rb"
 
 module EH::Game::NPC
   
@@ -19,6 +19,8 @@ module EH::Game::NPC
     
     def on_init
       exec_task(@init)
+      @self.goal.reset
+      exec_task(@motion)
     end
   
     def on_trigger(other)
@@ -27,23 +29,10 @@ module EH::Game::NPC
   
     def on_update
       exec_task(@update)
-      on_endmotion if !@motion.empty? and @self.goal.state == :finished
-    end
-    
-    def on_endmotion
-      i = @motion.index(@curr_motion) + 1
-      if i >= @motion.size
-        i = 0
-      end
-      @curr_motion = @motion[i]
-      exec_task(@curr_motion)
+      exec_task(@motion)
     end
     
     def exec_task(task, other=nil)
-      if task.class == MotionTask
-        task.execute(@self, other)
-        return
-      end
       task.execute(@self, other) if !task.finished?
       if task.finished?
         if task.remove?

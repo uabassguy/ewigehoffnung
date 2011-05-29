@@ -2,10 +2,11 @@
 module EH::Game
   class MapObject
     attr_reader :x, :y, :z, :name, :dy, :dx, :properties, :tx, :ty
-    attr_accessor :through
+    attr_accessor :through, :follow
     def initialize(x, y, props)
       file = props[:file]
       @properties = props
+      @follow = false
       # TODO check for file first
       @graphics = Gosu::Image.load_tiles(EH.window, "graphics/chars/#{file}.png", -4, -4, false)
       @index = 0

@@ -221,7 +221,7 @@ module EH::Parse
       end
       if line[0] == "}"
         block = false
-        hash.store(name, EH::ParticleEmitter.new(filename, time, fadein, fadeout, color, delay, angle, mode, xrange, yrange, xoffset, yoffset))
+        hash.store(name.to_sym, EH::ParticleEmitter.new(filename, time, fadein, fadeout, color, delay, angle, mode, xrange, yrange, xoffset, yoffset))
         name = filename = ""
         mode = :default
         delay = time = fadein = fadeout = 0
