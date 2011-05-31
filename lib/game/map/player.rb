@@ -15,20 +15,20 @@ module EH::Game
       window = EH.window
       if @dx == 0 and @dy == 0
         if window.button_down?(KbLeft)
-          @dx = -32;
-          @dy = 0;
+          @dx = -32
+          @dy = 0
           destroy_goal
         elsif window.button_down?(KbRight)
-          @dx = 32;
-          @dy = 0;
+          @dx = 32
+          @dy = 0
           destroy_goal
         elsif window.button_down?(KbUp)
-          @dx = 0;
-          @dy = -32;
+          @dx = 0
+          @dy = -32
           destroy_goal
         elsif window.button_down?(KbDown)
-          @dx = 0;
-          @dy = 32;
+          @dx = 0
+          @dy = 32
           destroy_goal
         end
       end
@@ -36,6 +36,18 @@ module EH::Game
         update_trigger
       end
       super
+      if @stepped
+        if @dx < 0
+          EH.window.state.map.xoff += @speed
+        elsif @dx > 0
+          EH.window.state.map.xoff -= @speed
+        end
+        if @dy < 0
+          EH.window.state.map.yoff += @speed
+        elsif @dy > 0
+          EH.window.state.map.yoff -= @speed
+        end
+      end
     end
   end
 end

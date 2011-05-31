@@ -47,11 +47,12 @@ module EH::Game
       @collision = EH::CollisionLayer.new(@layers.first.filled.first.size, @layers.first.filled.size, tiles)
     end
     
-    def draw
+    # parameters are scrolling, instance variables are world positions
+    def draw(xoff, yoff)
       @layers.each { |l|
         l.filled.each { |ary|
           ary.each { |tile|
-            tile.draw(@xoff, @yoff) if tile
+            tile.draw(xoff+@xoff, yoff+@yoff) if tile
           }
         }
       }

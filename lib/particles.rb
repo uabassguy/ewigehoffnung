@@ -29,8 +29,8 @@ module EH
     def update
       @emitter.update
     end
-    def draw
-      @emitter.draw
+    def draw(xoff=0, yoff=0)
+      @emitter.draw(xoff, yoff)
     end
   end
   
@@ -61,7 +61,7 @@ module EH
     def dead?
       return @dead
     end
-    def draw
+    def draw(xoff=0, yoff=0)
       color = @color
       if @age < @fade_in
         a = 125 + ((((@age - @fade_in) * 255) / @lifetime))
@@ -77,7 +77,7 @@ module EH
         a = 0
       end
       color.alpha = a.to_i;
-      @img.draw_rot(@x, @y, EH::PARTICLE_Z, @angle, 0.5, 0.5, 1, 1, color, @mode)
+      @img.draw_rot(@x+xoff, @y+yoff, EH::PARTICLE_Z, @angle, 0.5, 0.5, 1, 1, color, @mode)
     end
   end
   
@@ -112,9 +112,9 @@ module EH
       @particles.last.wind = @wind
       @particles.last.gravity = @gravity
     end
-    def draw
+    def draw(xoff=0, yoff=0)
       @particles.each { |p|
-        p.draw
+        p.draw(xoff, yoff)
       }
     end
     def wind=(w)

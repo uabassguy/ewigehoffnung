@@ -138,8 +138,8 @@ module EH::Game
       end
     end
     
-    def draw
-      @graphics[@index].draw(@x, @y-16, @z)
+    def draw(xoff, yoff)
+      @graphics[@index].draw(@x+xoff, @y-16+yoff, @z)
     end
     
     def dead?

@@ -19,8 +19,8 @@ module EH::Game
       @emitter.update
     end
     
-    def draw
-      @emitter.draw
+    def draw(x, y)
+      @emitter.draw(x, y)
     end
   end
   

@@ -67,9 +67,9 @@ module EH::Game
       end
     end
     
-    def draw
+    def draw(x, y)
       super
-      @children.map(&:draw)
+      @children.each { |child| child.draw(x, y) }
     end
     
     def destroy_goal

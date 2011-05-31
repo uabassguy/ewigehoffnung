@@ -1,16 +1,11 @@
 
-# 0 1 2
-# 3 4 5
-# 6 7 8
-# 
-# 4 => current
-
 require_relative "fog.rb"
 
 module EH::Game
   class MapLoader
     
     attr_reader :objects, :misc
+    attr_accessor :xoff, :yoff
     
     def initialize
       @objects = []
@@ -20,16 +15,24 @@ module EH::Game
       @message = nil # TODO replace with EH::GUI::Textfield
       @font = EH.font(EH::DEFAULT_FONT, 24)
       @msgimg = EH.sprite("gui/msg_background")
+      @xoff = 496
+      @yoff = 360
     end
     
     def current
       return @maps[4]
     end
     
+    # 0 1 2
+    # 3 4 5
+    # 6 7 8
+    # 
+    # 4 => current
+
     def load(file)
       map = EH::Parse.map(file)
       @objects = map.objects
-      @objects.push(EH::Game::Player.new(32, 32))
+      @objects.push(EH::Game::Player.new(0, 0))
       @maps[4] = map
       if map.upper
         @maps[1] = EH::Parse.map(map.upper)
@@ -62,6 +65,16 @@ module EH::Game
       if map.left
         @maps[3] = EH::Parse.map(map.left)
         @maps[3].xoff = -@maps[3].width*32
+        if !@maps[1].left and @maps[3].upper
+          @maps[0] = EH::Parse.map(@maps[3].upper)
+          @maps[0].xoff = -@maps[0].width*32
+          @maps[0].yoff = -@maps[0].height*32
+        end
+        if !@maps[6].left and @maps[3].lower
+          @maps[6] = EH::Parse.map(@maps[3].lower)
+          @maps[6].xoff = -@maps[6].width*32
+          @maps[6].yoff = +@maps[6].height*32
+        end
       end
       if map.lower
         @maps[7] = EH::Parse.map(map.lower)
@@ -111,20 +124,20 @@ module EH::Game
         @misc.each { |obj|
           obj.update
         }
+        @fog.update if @fog
       else
         if EH.window.pressed?(Gosu::KbSpace)
           @message = nil
         end
       end
-      @fog.update if @fog
     end
     
     def draw
       @maps.each { |map|
-        map.draw if map
+        map.draw(@xoff, @yoff) if map
       }
       @objects.each { |obj|
-        obj.draw
+        obj.draw(@xoff, @yoff)
       }
       @misc.each { |m|
         m.draw

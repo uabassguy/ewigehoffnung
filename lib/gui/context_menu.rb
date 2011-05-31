@@ -73,22 +73,25 @@ module EH::GUI
       
       @buttons.store(:label, Textfield.new(@x, @y, @w, 24, label, 24))
       
+      x = @x - EH.window.state.map.xoff
+      y = @y - EH.window.state.map.yoff
+      
       if !player
         if npc
           @buttons.store(:talk_to,
             Button.new(@x, @y+(@buttons.size*24), @w, 24, EH::Trans.menu(:talk_to),
-              lambda { puts("STUB: talk_to"); p.find_path_to(@x.to_i/32, (@y.to_i/32) - (p.y < obj.y ? 1 : -1)); @remove = true }, true, :left))
+              lambda { puts("STUB: talk_to"); p.find_path_to(x.to_i/32, (y.to_i/32) - (p.y < obj.y ? 1 : -1)); @remove = true }, true, :left))
         else
           @buttons.store(:move,
             Button.new(@x, @y+(@buttons.size*24), @w, 24, EH::Trans.menu(:walk_here),
-              lambda { p.find_path_to(@x.to_i/32, @y.to_i/32); @remove = true }, true, :left))
-          if !EH.window.state.map.current.passable?(@x, @y) or (obj and !obj.through)
+              lambda { p.find_path_to(x.to_i/32, y.to_i/32); @remove = true }, true, :left))
+          if !EH.window.state.map.current.passable?(x, y) or (obj and !obj.through)
             # TODO left/right
             if !obj
-              obj = [@x, @y] # i <3 ruby
+              obj = [x, y] # i <3 ruby
             end
             # a* cant find a path to a blocked tile, so shift the position away a bit
-            @buttons[:move].proc = lambda { p.find_path_to(@x.to_i/32, (@y.to_i/32) - (p.y < obj.y ? 1 : -1)); @remove = true }
+            @buttons[:move].proc = lambda { p.find_path_to(x.to_i/32, (y.to_i/32) - (p.y < obj.y ? 1 : -1)); @remove = true }
             # TODO check again if it works, the player *must* move
           end
         end

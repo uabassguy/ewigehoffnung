@@ -69,7 +69,7 @@ module EH::States
         return
       end
       if @window.pressed?(Gosu::MsRight) and @context ? !EH.inside?(@window.mouse_x, @window.mouse_y, @context.x, @context.y, @context.x+@context.w, @context.y+@context.h) : true
-        obj = find_object(@window.mouse_x.to_i, @window.mouse_y.to_i)
+        obj = find_object(@window.mouse_x.to_i - @map.xoff, @window.mouse_y.to_i - @map.yoff)
         @context = EH::GUI::ContextMenu.new(@window.mouse_x, @window.mouse_y, obj)
       end
       if @context
