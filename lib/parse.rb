@@ -317,7 +317,7 @@ module EH::Parse
       b = nil
       
       name = array = type = ""
-      init = trigger = motion = update = EH::Game::NPC::DummyTask.new
+      init = trigger = motion = update = EH::Game::NPC::Task.new([])
       
       file.each_line { |line|
         line.sub!("\n", "")
@@ -355,7 +355,7 @@ module EH::Parse
           if line.include?("}")
             block = false
             b = EH::Game::NPC::Behaviour.new(npc, init, trigger, motion, update)
-            init = trigger = motion = update = EH::Game::NPC::DummyTask.new
+            init = trigger = motion = update = EH::Game::NPC::Task.new([])
             break
           end
           type = line.gsub(/\s?=\s?\[/, "")
@@ -380,21 +380,10 @@ module EH::Parse
   
   def self.task_array(inp, npc)
     ret = []
-    wait = remove = false
     inp.each { |el|
       delete = []
       ary = el.split(" ")
       ary.each { |parm|
-        if parm == "remove"
-          delete.push(parm)
-          remove = true
-          next
-        end
-        if parm == "wait"
-          delete.push(parm)
-          wait = true
-          next
-        end
         if parm.include?("|")
           if parm.include?("@")
             parm.sub!("@x", "#{npc.x}")
@@ -408,12 +397,11 @@ module EH::Parse
         end
         ary[ary.index(parm)] = parm.to_sym
       }
-      delete.each { |el| ary.delete(el) }
       ary.compact!
       ret.push(ary)
     }
     ret.compact!
-    return EH::Game::NPC::Task.new(ret, wait, remove)
+    return EH::Game::NPC::Task.new(ret)
   end
   
   # TODO create special parser

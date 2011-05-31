@@ -5,9 +5,8 @@ module EH::Game::NPC
     # action: proc to execute
     # wait: stall later tasks until this one finished
     # remove_after: delete task when finished
-    def initialize(parameters, wait, remove_after=false)
+    def initialize(parameters)
       @array = parameters
-      @wait, @remove = wait, remove_after
       @finished = false
       @current = 0
     end
@@ -22,16 +21,8 @@ module EH::Game::NPC
       return @array.empty?
     end
   
-    def wait?
-      return @wait
-    end
-  
     def finished?
       return @finished
-    end
-  
-    def remove?
-      return @remove
     end
     
     def reset
@@ -39,16 +30,16 @@ module EH::Game::NPC
     end
     
     def next_subtask(npc, other)
-      stop = false
-      @current += 1
+      if @array[@current].include?(:remove)
+        @array.delete_at(@current)
+      else
+        @current += 1
+      end
       if @current >= @array.size
         @current = 0
-        if @remove
-          @finished = true
-        end
-        stop = true
+        return
       end
-      if !@finished and !@wait and !stop
+      if !@array[@current-1].include?(:wait)
         execute(npc, other)
       end
     end
@@ -77,12 +68,6 @@ module EH::Game::NPC
       next_subtask(npc, other)
     end
   
-  end
-  
-  class DummyTask < Task
-    def initialize
-      super([], false, false)
-    end
   end
   
 end
