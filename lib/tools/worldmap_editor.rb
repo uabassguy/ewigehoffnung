@@ -8,18 +8,20 @@ module EH
   module Tools
     
     include Gosu
-    include REXML
     
     class AbstractMap
       attr_accessor :lower, :upper, :right, :left
-      attr_reader :name
-      def initialize(name)
+      attr_reader :name, :file
+      def initialize(name, file)
         @name = name
+        @file = file
         @lower = @upper = @right = @left = nil
       end
     end
     
     class WorldmapEditor < Window
+      include REXML
+    
       def initialize
         super(1024, 768, false)
         self.caption = "Ewige Hoffnung Worldmap Editor"
@@ -38,7 +40,7 @@ module EH
           if !map.properties[:name] or map.properties[:name].empty?
             map.properties[:name] = file.sub(".tmx", "")
           end
-          map = AbstractMap.new(map.properties[:name])
+          map = AbstractMap.new(map.properties[:name], file.sub(".tmx", ""))
           @maps.push(map)
           @gui[:list].add(EH::GUI::Button.new(0, 0, 168, 24, map.name, lambda { clicked(map) }, true, :left))
         }
@@ -81,6 +83,58 @@ module EH
               @world[y][x].right = @world[y][x + 1] if x < @world[y].size
               @world[y][x].upper = @world[y - 1][x] if y > 0
               @world[y][x].lower = @world[y + 1][x] if y < @world.size
+              doc = Document.new(File.open("maps/#{@world[y][x].file}.tmx"))
+              doc.context[:attribute_quote] = :quote
+              
+              # FIXME
+              # properties element needs to exist
+              # property elements must be created in a SINGLE properties element
+              
+              if @world[y][x].upper
+                if !doc.root.elements['//property[@name="upper"]']
+                  props = Element.new("properties")
+                  prop = Element.new("property")
+                  prop.add_attribute("name", "upper")
+                  prop.add_attribute("value", "")
+                  props << prop
+                  doc.root.elements << props
+                end
+                doc.root.elements['//property[@name="upper"]'].add_attribute("value", @world[y][x].upper.file)
+              end
+              if @world[y][x].lower
+                if !doc.root.elements['//property[@name="lower"]']
+                  props = Element.new("properties")
+                  prop = Element.new("property")
+                  prop.add_attribute("name", "lower")
+                  prop.add_attribute("value", "")
+                  props << prop
+                  doc.root.elements << props
+                end
+                doc.root.elements['//property[@name="lower"]'].add_attribute("value", @world[y][x].lower.file)
+              end
+              if @world[y][x].left
+                if !doc.root.elements['//property[@name="left"]']
+                  props = Element.new("properties")
+                  prop = Element.new("property")
+                  prop.add_attribute("name", "left")
+                  prop.add_attribute("value", "")
+                  props << prop
+                  doc.root.elements << props
+                end
+                doc.root.elements['//property[@name="left"]'].add_attribute("value", @world[y][x].left.file)
+              end
+              if @world[y][x].right
+                if !doc.root.elements['//property[@name="right"]']
+                  props = Element.new("properties")
+                  prop = Element.new("property")
+                  prop.add_attribute("name", "right")
+                  prop.add_attribute("value", "")
+                  props << prop
+                  doc.root.elements << props
+                end
+                doc.root.elements['//property[@name="right"]'].add_attribute("value", @world[y][x].right.file)
+              end
+              doc.write(File.open("maps/#{@world[y][x].file}.tmx", "w"))
             end
             x += 1
           }
@@ -173,5 +227,5 @@ begin
   editor = EH::Tools::WorldmapEditor.new
   editor.show
 ensure
-  editor.save_world
+  editor.save_world if editor
 end
