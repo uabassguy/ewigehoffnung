@@ -107,7 +107,7 @@ module EH::Parse
     end
   end
   
-  def self.map(file)
+  def self.map(file, loadobjects=true)
     tiles = []
     layers = []
     objects = []
@@ -130,9 +130,11 @@ module EH::Parse
       layers.push(self.layer(el))
       layers.last.fill_tilemap(tiles.first) # TODO check for gids to choose right tileset
     }
-    root.each_element("//objectgroup") { |el|
-      objects.concat(self.objectgroup(el, file))
-    }
+    if loadobjects
+      root.each_element("//objectgroup") { |el|
+        objects.concat(self.objectgroup(el, file))
+      }
+    end
     return EH::Game::Map.new(properties, layers, objects)
   end
   

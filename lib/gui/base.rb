@@ -164,6 +164,7 @@ module EH::GUI
       @item = nil
       @changed = false
     end
+    
     def add(element)
       element.x = @x
       element.y = @y + @yoff + ((@items.size+1)*@ch)

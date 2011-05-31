@@ -70,11 +70,6 @@ module EH::Game
           @maps[0].xoff = -@maps[0].width*32
           @maps[0].yoff = -@maps[0].height*32
         end
-        if !@maps[6].left and @maps[3].lower
-          @maps[6] = EH::Parse.map(@maps[3].lower)
-          @maps[6].xoff = -@maps[6].width*32
-          @maps[6].yoff = +@maps[6].height*32
-        end
       end
       if map.lower
         @maps[7] = EH::Parse.map(map.lower)
@@ -83,6 +78,11 @@ module EH::Game
           @maps[6] = EH::Parse.map(@maps[7].left)
           @maps[6].xoff = -@maps[7].height*32
           @maps[6].yoff = @maps[7].height*32
+          if !@maps[6].left and @maps[3].lower
+            @maps[6] = EH::Parse.map(@maps[3].lower)
+            @maps[6].xoff = -@maps[6].width*32
+            @maps[6].yoff = +@maps[6].height*32
+          end
         end
         if @maps[7].right
           @maps[8] = EH::Parse.map(@maps[7].right)
