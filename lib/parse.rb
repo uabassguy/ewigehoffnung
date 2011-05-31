@@ -107,7 +107,7 @@ module EH::Parse
     end
   end
   
-  def self.map(file, loadobjects=true)
+  def self.map(file, tiny=false)
     tiles = []
     layers = []
     objects = []
@@ -123,14 +123,14 @@ module EH::Parse
     properties.store(:width, root.attributes["width"].to_i)
     properties.store(:height, root.attributes["height"].to_i)
     properties.store(:file, file)
-    root.each_element("//tileset") { |el|
-      tiles.push(self.tileset(el))
-    }
-    root.each_element("//layer") { |el|
-      layers.push(self.layer(el))
-      layers.last.fill_tilemap(tiles.first) # TODO check for gids to choose right tileset
-    }
-    if loadobjects
+    if !tiny
+      root.each_element("//tileset") { |el|
+        tiles.push(self.tileset(el))
+      }
+      root.each_element("//layer") { |el|
+        layers.push(self.layer(el))
+        layers.last.fill_tilemap(tiles.first) # TODO check for gids to choose right tileset
+      }
       root.each_element("//objectgroup") { |el|
         objects.concat(self.objectgroup(el, file))
       }

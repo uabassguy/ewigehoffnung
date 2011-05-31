@@ -24,6 +24,7 @@ module EH::Game
     end
     
     def create_static_collision
+      return if @layers.empty?
       tiles = []
       @layers.each { |l|
         i = 0

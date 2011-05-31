@@ -8,6 +8,16 @@ module EH
   module Tools
     
     include Gosu
+    include REXML
+    
+    class AbstractMap
+      attr_accessor :lower, :upper, :right, :left
+      attr_reader :name
+      def initialize(name)
+        @name = name
+        @lower = @upper = @right = @left = nil
+      end
+    end
     
     class WorldmapEditor < Window
       def initialize
@@ -24,15 +34,16 @@ module EH
         start = Time.now.sec
         Dir.new("maps/").each { |file|
           next if file == "." or file == ".." or File.directory?(file)
-          @maps.push(EH::Parse.map(file.sub(".tmx", ""), false))
-          if !@maps.last.properties[:name] or @maps.last.properties[:name].empty?
-            @maps.last.properties[:name] = file.sub(".tmx", "")
+          map = EH::Parse.map(file.sub(".tmx", ""), true)
+          if !map.properties[:name] or map.properties[:name].empty?
+            map.properties[:name] = file.sub(".tmx", "")
           end
-          map = @maps.last
-          @gui[:list].add(EH::GUI::Button.new(0, 0, 168, 24, @maps.last.properties[:name], lambda { clicked(map) }, true, :left))
+          map = AbstractMap.new(map.properties[:name])
+          @maps.push(map)
+          @gui[:list].add(EH::GUI::Button.new(0, 0, 168, 24, map.name, lambda { clicked(map) }, true, :left))
         }
         puts("INFO: Loaded #{@maps.size} maps in #{Time.now.sec - start} seconds")
-        @world = Array.new(@maps.size) { Array.new(@maps.size) }
+        @world = load_world
       end
       
       def update
@@ -40,9 +51,41 @@ module EH
           el.update
         }
         if @current and pressed?(Gosu::MsLeft) and mouse_x > 192
-          place_map(mouse_x-192, mouse_y)
+          place_map(mouse_x - 192, mouse_y)
+        end
+        if pressed?(Gosu::MsRight) and mouse_x > 192
+          remove_map(mouse_x - 192, mouse_y)
         end
         unpress
+      end
+      
+      def load_world
+        begin
+          file = File.open("tools/world.map", "r")
+          world = Marshal.load(file)
+          file.close
+          return world
+        rescue
+          return Array.new(@maps.size) { Array.new(@maps.size) }
+        end
+      end
+      
+      def save_world
+        Marshal.dump(@world, File.open("tools/world.map", "w"))
+        y = 0
+        @world.size.times {
+          x = 0
+          @world[y].size.times {
+            if @world[y][x]
+              @world[y][x].left = @world[y][x - 1] if x > 0
+              @world[y][x].right = @world[y][x + 1] if x < @world[y].size
+              @world[y][x].upper = @world[y - 1][x] if y > 0
+              @world[y][x].lower = @world[y + 1][x] if y < @world.size
+            end
+            x += 1
+          }
+          y += 1
+        }
       end
       
       def place_map(mx, my)
@@ -52,7 +95,15 @@ module EH
           return
         end
         @world[y][x] = @current
-        @current = nil
+      end
+      
+      def remove_map(mx, my)
+        x = mx.to_i/32
+        y = my.to_i/24
+        if y >= @world.size or x >= @world.first.size
+          return
+        end
+        @world[y][x] = nil
       end
       
       def draw
@@ -77,8 +128,8 @@ module EH
         y = mouse_y.to_i / 24
         if @world[y] and @world[y][x]
           c = Gosu::Color::WHITE
-          @font.draw(@world[y][x].properties[:name], mouse_x + 12, mouse_y + 12, 200, 1, 1, Gosu::Color::BLACK)
-          w = @font.text_width(@world[y][x].properties[:name]) + 8
+          @font.draw(@world[y][x].name, mouse_x + 12, mouse_y + 12, 200, 1, 1, Gosu::Color::BLACK)
+          w = @font.text_width(@world[y][x].name) + 8
           x = mouse_x + 8
           y = mouse_y + 8
           draw_quad(x, y, c, x+w, y, c, x+w, y+24, c, x, y+24, c, 100)
@@ -112,11 +163,15 @@ module EH
       def needs_cursor?
         return true
       end
-    
+      
     end
     
   end
 end
-
-editor = EH::Tools::WorldmapEditor.new
-editor.show
+  
+begin
+  editor = EH::Tools::WorldmapEditor.new
+  editor.show
+ensure
+  editor.save_world
+end
