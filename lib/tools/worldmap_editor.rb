@@ -86,53 +86,21 @@ module EH
               doc = Document.new(File.open("maps/#{@world[y][x].file}.tmx"))
               doc.context[:attribute_quote] = :quote
               
-              # FIXME
-              # properties element needs to exist
-              # property elements must be created in a SINGLE properties element
-              
               if @world[y][x].upper
-                if !doc.root.elements['//property[@name="upper"]']
-                  props = Element.new("properties")
-                  prop = Element.new("property")
-                  prop.add_attribute("name", "upper")
-                  prop.add_attribute("value", "")
-                  props << prop
-                  doc.root.elements << props
-                end
-                doc.root.elements['//property[@name="upper"]'].add_attribute("value", @world[y][x].upper.file)
+                check_attribute(doc, "upper")
+                property_element(doc, "upper").add_attribute("value", @world[y][x].upper.file)
               end
               if @world[y][x].lower
-                if !doc.root.elements['//property[@name="lower"]']
-                  props = Element.new("properties")
-                  prop = Element.new("property")
-                  prop.add_attribute("name", "lower")
-                  prop.add_attribute("value", "")
-                  props << prop
-                  doc.root.elements << props
-                end
-                doc.root.elements['//property[@name="lower"]'].add_attribute("value", @world[y][x].lower.file)
+                check_attribute(doc, "lower")
+                property_element(doc, "lower").add_attribute("value", @world[y][x].lower.file)
               end
               if @world[y][x].left
-                if !doc.root.elements['//property[@name="left"]']
-                  props = Element.new("properties")
-                  prop = Element.new("property")
-                  prop.add_attribute("name", "left")
-                  prop.add_attribute("value", "")
-                  props << prop
-                  doc.root.elements << props
-                end
-                doc.root.elements['//property[@name="left"]'].add_attribute("value", @world[y][x].left.file)
+                check_attribute(doc, "left")
+                property_element(doc, "left").add_attribute("value", @world[y][x].left.file)
               end
               if @world[y][x].right
-                if !doc.root.elements['//property[@name="right"]']
-                  props = Element.new("properties")
-                  prop = Element.new("property")
-                  prop.add_attribute("name", "right")
-                  prop.add_attribute("value", "")
-                  props << prop
-                  doc.root.elements << props
-                end
-                doc.root.elements['//property[@name="right"]'].add_attribute("value", @world[y][x].right.file)
+                check_attribute(doc, "right")
+                property_element(doc, "right").add_attribute("value", @world[y][x].right.file)
               end
               doc.write(File.open("maps/#{@world[y][x].file}.tmx", "w"))
             end
@@ -140,6 +108,28 @@ module EH
           }
           y += 1
         }
+      end
+      
+      def property_element(doc, attribute)
+        return doc.root.elements['/map/properties/property[@name="'+attribute+'"]']
+      end
+      
+      def check_attribute(doc, attribute)
+        if !doc.root.elements['/map/properties/property[@name="'+attribute+'"]']
+          props = doc.root.elements['/map/properties[1]']
+          if !props
+            props = Element.new('properties')
+            doc.root.elements['/map'] << props
+            props = doc.root.elements['/map/properties[1]']
+          end
+          prop = Element.new("property")
+          prop.add_attribute("name", "#{attribute}")
+          prop.add_attribute("value", "")
+          props << prop
+          doc.root.elements.add(props)
+        else
+          puts("found attribute #{attribute}")
+        end
       end
       
       def place_map(mx, my)
