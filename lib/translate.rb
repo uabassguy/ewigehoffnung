@@ -325,26 +325,37 @@ module EH
       end
     end
     
+    def self.safe(hash, sym)
+      if !hash.has_key?(EH.config[:language])
+        warn("ERROR: Selected language (#{EH.config[:language]}) not available")
+        return ""
+      elsif !hash[EH.config[:language]].has_key?(sym)
+        warn("ERROR: Missing translation for #{sym} for language #{EH.config[:language]}")
+        return ""
+      end
+      return hash[EH.config[:language]][sym]
+    end
+    
     def self.item(sym)
-      return @@items[EH.config[:language]][sym]
+      return safe(@@items, sym)
     end
     def self.skill(sym)
-      return @@skills[EH.config[:language]][sym]
+      return safe(@@skills, sym)
     end
     def self.spell(sym)
-      return @@spells[EH.config[:language]][sym]
+      return safe(@@spells, sym)
     end
     def self.menu(sym)
-      return @@menu[EH.config[:language]][sym]
+      return safe(@@menu, sym)
     end
     def self.dialogue(sym)
-      return @@dialogues[EH.config[:language]][sym]
+      return safe(@@dialogues, sym)
     end
     def self.enemy(sym)
-      return @@enemies[EH.config[:language]][sym]
+      return safe(@@enemies, sym)
     end
     def self.weapon(sym)
-      return @@weapons[EH.config[:language]][sym]
+      return safe(@@weapons, sym)
     end
   end
 end

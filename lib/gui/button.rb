@@ -20,6 +20,9 @@ module EH::GUI
       @align = align
       @enabled = true
     end
+    def hovered?
+      return @selected
+    end
     def toggle
       @enabled = !@enabled
     end

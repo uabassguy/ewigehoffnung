@@ -20,6 +20,9 @@ module EH::GUI
     def draw
       @bg.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + @zoff, (@w)/@bg.width.to_f, @h/@bg.height.to_f)
       y = 0
+      if @text.size == 1
+        y += 4
+      end
       @text.each { |line|
         case @align
         when :center

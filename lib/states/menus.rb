@@ -232,9 +232,11 @@ module EH::States
       @w.add(:charselect, CharSelector.new(32, 32, party))
       @w.add(:experience, Textfield.new(320, 32, 256, 32, "#{Trans.menu(:experience)}: #{@party.members[@w.get(:charselect).index].skills.level_to_s(Game.find_skill(:botany))}", 24, :center))
       @w.add(:recipies_text, Textfield.new(32, 96, 256, 32, Trans.menu(:recipies), 24, :center))
-      @w.add(:recipies, Container.new(32, 128, 256, 584, 32))
+      @w.add(:recipies, Container.new(32, 128, 256, 584, 24))
       @w.add(:items_text, Textfield.new(736, 96, 256, 32, Trans.menu(:items), 24, :center))
-      @w.add(:items, Inventory.new(736, 128, 256, 584, @party.members[@w.get(:charselect).index], [:herb, :food, :poison], 32))
+      @w.add(:items, Inventory.new(736, 128, 256, 584, @party.members[@w.get(:charselect).index], [:herb, :food, :poison], 24))
+      @w.add(:info_header, Textfield.new(320, 480, 384, 200, "", 24, :center))
+      @w.add(:info, Textfield.new(320, 512, 384, 200, ""))
     end
     def update
       super
@@ -243,7 +245,13 @@ module EH::States
       end
       @w.update
       if @w.get(:charselect).changed?
-        @w.get(:experience).text = "#{Trans.menu(:experience)}: #{@party.members[@w.get(:charselect).index].skills.level_to_s(Game.find_skill(:botany))}"
+        char = @party.members[@w.get(:charselect).index]
+        @w.get(:experience).text = "#{Trans.menu(:experience)}: #{char.skills.level_to_s(Game.find_skill(:botany))}"
+        @w.get(:items).inventory = char.inventory
+      end
+      if @w.get(:items).changed?
+        @w.get(:info_header).text = Trans.item(@w.get(:items).selected.name)
+        @w.get(:info).text = Trans.item("#{@w.get(:items).selected.name}_desc".to_sym)
       end
     end
     def draw

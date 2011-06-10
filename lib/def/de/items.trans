@@ -64,3 +64,15 @@ sage
 name = "Salbei"
 desc = ""
 }
+
+meat
+{
+name = "Fleisch"
+desc = ""
+}
+
+atropin
+{
+name = "Tollkirschengift"
+desc = ""
+}

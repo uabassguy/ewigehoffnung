@@ -64,3 +64,15 @@ sage
 name = "Sage"
 desc = ""
 }
+
+meat
+{
+name = "Meat"
+desc = ""
+}
+
+atropin
+{
+name = "Nightshade poison"
+desc = ""
+}

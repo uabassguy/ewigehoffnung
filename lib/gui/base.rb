@@ -171,13 +171,25 @@ module EH::GUI
       @items.push(element)
     end
     
+    def hovered
+      i = 0
+      @items.each { |it|
+        if it.hovered?
+          return i
+        end
+        i += 1
+      }
+      return -1
+    end
+    
     def update
+      # TODO scrollbar probably doesnt work
       @scrollbar.update
       @scrollbar.xoff, @scrollbar.yoff, @scrollbar.zoff = @xoff, @yoff, @zoff
       offset = @scrollbar.offset * -@ch
       @items.each { |item|
         item.xoff, item.zoff = @xoff, @zoff
-        item.yoff = @yoff + (offset/@ch) - @ch
+        item.yoff = @yoff# + (offset/@ch) - @ch
         if item.y + item.yoff + item.h < @scrollbar.y + @scrollbar.yoff
           next
         end

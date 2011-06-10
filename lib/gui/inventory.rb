@@ -2,6 +2,7 @@
 module EH::GUI
   class Inventory < Container
     include EH
+    attr_reader :inv
     def initialize(x, y, w, h, char, filter=[:all], item_height=24)
       super(x, y, w, h, item_height)
       @item_height = item_height
