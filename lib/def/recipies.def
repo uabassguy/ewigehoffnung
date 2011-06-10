@@ -1,16 +1,18 @@
 
 {
 name = atropin
-icon = "atropin"
+icon = "items/atropin"
 output = atropin
 input = [15*banewort]
+level = 1
 }
 
 #EOF
 
 {
 name = 
-icon = ""
+icon = "items/"
 output = 
 input = []
+level = 
 }

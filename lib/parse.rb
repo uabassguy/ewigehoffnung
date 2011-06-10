@@ -511,6 +511,7 @@ module EH::Parse
       "icon" => :image,
       "output" => :symbol,
       "input" => :symarray,
+      "level" => :int,
     }
     return Parser.new("def/recipies.def", p, EH::Game::Alchemy::Recipe).parse
   end

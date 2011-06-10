@@ -9,6 +9,7 @@ require_relative "../gui/textfield.rb"
 require_relative "../gui/slider.rb"
 
 module EH::States
+  
   class StartMenu < State
     include EH
     def initialize(window)
@@ -97,7 +98,8 @@ module EH::States
       @w.add(:items, Button.new(32, 32, 224, 32, Trans.menu(:items), lambda {}))
       @w.add(:equip, Button.new(32, 96, 224, 32, Trans.menu(:equipment), lambda { @window.advance(EquipMenu.new(@window, self, party)) }))
       @w.add(:skills, Button.new(32, 160, 224, 32, Trans.menu(:skills), lambda {}))
-      @w.add(:magic, Button.new(32, 224, 224, 32, Trans.menu(:magic), lambda { @window.advance(MagicMenu.new(@window, self, party)) }))
+      @w.add(:alchemy, Button.new(32, 224, 224, 32, Trans.menu(:botany), lambda { @window.advance(AlchemyMenu.new(@window, self, party)) }))
+      @w.add(:magic, Button.new(32, 284, 224, 32, Trans.menu(:magic), lambda { @window.advance(MagicMenu.new(@window, self, party)) }))
       @w.add(:save, Button.new(32, 552, 224, 32, Trans.menu(:save), lambda {}))
       @w.add(:load, Button.new(32, 616, 224, 32, Trans.menu(:load), lambda {}))
       @w.add(:options, Button.new(32, 680, 224, 32, Trans.menu(:options), lambda {}))
@@ -209,6 +211,39 @@ module EH::States
       end
       @w.update
       if @w.get(:charselect).changed?
+      end
+    end
+    def draw
+      @background.draw(0, 0, 0)
+      @w.draw
+      draw_cursor
+    end
+  end
+  
+  class AlchemyMenu < State
+    include EH::GUI
+    include EH
+    def initialize(window, previous, party)
+      super(window)
+      @previous = previous
+      @party = party
+      @background = EH.sprite("menu/ingame_background")
+      @w = EH::GUI::Window.new(0, 0, 1024, 768, Trans.menu(:botany))
+      @w.add(:charselect, CharSelector.new(32, 32, party))
+      @w.add(:experience, Textfield.new(320, 32, 256, 32, "#{Trans.menu(:experience)}: #{@party.members[@w.get(:charselect).index].skills.level_to_s(Game.find_skill(:botany))}", 24, :center))
+      @w.add(:recipies_text, Textfield.new(32, 96, 256, 32, Trans.menu(:recipies), 24, :center))
+      @w.add(:recipies, Container.new(32, 128, 256, 584, 32))
+      @w.add(:items_text, Textfield.new(736, 96, 256, 32, Trans.menu(:items), 24, :center))
+      @w.add(:items, Inventory.new(736, 128, 256, 584, @party.members[@w.get(:charselect).index], [:herb, :food, :poison], 32))
+    end
+    def update
+      super
+      if @window.pressed?(Gosu::KbEscape) or @w.remove?
+        @window.advance(@previous)
+      end
+      @w.update
+      if @w.get(:charselect).changed?
+        @w.get(:experience).text = "#{Trans.menu(:experience)}: #{@party.members[@w.get(:charselect).index].skills.level_to_s(Game.find_skill(:botany))}"
       end
     end
     def draw

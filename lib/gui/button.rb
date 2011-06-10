@@ -6,13 +6,13 @@ module EH::GUI
     attr_accessor :background, :proc
     @@sound = EH::Sample.new("click1")
     @@error = EH::Sample.new("error1")
-    def initialize(x, y, w, h, text, proc, bg=true, align=:center)
+    def initialize(x, y, w, h, text, proc, bg=true, align=:center, text_height=h)
       super(x, y, w, h)
       if bg
         @bg = EH.sprite("gui/button_background")
       end
       @hi = EH.sprite("gui/button_highlight", true)
-      @font = EH.font(EH::DEFAULT_FONT, h)
+      @font = EH.font(EH::DEFAULT_FONT, text_height)
       @text = text
       @proc = proc
       @selected = false

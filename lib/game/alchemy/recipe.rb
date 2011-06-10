@@ -3,7 +3,7 @@ module EH::Game
   module Alchemy
     
     class Recipe
-      attr_accessor :name, :icon, :output, :input
+      attr_accessor :name, :icon, :output, :input, :level
     end
   
     def self.recipies

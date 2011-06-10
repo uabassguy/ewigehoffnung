@@ -2,9 +2,9 @@
 module EH::GUI
   class Inventory < Container
     include EH
-    ITEM_HEIGHT = 24
-    def initialize(x, y, w, h, char, filter=[:all])
-      super(x, y, w, h, ITEM_HEIGHT)
+    def initialize(x, y, w, h, char, filter=[:all], item_height=24)
+      super(x, y, w, h, item_height)
+      @item_height = item_height
       @inv = char.inventory
       @filter = filter
       @item = nil
@@ -27,7 +27,7 @@ module EH::GUI
       items.each_value { |ary|
         item = ary[0]
         amount = ary[1]
-        @items.push(Button.new(@x, @y+(y*ITEM_HEIGHT), @w-24, ITEM_HEIGHT, "#{amount}x #{Trans.item(item.name)}", lambda { clicked(item) }, false, :left))
+        @items.push(Button.new(@x, @y+(y*@item_height), @w-24, @item_height, "#{amount}x #{Trans.item(item.name)}", lambda { clicked(item) }, false, :left, 24))
         y += 1
       }
     end
