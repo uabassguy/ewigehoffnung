@@ -4,6 +4,7 @@
 require_relative "game/map/map.rb"
 require_relative "game/item.rb"
 require_relative "game/spell.rb"
+require_relative "game/alchemy/recipe.rb"
 
 require_relative "tileset.rb"
 require_relative "layer.rb"
@@ -97,10 +98,30 @@ module EH::Parse
         return str.to_f
       when :array
         s = str.gsub!(/\s|\[|\]/, '')
-        return s.split(',')
+        ary = s.split(',')
+        ary.each { |el|
+          if el.include?('*')
+            a = el.split('*')
+            ary.delete(el)
+            a[0].to_i.times {
+              ary.push(a[1])
+            }
+          end
+        }
+        return ary
       when :symarray
         s = str.gsub!(/\s|\[|\]/, '')
-        return(s.split(',').map(&:to_sym))
+        ary = s.split(',')
+        ary.each { |el|
+          if el.include?('*')
+            a = el.split('*')
+            ary.delete(el)
+            a[0].to_i.times {
+              ary.push(a[1])
+            }
+          end
+        }
+        return ary.map(&:to_sym)
       when :image
         return EH.sprite(str)
       end
@@ -482,6 +503,16 @@ module EH::Parse
       "icon" => :image,
     }
     return Parser.new("def/skills.def", p, EH::Game::Skill).parse
+  end
+  
+  def self.recipies
+    p = {
+      "name" => :symbol,
+      "icon" => :image,
+      "output" => :symbol,
+      "input" => :symarray,
+    }
+    return Parser.new("def/recipies.def", p, EH::Game::Alchemy::Recipe).parse
   end
   
   def self.items

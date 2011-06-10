@@ -1,5 +1,6 @@
 
 module EH::Game
+  
   class Item
     attr_reader :name, :desc, :icon, :weight, :effects, :type, :img
     attr_reader :icon_file

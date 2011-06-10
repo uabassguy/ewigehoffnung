@@ -46,31 +46,42 @@ module EH::Game
     
     def update_move(map)
       moved = false
+      player = self.class == Player
       if @dx > 0
-        if @stepped or @through or map.passable?((@tx*32)+@dx, @ty*32)
+        if @stepped or @through or map.passable?((@tx*32)+@dx, @ty*32, player)
           @x += @speed
           @dx -= @speed
           @tx += 1 if !@stepped
           @stepped = true
           moved = true
+          if @tx > EH.window.state.map.current.width
+            EH.window.state.map.move_right
+            @tx = 0
+            @x = @speed
+          end
         else
           @dx = 0
         end
         @index = 8
       elsif @dx < 0
-        if @stepped or @through or map.passable?((@tx*32)+@dx, @ty*32)
+        if @stepped or @through or map.passable?((@tx*32)+@dx, @ty*32, player)
           @x -= @speed
           @dx += @speed
           @tx -= 1 if !@stepped
           @stepped = true
           moved = true
+          if @tx < 0
+            EH.window.state.map.move_left
+            @tx = EH.window.state.map.current.width
+            @x = (EH.window.state.map.current.width*32) - @speed
+            end
         else
           @dx = 0
         end
         @index = 4
       end
       if @dy > 0
-        if @stepped or @through or map.passable?(@tx*32, (@ty*32)+@dy)
+        if @stepped or @through or map.passable?(@tx*32, (@ty*32)+@dy, player)
           @y += @speed
           @dy -= @speed
           @ty += 1 if !@stepped
@@ -81,7 +92,7 @@ module EH::Game
         end
         @index = 0
       elsif @dy < 0
-        if @stepped or @through or map.passable?(@tx*32, (@ty*32)+@dy)
+        if @stepped or @through or map.passable?(@tx*32, (@ty*32)+@dy, player)
           @y -= @speed
           @dy += @speed
           @ty -= 1 if !@stepped

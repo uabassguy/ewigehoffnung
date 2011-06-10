@@ -23,6 +23,22 @@ module EH::Game
       return @maps[4]
     end
     
+    def left
+      return @maps[3]
+    end
+    
+    def right
+      return @maps[5]
+    end
+    
+    def upper
+      return @maps[1]
+    end
+    
+    def lower
+      return @maps[7]
+    end
+    
     # 0 1 2
     # 3 4 5
     # 6 7 8
@@ -154,6 +170,22 @@ module EH::Game
       @message = str
       @mx, @my = x, y
       @mw, @mh = w, h
+    end
+    
+    def move_up
+      load(@maps[1].properties[:file])
+    end
+    
+    def move_down
+      load(@maps[7].properties[:file])
+    end
+    
+    def move_left
+      load(@maps[3].properties[:file])
+    end
+    
+    def move_right
+      load(@maps[5].properties[:file])
     end
     
   end

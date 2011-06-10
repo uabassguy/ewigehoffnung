@@ -132,6 +132,16 @@ effects = []
 type = loot
 }
 
+#========= Alchemy ===========
+
+{
+name = atropin
+icon = "atropin"
+weight = 0.1
+effects = [2*toxic_respiratory]
+type = poison
+}
+
 #EOF
 
 {

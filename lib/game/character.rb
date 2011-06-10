@@ -17,7 +17,7 @@ module EH::Game
   class Character
     attr_reader :name, :age, :weight, :strength, :charset, :gender
     attr_reader :inventory, :skills, :const, :mind, :equipment, :race, :magic
-    attr_reader :endurance, :state, :agility, :spells
+    attr_reader :endurance, :state, :agility, :spells, :influences
     attr_accessor :health
     # health is only used as a percentage for easier displaying, the real stuff is in @const
     
@@ -36,6 +36,7 @@ module EH::Game
       }
       @charset = @file
       @file = EH.sprite(@file)
+      @influences = []
     end
     
     def validate
@@ -47,18 +48,24 @@ module EH::Game
     end
     
     def update
+      @influences.each { |inf|
+        inf.update(self)
+      }
+    end
+    
+    def consume(item)
     end
     
     def calc_status
       if @endurance <= 25
-        @state = EH::Game::DEAD
-      elsif @endurance <= 0
         @state = EH::Game::UNCONSCIOUS
+      elsif @endurance <= 0
+        @state = EH::Game::DEAD
       end
     end
     
     def weaken(amount)
-      if @state = EH::Game::DEAD
+      if @state != EH::Game::DEAD
         @endurance -= amount
         calc_status
       end

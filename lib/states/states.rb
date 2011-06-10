@@ -49,6 +49,7 @@ module EH::States
       EH::Game.weapons = EH::Parse.weapons
       EH::Game.enemies = EH::Parse.enemies # needs the weapons
       EH::Game.characters = EH::Parse.characters
+      EH::Game::Alchemy.recipies = EH::Parse.recipies
       EH::Trans.parse_items
       EH::Trans.parse_skills
       EH::Trans.parse_spells

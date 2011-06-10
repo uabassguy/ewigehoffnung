@@ -1,0 +1,16 @@
+
+{
+name = atropin
+icon = "atropin"
+output = atropin
+input = [15*banewort]
+}
+
+#EOF
+
+{
+name = 
+icon = ""
+output = 
+input = []
+}
