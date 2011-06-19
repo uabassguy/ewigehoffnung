@@ -125,5 +125,3 @@ module EH
     end
   end
 end
-
-EH.particles = EH::Parse.particles

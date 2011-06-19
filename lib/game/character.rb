@@ -37,6 +37,7 @@ module EH::Game
       @charset = @file
       @file = EH.sprite(@file)
       @influences = []
+      setup_skills
     end
     
     def validate
@@ -82,6 +83,19 @@ module EH::Game
         @state = EH::Game::NORMAL
         calc_status
       end
+    end
+    
+    private
+    
+    def setup_skills
+      @skills.list[EH::Game.find_skill(:healing)] = @healing
+      @skills.list[EH::Game.find_skill(:crafting)] = @crafting
+      @skills.list[EH::Game.find_skill(:botany)] = @botany
+      @skills.list[EH::Game.find_skill(:healing_magic)] = @healing_magic
+      @skills.list[EH::Game.find_skill(:mind)] = @mind
+      @skills.list[EH::Game.find_skill(:elemental)] = @elemental
+      @skills.list[EH::Game.find_skill(:ranged)] = @ranged
+      @skills.list[EH::Game.find_skill(:melee)] = @melee
     end
     
   end

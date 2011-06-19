@@ -1,0 +1,55 @@
+
+(
+graphic = "explosion2.png"
+split_x = 3
+split_y = 4
+repeat = false
+)
+
+{
+length = 10
+rgba = [255, 255, 255, 255]
+x = 0
+y = 0
+mode = default
+}
+
+{
+length = 10
+rgba = [255, 255, 255, 255]
+x = 0
+y = 0
+mode = default
+}
+
+{
+length = 10
+rgba = [255, 255, 255, 255]
+x = 0
+y = 0
+mode = default
+}
+
+{
+length = 10
+rgba = [255, 255, 255, 255]
+x = 0
+y = 0
+mode = default
+}
+
+{
+length = 10
+rgba = [255, 255, 255, 255]
+x = 0
+y = 0
+mode = default
+}
+
+{
+length = 10
+rgba = [255, 255, 255, 255]
+x = 0
+y = 0
+mode = default
+}

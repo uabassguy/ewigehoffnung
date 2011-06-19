@@ -2,7 +2,6 @@
 # Superclass for game states
 
 require_relative "../cursor.rb"
-require_relative "../particles.rb"
 
 module EH::States
   # Skeleton for game states

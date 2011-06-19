@@ -488,6 +488,14 @@ module EH::Parse
       "file" => :string,
       "race" => :string,
       "gender" => :symbol,
+      "healing" => :int,
+      "crafting" => :int,
+      "botany" => :int,
+      "healing_magic" => :int,
+      "mind" => :int,
+      "elemental" => :int,
+      "ranged" => :int,
+      "melee" => :int,
     }
     chars = Parser.new("def/characters.def", p, EH::Game::Character).parse
     chars.each { |char|
@@ -604,6 +612,24 @@ module EH::Parse
     file.close
     puts("INFO: Parsed #{hash.size} weapons")
     return hash
+  end
+  
+  def self.animations
+    anims = {}
+    Dir.new("def/animations").each { |file|
+      next if file == "." or file == ".."
+      file = File.open("def/animations/#{file}")
+      file.close
+    }
+    return anims
+  end
+  
+  def animation(file)
+    graphic = ""
+    sx = sy = 0
+    repeat = false
+    frames = []
+    return Animation.new(graphic, sx, sy, repeat, frames)
   end
   
 end

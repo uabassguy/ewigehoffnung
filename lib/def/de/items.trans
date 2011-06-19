@@ -76,3 +76,9 @@ atropin
 name = "Tollkirschengift"
 desc = ""
 }
+
+meat_raw
+{
+name = "Rohes Fleisch"
+desc = ""
+}

@@ -7,6 +7,14 @@ agility = 100
 file = "tharat"
 race = "Etarae"
 gender = male
+healing = 2
+crafting = 2
+botany = 1
+healing_magic = 0
+mind = 0
+elemental = 0
+ranged = 5
+melee = 3
 }
 
 {
@@ -18,6 +26,14 @@ agility = 30
 file = "adekea"
 race = "Etarae"
 gender = female
+healing = 2
+crafting = 1
+botany = 1
+healing_magic = 0
+mind = 0
+elemental = 0
+ranged = 1
+melee = 1
 }
 
 {
@@ -29,6 +45,14 @@ agility = 30
 file = "esthen"
 race = "Etarae"
 gender = male
+healing = 0
+crafting = 2
+botany = 1
+healing_magic = 0
+mind = 0
+elemental = 0
+ranged = 2
+melee = 2
 }
 
 {
@@ -40,6 +64,14 @@ agility = 30
 file = "joanna"
 race = "Etarae"
 gender = female
+healing = 2
+crafting = 1
+botany = 2
+healing_magic = 3
+mind = 0
+elemental = 2
+ranged = 1
+melee = 1
 }
 
 {
@@ -51,6 +83,14 @@ agility = 30
 file = "ejera"
 race = "Mensch"
 gender = female
+healing = 5
+crafting = 1
+botany = 4
+healing_magic = 0
+mind = 0
+elemental = 0
+ranged = 1
+melee = 2
 }
 
 {
@@ -62,6 +102,14 @@ agility = 30
 file = "salyjea"
 race = "Etarae"
 gender = female
+healing = 4
+crafting = 1
+botany = 3
+healing_magic = 1
+mind = 0
+elemental = 0
+ranged = 1
+melee = 2
 }
 
 {
@@ -73,4 +121,12 @@ agility = 30
 file = "iliana"
 race = "Etarae"
 gender = female
+healing = 2
+crafting = 3
+botany = 2
+healing_magic = 0
+mind = 0
+elemental = 0
+ranged = 3
+melee = 3
 }

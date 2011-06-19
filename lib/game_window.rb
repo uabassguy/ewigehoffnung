@@ -6,6 +6,9 @@ if EH.config[:opengl]
   require_relative "ext/shader.rb"
 end
 
+require_relative "particles.rb"
+require_relative "animation.rb"
+
 module EH
   class GameWindow < Gosu::Window
     attr_accessor :state
@@ -14,6 +17,8 @@ module EH
       super(1024, 768, false)
       self.caption = "Ewige Hoffnung - v#{EH::VERSION}"
       EH.window = self
+      EH.particles = EH::Parse.particles
+      EH.animations = EH::Parse.animations
       @state = StartMenu.new(self)
       @unpress = []
       @font = EH.font(EH::DEFAULT_FONT, 20)
