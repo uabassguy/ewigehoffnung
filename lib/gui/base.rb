@@ -134,8 +134,7 @@ module EH::GUI
   end
   
   class Element
-    attr_accessor :x, :y, :xoff, :yoff, :zoff
-    attr_reader :w, :h
+    attr_accessor :x, :y, :xoff, :yoff, :zoff, :w, :h
     # x and y are relative to the windows topleft corner plus title bar
     def initialize(x, y, w, h)
       @remove = false

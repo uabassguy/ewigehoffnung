@@ -54,6 +54,31 @@ module EH
     end
     return false
   end
+    
+  def self.multiline(text, width, font)
+    ret = []
+    lines = text.split("\n")
+    lines.each { |line|
+      ary = line.split(" ")
+      str = ""
+      ary.each { |word|
+        if font.text_width(str + word) < width - 18
+          str += "#{word} "
+        else
+          str.rstrip!
+          if str != ""
+            ret.push(str)
+          end
+          str = "#{word} "
+        end
+        if word == ary.last
+          str.rstrip!
+          ret.push(str)
+        end
+      }
+    }
+    return ret
+  end
   
   @@fonts = {}
   

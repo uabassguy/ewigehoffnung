@@ -7,14 +7,12 @@ module EH::GUI
       super(x, y, w, h)
       @bg = EH.sprite("gui/container_background")
       @font = EH.font(EH::DEFAULT_FONT, size)
-      @text = []
-      setup_text(text)
+      @text = EH.multiline(text, @w, @font)
       @align = align
     end
     
     def text=(text)
-      @text = []
-      setup_text(text)
+      @text = EH.multiline(text, @w, @font)
     end
     
     def draw
@@ -33,31 +31,6 @@ module EH::GUI
           @font.draw(line, @x + @xoff + (@w-@font.text_width(line)), @y + @yoff + (@font.height/9) + y, EH::GUI_Z + 10 + @zoff, 1, 1, Gosu::Color::BLACK)
         end
         y += @font.height
-      }
-    end
-    
-    private
-    
-    def setup_text(text)
-      lines = text.split("\n")
-      lines.each { |line|
-        ary = line.split(" ")
-        str = ""
-        ary.each { |word|
-          if @font.text_width(str + word) < @w - 18
-            str += "#{word} "
-          else
-            str.rstrip!
-            if str != ""
-              @text.push(str)
-            end
-            str = "#{word} "
-          end
-          if word == ary.last
-            str.rstrip!
-            @text.push(str)
-          end
-        }
       }
     end
     

@@ -8,25 +8,25 @@ desc = ""
 bow
 {
 name = "Bogen"
-desc = ""
+desc = "Fernkampfwaffe"
 }
 
 knife
 {
 name = "Messer"
-desc = ""
+desc = "Werkzeug und Waffe"
 }
 
 arrow
 {
 name = "Pfeil"
-desc = ""
+desc = "Munition für Bögen"
 }
 
 leather_harness
 {
 name = "Lederharnisch"
-desc = ""
+desc = "Schützt vor Nahkampfangriffen"
 }
 
 linen_shirt
@@ -50,7 +50,7 @@ desc = ""
 banewort
 {
 name = "Tollkirsche"
-desc = ""
+desc = "Giftige Beere"
 }
 
 wolfsbane
@@ -68,13 +68,13 @@ desc = ""
 meat
 {
 name = "Fleisch"
-desc = ""
+desc = "Nahrungsmittel"
 }
 
 atropin
 {
 name = "Tollkirschengift"
-desc = ""
+desc = "Langsames, aber sehr wirksames Gift"
 }
 
 meat_raw

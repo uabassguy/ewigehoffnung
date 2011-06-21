@@ -251,7 +251,7 @@ module EH::States
       end
       if @w.get(:items).changed?
         @w.get(:info_header).text = Trans.item(@w.get(:items).selected.name)
-        @w.get(:info).text = Trans.item("#{@w.get(:items).selected.name}_desc".to_sym)
+        @w.get(:info).text = Trans.item("#{@w.get(:items).selected.name}_desc")
       end
     end
     def draw
