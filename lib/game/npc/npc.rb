@@ -1,5 +1,6 @@
 
 require_relative "goal.rb"
+require_relative "bubble.rb"
 
 # TODO move goal logic to mapobject
 
@@ -17,6 +18,7 @@ module EH::Game
       @name = "npc-#{props[:file].downcase}-#{rand(1000)}"
       @gamename = props[:name] ? props[:name] : @name
       @children = []
+      @bubble = Bubble.new(@x, @y, 64, 24, "weeeh\nlol 1337 this is some serious damn effing long line mkay?\nmulti\nline\ntest")
     end
     def setup
       super
@@ -69,6 +71,7 @@ module EH::Game
     
     def draw(x, y)
       super
+      @bubble.draw(@x+x, @y+y)
       @children.each { |child| child.draw(x, y) }
     end
     

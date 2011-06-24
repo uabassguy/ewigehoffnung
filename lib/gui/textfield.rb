@@ -3,17 +3,32 @@ module EH::GUI
   # Displays text in the given font and alignment
   class Textfield < Element
     
-    def initialize(x, y, w, h, text="", size=20, align=:left)
+    attr_accessor :max_width
+    
+    def initialize(x, y, w, h, txt="", size=20, align=:left, fixed=true, maxw=w)
       super(x, y, w, h)
       @bg = EH.sprite("gui/container_background")
       @font = EH.font(EH::DEFAULT_FONT, size)
-      @text = EH.multiline(text, @w, @font)
       @align = align
+      @fixed = fixed
+      @max_width = maxw
+      set_text(txt)
     end
     
     def text=(text)
+      if !@fixed
+        @w = @max_width
+      end
       @text = EH.multiline(text, @w, @font)
+      if !@fixed
+        @h = 8 + @text.size * (@font.height)
+        #if @text.size == 1
+        #  @w = 8 + @font.text_width(@text.first)
+        #end
+      end
     end
+    
+    alias :set_text :text=
     
     def draw
       @bg.draw(@x+@xoff, @y+@yoff, EH::GUI_Z + @zoff, (@w)/@bg.width.to_f, @h/@bg.height.to_f)
