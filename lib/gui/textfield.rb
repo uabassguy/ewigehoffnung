@@ -21,10 +21,8 @@ module EH::GUI
       end
       @text = EH.multiline(text, @w, @font)
       if !@fixed
+        @w = 8 + @font.text_width(@text.sort_by { |line| line.length}.reverse!.first)
         @h = 8 + @text.size * (@font.height)
-        #if @text.size == 1
-        #  @w = 8 + @font.text_width(@text.first)
-        #end
       end
     end
     

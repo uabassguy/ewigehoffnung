@@ -74,7 +74,7 @@ module EH::Game
             EH.window.state.map.move_left
             @tx = EH.window.state.map.current.width
             @x = (EH.window.state.map.current.width*32) - @speed
-            end
+          end
         else
           @dx = 0
         end

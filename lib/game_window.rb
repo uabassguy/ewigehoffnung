@@ -26,6 +26,8 @@ module EH
       if (EH.config[:contrast] != 1.0 and EH.config[:opengl])
         @contrast = Shader.new(self, "glsl/contrast")
         @contrast["contrast"] = EH.config[:contrast]
+      else
+        @contrast = nil
       end
     end
     def update

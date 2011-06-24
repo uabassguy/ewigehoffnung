@@ -18,12 +18,14 @@ module EH::Game
       @name = "npc-#{props[:file].downcase}-#{rand(1000)}"
       @gamename = props[:name] ? props[:name] : @name
       @children = []
-      @bubble = Bubble.new(@x, @y, 64, 24, "weeeh\nlol 1337 this is some serious damn effing long line mkay?\nmulti\nline\ntest")
+      @bubble = nil
     end
+    
     def setup
       super
       @behaviour.on_init if @behaviour
     end
+    
     # Generates a path from the current position to the given screen coordinates by using A*
     def find_path_to(x, y)
       #puts("from #{@x/32}|#{@y/32} to #{x}|#{y}")
@@ -37,6 +39,7 @@ module EH::Game
       @goal.start
       return @goal
     end
+    
     def update
       @children.each { |child|
         if child.follow
@@ -67,12 +70,21 @@ module EH::Game
           end
         end
       end
+      if @bubble
+        @bubble.update
+        @bubble = nil if @bubble.remove?
+      end
     end
     
     def draw(x, y)
       super
-      @bubble.draw(@x+x, @y+y)
+      @bubble.draw(@x+x, @y+y) if @bubble
       @children.each { |child| child.draw(x, y) }
+    end
+    
+    # Displays a speech bubble with the given text
+    def talk(text)
+      @bubble = Bubble.new(text)
     end
     
     def destroy_goal

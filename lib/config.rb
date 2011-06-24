@@ -8,6 +8,8 @@ module EH
         :language => "de",
         :volume => 0.5, # 0 = normal, 1 = twice as loud
         :contrast => 1.0, # 1.0 = off
+        :log => true, # whether to log to file or print everything on stdout
+        :text_speed => 5, # higher = slower
       }
     end
     def load(file=EH::DEFAULT_CONFIG)
@@ -37,6 +39,12 @@ module EH
         @hash[:volume] = 0.0
       elsif vol > 1
         @hash[:volume] = 1.0
+      end
+      speed = @hash[:text_speed]
+      if speed < 1
+        @hash[:text_speed] = 1
+      elsif speed > 10
+        @hash[:text_speed] = 10
       end
     end
   end

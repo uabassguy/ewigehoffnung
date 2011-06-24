@@ -3,8 +3,17 @@ module EH::Game
   
   class Bubble < EH::GUI::Textfield
     
-    def initialize(x, y, w, h, text)
-      super(x, y, w, h, text, 20, :left, false, 256)
+    def initialize(text)
+      super(0, 0, 0, 0, text, 20, :left, false, 256)
+      @age = text.gsub("\n", "").size * EH.config[:text_speed]
+    end
+    
+    def update
+      if @age <= 0
+        @remove = true
+      else
+        @age -= 1
+      end
     end
     
     def draw(x, y)

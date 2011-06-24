@@ -38,6 +38,7 @@ module EH::GUI
       @changed = false
       @dragging = false
       @parent = nil
+      @save_pos = false
     end
     def empty
       @elements = {}

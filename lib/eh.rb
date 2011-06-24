@@ -16,7 +16,10 @@ module EH
   if !File.directory?("#{HOME_PATH}saves")
     Dir.mkdir("#{HOME_PATH}saves")
   end
+  
   VERSION = 0.1
+  RELEASE = false
+
   #--
   # Game
   MAP_Z = 1
@@ -97,6 +100,17 @@ module EH
   @config.load
   def self.config
     return @config.hash
+  end
+  
+  if RELEASE
+    if config[:log]
+      puts("INFO: Redirecting further output to log files")
+      $stdout.reopen("#{EH::HOME_PATH}/info.log", "w")
+      $stderr.reopen("#{EH::HOME_PATH}/error.log", "w")
+    end
+    if $DEBUG
+      $DEBUG = false
+    end
   end
   
   begin
@@ -189,7 +203,7 @@ if !File.exists?("graphics/missing.png")
   EH.exit(1)
 end
 
-puts("INFO: Loaded core module (v#{EH::VERSION})\nLIB #{EH::LIBRARY_PATH}\nHOME #{EH::HOME_PATH}")
+puts("INFO: Loaded core module (v#{EH::VERSION})\nINFO: LIB #{EH::LIBRARY_PATH}\nINFO: HOME #{EH::HOME_PATH}")
 
 require_relative "translate.rb"
 require_relative "parse.rb"
