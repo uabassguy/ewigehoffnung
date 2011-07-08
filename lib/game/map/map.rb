@@ -60,13 +60,14 @@ module EH::Game
     end
     
     def passable?(x, y, player=false)
-      if !player && ((x/32) < 0 or (x/32) > width-1 or (y/32) < 0 or (y/32) > height-1)
+      if !player && ((x/32) < 0 or (x/32) >= width or (y/32) < 0 or (y/32) >= height)
         return false
       elsif player
-        if (x/32).to_i > width - 1
+        if (x/32).to_i >= width
           puts("right")
           return EH.window.state.map.right.passable?(0, y, true)
         elsif (x/32).to_i < 0
+          puts("left")
           return EH.window.state.map.left.passable?(EH.window.state.map.left.width*32, y, true)
         end
       end

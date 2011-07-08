@@ -4,7 +4,11 @@ require_relative "map_animation.rb"
 
 module EH::Game
   class Player < MapNPC
+    
     include Gosu
+    
+    attr_accessor :x, :y
+    
     def initialize(x=0, y=0)
       super(x, y, {:file => EH.window.state.party.player.charset})
       @speed = 2
@@ -12,6 +16,7 @@ module EH::Game
       @name = "player"
       @gamename = EH.window.state.party.player.name
     end
+    
     def update
       window = EH.window
       if @dx == 0 and @dy == 0
@@ -50,5 +55,7 @@ module EH::Game
         end
       end
     end
+    
   end
+  
 end
