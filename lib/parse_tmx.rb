@@ -20,10 +20,12 @@ module EH::Parse
       props = root.get_elements("properties")
       props.each { |prop|
         prop.each_element { |el|
-          properties.store(el.attribute("name").to_s.to_sym, el.attribute("value"))
+          properties.store(el.attribute("name").to_s.to_sym, el.attribute("value").to_s)
         }
       }
-      ap properties
+      properties.store(:width, root.attribute("width").to_s.to_i)
+      properties.store(:height, root.attribute("height").to_s.to_i)
+      properties.store(:file, file)
       
       ts = root.get_elements("tileset")
       ts.each { |set|
@@ -44,7 +46,6 @@ module EH::Parse
             tile_props)
         )
       }
-      ap tilesets
       
       layer_elements = root.get_elements("layer")
       layer_elements.each { |layer|
@@ -63,7 +64,6 @@ module EH::Parse
         layers.push(EH::Layer.new(w, h, props, tiles))
         layers.last.fill_tilemap(tilesets.last)
       }
-      ap layers
       
       objectgrous = root.get_elements("objectgroup")
       objectgrous.each { |objectgroup|
@@ -74,16 +74,18 @@ module EH::Parse
           el.get_elements("properties/property").each { |p|
             props.store(p.attribute("name").to_s.to_sym, p.attribute("value").to_s)
           }
+          props.store(:layer, objectgroup.attributes["name"])
+          props.store(:id, el.attribute("name").to_s.gsub("-", "_"))
           case el.attribute("type").to_s.to_sym
           when :npc
             obj = EH::Game::MapNPC.new(x, y, props)
+            obj.behaviour = EH::Parse.behaviour(file, obj)
           else
             obj = EH::Game::MapObject(x, y, props)
           end
           objects.push(obj)
         }
       }
-      ap objects
       
       return EH::Game::Map.new(properties, layers, objects)
     end

@@ -17,10 +17,6 @@ module EH
       super(1024, 768, false)
       self.caption = "Ewige Hoffnung - v#{EH::VERSION}"
       EH.window = self
-
-      EH::Parse::TMX.parse("test")
-      EH.exit(0)
-
       EH.particles = EH::Parse.particles
       EH.animations = EH::Parse.animations
       @state = StartMenu.new(self)
