@@ -14,6 +14,7 @@ module EH
   end
   
   class Animation
+    attr_accessor :x, :y
     def initialize(graphic, sx, sy, repeat, frames)
       @anim_frames = EH.tiles("animations/#{graphic}", sx, sy, false)
       @repeat = repeat

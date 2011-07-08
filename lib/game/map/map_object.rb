@@ -5,10 +5,14 @@ module EH::Game
     attr_accessor :through, :follow
     def initialize(x, y, props)
       file = props[:file]
+      if file
+        @graphics = EH.tiles("chars/#{file}", -4, -4)
+      else
+        @graphics = nil
+        file = "unnamed"
+      end
       @properties = props
       @follow = false
-      # TODO check for file first
-      @graphics = EH.tiles("chars/#{file}", -4, -4)
       @index = 0
       @x, @y = x, y
       @tx, @ty = x/32, y/32 # tile based position, used for collision

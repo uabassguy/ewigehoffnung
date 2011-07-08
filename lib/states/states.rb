@@ -60,8 +60,6 @@ module EH::States
       @setup = false
       @context = nil
       @osd = {}
-      @anim = EH.anim(:test)
-      @anim.play(512, 384, 5000)
     end
     
     def update
@@ -105,7 +103,6 @@ module EH::States
       }
       @context.draw if @context
       draw_cursor
-      @anim.draw
     end
     
     # Looks for an objects on the current map at the given screen coordinates
