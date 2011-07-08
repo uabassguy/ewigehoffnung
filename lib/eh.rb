@@ -207,6 +207,7 @@ puts("INFO: Loaded core module (v#{EH::VERSION})\nINFO: LIB #{EH::LIBRARY_PATH}\
 
 require_relative "translate.rb"
 require_relative "parse.rb"
+require_relative "parse_tmx.rb"
 require_relative "sample.rb"
 require_relative "song.rb"
 require_relative "sprite.rb"
