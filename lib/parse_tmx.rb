@@ -29,9 +29,7 @@ module EH::Parse
       ts.each { |set|
         img = set.get_elements("image").first
         tile_props = {}
-        tiles = set.get_elements("tile")
-        # TODO EH::Game::Tile objects
-        tiles.each { |tile|
+        set.get_elements("tile").each { |tile|
           hash = {}
           tile.get_elements("properties/property").each { |p|
             hash.store(p.attribute("name").to_s.to_sym, p.attribute("value").to_s)
@@ -42,7 +40,7 @@ module EH::Parse
           EH::Tileset.new(
             set.attribute("firstgid"),
             set.attribute("name"),
-            img.attribute("source").to_s,
+            "graphics/tiles/#{File.basename(img.attribute("source").to_s)}",
             tile_props)
         )
       }
@@ -63,6 +61,7 @@ module EH::Parse
           tiles.push(val.gsub(",", "").to_i)
         }
         layers.push(EH::Layer.new(w, h, props, tiles))
+        layers.last.fill_tilemap(tilesets.last)
       }
       ap layers
       
@@ -75,12 +74,18 @@ module EH::Parse
           el.get_elements("properties/property").each { |p|
             props.store(p.attribute("name").to_s.to_sym, p.attribute("value").to_s)
           }
-          objects.push(EH::Game::MapNPC.new(x, y, props))
+          case el.attribute("type").to_s.to_sym
+          when :npc
+            obj = EH::Game::MapNPC.new(x, y, props)
+          else
+            obj = EH::Game::MapObject(x, y, props)
+          end
+          objects.push(obj)
         }
       }
       ap objects
       
-      return EH::Game::Map.new(properties, [], [])
+      return EH::Game::Map.new(properties, layers, objects)
     end
     
   end
