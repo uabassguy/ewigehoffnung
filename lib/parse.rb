@@ -19,7 +19,7 @@ module EH::Parse
   include REXML
   
   class Parser
-    def initialize(file, parsables, klass)
+    def initialize(file, parsables, klass, stfu=false)
       begin
         @file = File.open(file)
       rescue
@@ -27,6 +27,7 @@ module EH::Parse
       end
       @parsables = parsables
       @klass = klass
+      @stfu = stfu
     end
     
     def parse
@@ -64,7 +65,9 @@ module EH::Parse
           ivs("@#{key}_parsed".to_sym, val)
         end
       }
-      puts("INFO: Parsed #{parsed.length} #{File.basename(@file).sub('.def', '')}")
+      if !@stfu
+        puts("INFO: Parsed #{parsed.length} #{File.basename(@file).sub('.def', '')}")
+      end
       @file.close
       return parsed
     end
@@ -81,8 +84,10 @@ module EH::Parse
         return 0
       when :float
         return 0.0
-      when :array, :symarray
+      when :array, :symarray, :intarray
         return []
+      when :color
+        return Gosu::Color::WHITE
       end
     end
     
@@ -122,6 +127,34 @@ module EH::Parse
           end
         }
         return ary.map(&:to_sym)
+      when :intarray
+        s = str.gsub!(/\s|\[|\]/, '')
+        ary = s.split(',')
+        ary.each { |el|
+          if el.include?('*')
+            a = el.split('*')
+            ary.delete(el)
+            a[0].to_i.times {
+              ary.push(a[1])
+            }
+          end
+        }
+        return ary.map(&:to_i)
+      when :color
+        s = str.gsub!(/\s|\[|\]/, '')
+        ary = s.split(',')
+        ary.each { |el|
+          if el.include?('*')
+            a = el.split('*')
+            ary.delete(el)
+            a[0].to_i.times {
+              ary.push(a[1])
+            }
+          end
+        }
+        ary = ary.map(&:to_i)
+        color = Gosu::Color.new(ary[3], ary[0], ary[1], ary[2])
+        return color
       when :image
         return EH.sprite(str)
       end
@@ -614,13 +647,44 @@ module EH::Parse
     return hash
   end
   
+  # FIXME bit hacked
   def self.animations
+    p = {
+      "length" => :int,
+      "color" => :color,
+      "x" => :float,
+      "y" => :float,
+      "mode" => :symbol,
+    }
     anims = {}
     Dir.new("def/animations").each { |file|
       next if file == "." or file == ".."
-      file = File.open("def/animations/#{file}")
-      file.close
+      frames = Parser.new("def/animations/#{file}", p, EH::Frame, true).parse
+      block = false
+      @graphic = @split_x = @split_y = @repeat = nil
+      f = File.open("def/animations/#{file}")
+      f.each_line { |line|
+        line.gsub!(" ", "")
+        if line[0] == '('
+          block = true
+          next
+        end
+        if block
+          if line[0] == ')'
+            anims.store(file.gsub(".anim", "").to_sym, EH::Animation.new(@graphic, @split_x.to_i, @split_y.to_i, @repeat.to_b, frames))
+            break
+          else  
+            line.gsub!("\"", "")
+            line =~ /(.+)\=(.+)/
+            key = $1
+            val = $2
+            ivs("@#{key}", val)
+          end
+        end
+      }
+      f.close
     }
+    puts("INFO: Parsed #{anims.size} animations")
     return anims
   end
   

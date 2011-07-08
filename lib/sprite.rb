@@ -19,4 +19,16 @@ module EH
     end
   end
   
+  # TODO cache
+  def self.tiles(file, tx, ty, tile=false)
+    begin
+      ary = Gosu::Image.load_tiles(window, "graphics/#{file}.png", tx, ty, tile)
+      return ary
+    rescue RuntimeError
+      warn("ERROR: Failed to open graphic #{file}")
+      file = "missing"
+      retry
+    end
+  end
+  
 end

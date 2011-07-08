@@ -8,7 +8,7 @@ module EH::Game
       @properties = props
       @follow = false
       # TODO check for file first
-      @graphics = Gosu::Image.load_tiles(EH.window, "graphics/chars/#{file}.png", -4, -4, false)
+      @graphics = EH.tiles("chars/#{file}", -4, -4)
       @index = 0
       @x, @y = x, y
       @tx, @ty = x/32, y/32 # tile based position, used for collision
