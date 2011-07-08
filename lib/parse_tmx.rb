@@ -30,6 +30,7 @@ module EH::Parse
         img = set.get_elements("image").first
         tile_props = {}
         tiles = set.get_elements("tile")
+        # TODO EH::Game::Tile objects
         tiles.each { |tile|
           hash = {}
           tile.get_elements("properties/property").each { |p|
@@ -47,18 +48,38 @@ module EH::Parse
       }
       ap tilesets
       
-      layers = root.get_elements("layer")
-      layers.each { |layer|
-        layer.each { |el|
+      layer_elements = root.get_elements("layer")
+      layer_elements.each { |layer|
+        w = layer.attribute("width").to_s.to_i
+        h = layer.attribute("height").to_s.to_i
+        props = {:name => layer.attribute("name").to_s}
+        layer.get_elements("properties/property").each { |el|
+          props.store(el.attribute("name").to_s.to_sym, el.attribute("value").to_s)
         }
+        data = layer.get_elements("data").first
+        tiles = []
+        line = data.text.gsub("\n", "")
+        line.each_line(",") { |val|
+          tiles.push(val.gsub(",", "").to_i)
+        }
+        layers.push(EH::Layer.new(w, h, props, tiles))
       }
       ap layers
       
       objectgrous = root.get_elements("objectgroup")
       objectgrous.each { |objectgroup|
-        objectgroup.each { |el|
+        objectgroup.each_element { |el|
+          x = el.attribute("x").to_s.to_i
+          y = el.attribute("y").to_s.to_i
+          props = {}
+          el.get_elements("properties/property").each { |p|
+            props.store(p.attribute("name").to_s.to_sym, p.attribute("value").to_s)
+          }
+          objects.push(EH::Game::MapNPC.new(x, y, props))
         }
       }
+      ap objects
+      
       return EH::Game::Map.new(properties, [], [])
     end
     
