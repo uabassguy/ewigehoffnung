@@ -2,8 +2,10 @@
 module EH::States
   
   class AlchemyMenu < State
-    include EH::GUI
+    
     include EH
+    include EH::GUI
+    
     def initialize(window, previous, party)
       super(window)
       @previous = previous
@@ -19,6 +21,7 @@ module EH::States
       @w.add(:info_header, Textfield.new(320, 480, 384, 200, "", 24, :center))
       @w.add(:info, Textfield.new(320, 512, 384, 200, ""))
     end
+    
     def update
       super
       if @window.pressed?(Gosu::KbEscape) or @w.remove?
@@ -35,11 +38,13 @@ module EH::States
         @w.get(:info).text = Trans.item("#{@w.get(:items).selected.name}_desc")
       end
     end
+    
     def draw
       @background.draw(0, 0, 0)
       @w.draw
       draw_cursor
     end
+    
   end
   
 end

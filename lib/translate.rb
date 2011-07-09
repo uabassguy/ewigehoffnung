@@ -28,6 +28,9 @@ module EH
       "de" => {},
       "en" => {},
     }
+    
+    SUB = "[SUBSTITUTE]"
+    
     # menus are hardcoded anyway, so we dont parse anything
     @@menu = {
       "de" => {
@@ -325,7 +328,7 @@ module EH
       end
     end
     
-    def self.safe(hash, sym)
+    def self.safe(hash, sym, replace=nil)
       if !hash.has_key?(EH.config[:language])
         warn("ERROR: Selected language (#{EH.config[:language]}) not available")
         return ""
@@ -333,7 +336,11 @@ module EH
         warn("ERROR: Missing translation for #{sym} for language #{EH.config[:language]}")
         return ""
       end
-      return hash[EH.config[:language]][sym]
+      if replace && !replace.empty?
+        return hash[EH.config[:language]][sym].gsub(SUB, replace)
+      else
+        return hash[EH.config[:language]][sym]
+      end
     end
     
     def self.item(sym)
@@ -345,11 +352,11 @@ module EH
     def self.spell(sym)
       return safe(@@spells, sym)
     end
-    def self.menu(sym)
-      return safe(@@menu, sym)
+    def self.menu(sym, replace=nil)
+      return safe(@@menu, sym, replace)
     end
-    def self.dialogue(sym)
-      return safe(@@dialogues, sym)
+    def self.dialogue(sym, replace=nil)
+      return safe(@@dialogues, sym, replace)
     end
     def self.enemy(sym)
       return safe(@@enemies, sym)
