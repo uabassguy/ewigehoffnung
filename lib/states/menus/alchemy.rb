@@ -20,6 +20,7 @@ module EH::States
       @w.add(:items, Inventory.new(736, 128, 256, 584, @party.members[@w.get(:charselect).index], [:herb, :food, :poison], 24))
       @w.add(:info_header, Textfield.new(320, 480, 384, 200, "", 24, :center))
       @w.add(:info, Textfield.new(320, 512, 384, 200, ""))
+      @w.add(:grid, Grid.new(320, 128, 12, 6))
     end
     
     def update

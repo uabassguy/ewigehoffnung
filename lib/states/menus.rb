@@ -7,6 +7,7 @@ require_relative "../gui/char_equip.rb"
 require_relative "../gui/image.rb"
 require_relative "../gui/textfield.rb"
 require_relative "../gui/slider.rb"
+require_relative "../gui/grid.rb"
 
 require_relative "menus/alchemy.rb"
 require_relative "menus/equip.rb"
