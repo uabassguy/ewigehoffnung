@@ -50,6 +50,10 @@ module EH
     return false
   end
   
+  def self.mouse_inside?(x, y, ex, ey)
+    return inside?(EH.window.mouse_x, EH.window.mouse_y, x, y, ex, ey)
+  end
+  
   # a between b and c
   def self.between?(a, b, c)
     if a > b and a < c

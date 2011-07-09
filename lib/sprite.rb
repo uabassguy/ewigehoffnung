@@ -9,6 +9,7 @@ module EH
       return @@cache[file]
     end
     begin
+      raise if !File.exist?("graphics/#{file}.png")
       img = Gosu::Image.new(window, "graphics/#{file}.png", tile)
       @@cache.store(file, img)
       return img

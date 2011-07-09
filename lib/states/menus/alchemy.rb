@@ -20,7 +20,7 @@ module EH::States
       @w.add(:items, Inventory.new(736, 128, 256, 584, @party.members[@w.get(:charselect).index], [:herb, :food, :poison], 24))
       @w.add(:info_header, Textfield.new(320, 480, 384, 200, "", 24, :center))
       @w.add(:info, Textfield.new(320, 512, 384, 200, ""))
-      @w.add(:grid, Grid.new(320, 128, 12, 6))
+      @w.add(:grid, Grid.new(320, 128, 12, 6, [EH::Game::Item]))
     end
     
     def update
@@ -33,10 +33,12 @@ module EH::States
         char = @party.members[@w.get(:charselect).index]
         @w.get(:experience).text = "#{Trans.menu(:experience)}: #{char.skills.level_to_s(Game.find_skill(:botany))}"
         @w.get(:items).inventory = char.inventory
+        @w.get(:grid).clear
       end
       if @w.get(:items).changed?
         @w.get(:info_header).text = Trans.item(@w.get(:items).selected.name)
         @w.get(:info).text = Trans.item("#{@w.get(:items).selected.name}_desc")
+        @w.get(:grid).add(@w.get(:items).selected)
       end
     end
     
